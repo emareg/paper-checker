@@ -21,12 +21,21 @@ def split2words( sentence ):
     return re.findall(r'-?\d+(?:\.\d+)?|[a-zA-Z][0-9a-zA-Z\']*', sentence)    # \-
 
 
+
+
+def singular( string ):
+    if len(string) > 4 and string[-3:] == 'ies':
+        return string[:-3]+'y'
+    else:
+        return string[:-1]
+
+
 def plural( string ):
     ''' returns the plural of a word '''
     splural=''
     if(string[-1] == 's'): 
         splural=string+'es'
-    elif(string[-1] == 'y'): 
+    elif(string[-1] == 'y' and string[-2] != 'e'): 
         splural=string+'ies'
     else:
         splural=string+'s'
@@ -85,3 +94,9 @@ def infinitive( word ):
         infinitive=word[:-2]
     return infinitive
 
+
+def num2word( num ):
+    if isinstance(num, str): num = int(num)
+    if 0 <= num <= 12: 
+        words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelfe'] 
+        return words[num]

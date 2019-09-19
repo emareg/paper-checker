@@ -30,8 +30,11 @@ def regexFromLst( lst ):
 # Definition: includes preposition, postposition, and circumposition
 # An adposition does belong to a nound and not a verb (would be particle/adverb)
 
-lstAdpos = ['about', 'all', 'as', 'at', 'after', 'by','between', 'from', 'for', 'in','into', 'of', 'on','over', 'per', 'that', 'than', 'through','towards', 'under', 'unless', 'upon', 'with', 'without']
-reAdpos = regexFromLst(lstAdpos)+'$'
+# lstAdpos = ['about', 'all', 'as', 'at', 'after', 'by', 'between', 'from', 'for', 'in','into', 'of', 'on', 'over', 'per', 'that', 'than', 'through','towards', 'under', 'unless', 'until', 'upon', 'with', 'without']
+lstAdpos = ['about', 'at', 'after', 'by', 'between', 'from', 'for', 'in','into', 'of', 'on', 'over', 'per', 'than', 'through','towards', 'under', 'unless', 'until', 'upon', 'with', 'without']
+
+
+reAdpos = regexFromLst(lstAdpos)
 rePrep = regexFromLst(lstAdpos)
 
 
@@ -51,6 +54,10 @@ rePart = regexFromLst(lstParticle)
 ## Pronoun
 # -----------------------------------------------------------
 
+lstPron1 = ['I']
+lstPron1 = ['you']
+lstPron3 = ['he', 'she', 'it']
+
 lstPronoun = ['hers', 'herself', 'he', 'him', 'himself', 'hisself', 'I', 'it', 'itself', 'me', 'myself', 'one', 'oneself', 'ours', 'ourselves', 'ownself', 'self', 'she', 'thee', 'theirs', 'them', 'themselves', 'they', 'us', 'we', 'who', 'which', 'you']
 lstPronounPos = ['her', 'his', 'mine', 'my', 'our', 'ours', 'their', 'your', 'its']
 rePronoun = regexFromLst(lstPronoun+lstPronounPos)+'$'
@@ -58,21 +65,29 @@ rePronoun = regexFromLst(lstPronoun+lstPronounPos)+'$'
 
 
 
-## Pronoun
+## Quantifiers
 # -----------------------------------------------------------
 # Definition: before a noun
-
-reTheDet = '(:?[Aa]n?|[Aa]nother|[Aa]ny|[Mm]y|[Oo]ur|[Mm]any|[Nn]o|[Ss]ome|[Tt]he|[Tt]heir|[Tt]his|[Tt]hese|[Tt]hose)'
 
 lstQuantifier = ['all', 'any', 'enough', 'less', 'a lot of', 'lots of', 'more', 'most', 'no', 'none of', 'some']
 reQuantifier = regexFromLst(lstQuantifier)
 
-reIdentifier = '(:?what|such|)'
 
-lstDet = [ 'all', 'a', 'an', 'another', 'any', 'both', 'each', 'either', 'every', 'half', 'la', 'less', 'many', 'more', 'most', 'much', 'neither', 'no', 'our', 'several', 'some', 'such', 'that', 'the', 'these', 'this', 'those', 'which']
+## Determiners
+# -----------------------------------------------------------
+reTheDet = '(:?[Aa]n?|[Aa]nother|[Aa]ny|[Mm]y|[Oo]ur|[Mm]any|[Nn]o|[Ss]ome|[Tt]he|[Tt]heir|[Tt]his|[Tt]hese|[Tt]hose)'
+
+lstDetSgl = ['a', 'an', 'another', 'each', 'every', 'this']
+lstDetPl = ['all', 'both', 'many', 'most', 'several', 'some', 'these', 'those']
+lstDetExtra = ['any', 'the', 'no']
+# lstDet = [ 'all', 'a', 'an', 'another', 'any', 'both', 'each', 'either', 'every', 'half', 'la', 'less', 'many', 'more', 'most', 'much', 'neither', 'no', 'our', 'several', 'some', 'such', 'that', 'the', 'these', 'this', 'those', 'which']
+lstDet = lstDetSgl+ lstDetPl + lstDetExtra + lstPronounPos
+
 lstDeterminer = lstDet
-reDeterminer = regexFromLst(lstDet+lstPronounPos)+'$'
-reDet = regexFromLst(lstDet+lstPronounPos)
+#reDeterminer = regexFromLst(lstDet+lstPronounPos)+'$'
+reDetSgl = regexFromLst(lstDetSgl)
+reDetPl = regexFromLst(lstDetPl)
+reDet = regexFromLst(lstDet)
 
 
 
@@ -119,9 +134,8 @@ lstAdvTime = [ 'again', 'first', 'later', 'never', 'now', 'often', 'seldom', 'st
 lstAdvPlace = ['around', 'everywhere', 'here', 'there', 'nearby', 'outside']
 lstAdvDegree = ['almost', 'always', 'also', 'enough', 'further', 'least', 'many', 'not', 'too', 'quite', 'rather', 'very']
 lstAdvMisc = ['due', 'far', 'thus', 'yet', 'well']
-lstAdv = ['\w\w+ly']
 lstAdv = lstAdvTime + lstAdvPlace + lstAdvDegree + lstAdvMisc
-reAdv = regexFromLst(lstAdv)+'|\w\w+ly'
+reAdv = r'(?:\w\w+ly|' + regexFromLst(lstAdv)+r')'
 
 
 
@@ -129,14 +143,15 @@ reAdv = regexFromLst(lstAdv)+'|\w\w+ly'
 ## Adjective
 # -----------------------------------------------------------
 # todo: more words with 'al'
+# hypen words: hash-based
 # check ent, like
 
-lstAdjectiveExtra = ['able', 'bad', 'false', 'few', 'general', 'great', 'good', 'large', 'long', 'new', 'only', 'other', 'own', 'same', 'small', 'true']
+lstAdjectiveExtra = ['able', 'bad', 'false', 'few', 'general', 'great', 'good', 'large', 'long', 'new', 'only', 'other', 'own', 'same', 'small', 'smaller', 'true']
 
 reAdjectiveExtra = regexFromLst(lstAdjectiveExtra)
-reSuffixAdjective = r'\w\w+(?:ous|ant|[liur]ent|bare|[ai]ble|[st]ive|ful|\wless|[^i]ty|ic|ial|ian|ical|[mnrt]al|some|ional|[^e]ry|ish)$'
+reSuffixAdjective = r'\w{3,}-\w{3,}ed|\w\w+(?:ous|ant|[liur]ent|bare|[ai]ble|[st]ive|ful|\wless|[^i]ty|ic|ial|ian|ical|[mnrt]al|some|ional|[^e]ry|ish)'
 
-reAdjective = '(?:' + reAdjectiveExtra + '|' + reSuffixAdjective + ')$'
+reAdjective = '(?:' + reAdjectiveExtra + '|' + reSuffixAdjective + ')'
 
 
 
@@ -146,8 +161,11 @@ reAdjective = '(?:' + reAdjectiveExtra + '|' + reSuffixAdjective + ')$'
 lstVerbBase = ['be', 'been', 'is', 'are', 'was', 'were', 'has', 'have', 'had', 'need', 'get', 'got', 'do', 'does', 'did', 'done', 'make', 'makes', 'made']
 lstVerbCommon = ['give', 'gave', 'given', 'go', 'see', 'seen', 'seem', 'set' 'show', 'work', 'use']
 
-lstAux = ['can', 'cannot', 'could', 'may', 'might', 'must', 'shall', 'should', 'will', 'would' ]
+lstModal = ['can', 'cannot', 'could', 'may', 'might', 'must', 'shall', 'should', 'will', 'would']
+lstAux = lstModal + lstVerbBase  # modal + be, do, have
+reModal = regexFromLst(lstModal)
 reAux = regexFromLst(lstAux)
+
 
 reInfinitve = r'\w\w+(?:yze|lize|cate|ise|ify|ose|ive|rve|ate|re|mit)'
 reGerund = r'\w\w\w+ing'   # exceptions: xxthing, during, timing
@@ -161,21 +179,21 @@ reVerb = '(?:' + reSuffixVerb + '|' + regexFromLst(lstVerbBase+lstVerbCommon+lst
 ## Noun
 # -----------------------------------------------------------
 
-# check: me, ery, [siv]al, ity,ty , ngle, eer, ict 	EX: resource, protocol
+# check: me, ery, [siv]al, ity,ty , sis, ngle, eer, ict 	EX: resource, protocol, candidate
 # Wrongs: Thus, they, However
 
-lstNounExtra = ['amount', 'angle', 'case', 'cell', 'child', 'end', 'example', 'fact', 'group', 'item', 'life', 'line', 'way', 'year', 'part', 'point', 'rate', 'result', 'study', 'type', 'unit', 'number']
-reNounExtra = regexFromLst(lstNounExtra)
+
 
 reSuffixNoun = r'\w\w+(?:a|f|i|cy|me|or|age|ion|ium|omy|ver|ism|ght|ure|one|[ltr]ist|[ea]nce|[cn]ess|ican|[clv]ity|logy|ship|here|ment|[^o]us|[^aeiou]em|[emnpt]er|[oae][oa][dmnprkt]|[gwy]ear)'
-rePrefixNoun = r'(?:[A-Z][a-z]{3,})'
-reSuffixNounPl =  reSuffixNoun.replace('y|', 'ie|') 
+rePrefixNoun = r'(?:[A-Z][a-z]{3,}|[A-Z]{2,4})'
+reSuffixNounPl =  reSuffixNoun.replace('i|', '')   # 'is' 
+reSuffixNounPl =  reSuffixNoun.replace('y|', 'ies|') 
 reSuffixNounPl =  reSuffixNounPl.replace('s|', 'se|') 
 reSuffixNounPl =  reSuffixNounPl.replace(u'|', 's|')  #re.sub(r'([^ys])\||\)', '\1s')
 reSuffixNounPl = reSuffixNounPl.replace(')', '|ings)')
 
-reNoun = '(?:' + rePrefixNoun + '|' + reSuffixNoun + ')$'
-reNoun = '(?:' + reSuffixNoun +'|'+ reNounExtra +'|'+ reSuffixNounPl + r'|[ABCDEFGHJKLMNOPQRSTUVWXYZ])$'
+reNounSgl = '(?:' + rePrefixNoun +'|'+ reSuffixNoun + ')'
 reNounPl = reSuffixNounPl
+reNoun = '(?:' + reSuffixNoun +'|'+ reSuffixNounPl + r')'
 
 

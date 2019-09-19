@@ -30,7 +30,7 @@ def stripTeX( text, preserveLines = False ):
         text = re.sub(r'\s?\\'+cmd+r'\{([^\}]*)\}', r'', text)
 
     text = re.sub(r'(?<!\\)\%.*?\n', r'\n', text)     # remove comments
-    #text = re.sub(r'(\$[^$]+\$)', '$x$', text)     # remove inline math
+    text = re.sub(r'(\$[^$]+\$)', '$x$', text)     # remove inline math
     text = re.sub(r'\\([%#$&])(?=[ \}])', r'\1', text)     # replace special chars
 
 
@@ -55,7 +55,7 @@ def stripTeX( text, preserveLines = False ):
         text = re.sub(r'\\'+heading+r'\{([^}]*?)\}', r'\1',  text)
 
     # remove remaining
-    text = re.sub(r'\\\w+(?:\*|\[[^\]]*\])?(?:\{([^}]*)\})*', r'', text)     # replace special chars
+    text = re.sub(r'\\\w+(?:\*|\[[^\]]*\])?(?:\{([^}\n]*)\})*', r'', text)     # replace special chars
 
     return text
 
