@@ -13,9 +13,9 @@ cd paper-checker
 
 Afterwards you can use the script in two ways:
 
-**1. Call as a module**
+**1. Run the python file**
 ```
-python3 papercheck -gs example/testfile.tex
+python3 papercheck.py -gs example/testfile.tex
 ```
 
 **2. Compile as an stand-alone executable (Unix only)**
@@ -66,4 +66,11 @@ When you run the script on `.tex` files, it will also check for certain TeX prob
 * missing periods in figure/table captions
 * unused math operators in math mode, e.g. `$sin$` instead of `$\sin$` 
 
+
+## Related Work
+
+* [LanguageTool](https://languagetool.org/): Grammar, Style and Spell Checker written in Java
+* [textidote](https://github.com/sylvainhalle/textidote): uses LanguageTool on `.tex` files
+
+So why not use LanguageTool? It is large, slow and tailored for scientific/technical texts. However, I recommend to use LanguageTool in addition.
 

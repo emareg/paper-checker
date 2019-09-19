@@ -1,0 +1,89 @@
+
+
+\documentclass{scrartcl}
+
+
+
+\title{A simple TeX Test File with grammar errors}
+
+
+\begin{document}
+\maketitle
+
+
+\section{General}
+This document is a small file used to illustrate how \emph{papercheck} works.
+The following sections inherit grammar mistakes, confused terms and other language constructs that might need to change or improve before publishing.
+
+
+If papercheck runs on the \verb!.tex! file it will also analyze TeX environments and commands.
+
+
+
+
+\section{Grammar Check Testing}
+In this paragraphs, we focus at at various cases of for grammar violations.
+The checks should can have a higher accuracy then the paragraphs in the style section.
+I admit that I did not spend to much time on this the test.
+This should clearly had better grammar.
+
+Neither are the “a” and “an” in the next sentence correct or any of the following sentences.
+There is a LED and also a 8-bit microcontroller but not an universal key.
+However comma mistakes are more difficult to detect.
+Furthermore,I forget to put a space after a comma.
+
+We did not intended to make it this ugly.
+
+Some mistakes will not be detected but should be in the future.
+A internships are not plural. These figure is singular.
+
+
+
+
+
+
+\section{Language Style Testing}
+This section shows some confused terms and other language style issues.
+
+The massage of this paragraph is clear in the case that you missed it. We've got some words witch we should improve.
+Wait a minuet, can you see the huge amount of characters on the LCD display? 
+
+Thehe oxford comma is useful when listing terms, phrases or symbols.
+
+sometimes I try to directly start small. But if I write myfile.txt, I'm likely to get a warning about a period not followed by a space. Even if it is just 5 P.M. here.
+
+Well, that's enough for now.
+
+
+
+
+
+\section{TeX Testing}\label{sec:texsection}
+% basic Tex
+A first paragraph with some stuff, some \textbf{bold text}   and other things, like a citation\cite{my:paper}.
+Some other text, part of which is <<special>>, \emph{very} "special", like $4 \times 5 = 21$.
+
+Overall there are 
+\begin{itemize}
+	\item text formatting
+	\item environments such as itemize
+\end{itemize}
+
+
+\begin{table}
+	\centering
+    \begin{tabular}{@{}rr@{}} 
+    \textbf{Key}  & \textbf{Value} \\ 
+    name & me \\
+    id & 123456\\
+    \end{tabular}
+    \caption{A generic table with no special meaning}
+    \label{tab:example}
+\end{table}
+
+
+
+
+\end{document}
+
+
