@@ -198,7 +198,7 @@ def writeHTMLreport( lines, crit_linenums = [], warn_linenums = [] ):
 
 
     output = head + "<body>\n{}</body>\n</html>".format(out_lines)
-    with open('report.html', "w+") as f:
+    with open('papercheck_report.html', "w+") as f:
         f.write(output)    
 
 
