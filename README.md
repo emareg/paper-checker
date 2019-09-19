@@ -15,13 +15,13 @@ Afterwards you can use the script in two ways:
 
 **1. Run the python file**
 ```
-python3 papercheck.py -gs example/testfile.tex
+python3 papercheck.py -gy example/testfile.tex
 ```
 
 **2. Compile as an stand-alone executable (Unix only)**
 ```
 make
-./papercheck -gs example/testfile.tex
+./papercheck -gy example/testfile.tex
 ```
 
 Supported file types: `.tex .txt .md .pdf`
@@ -44,7 +44,7 @@ Will highlight simple grammar mistakes such as
 
 
 
-### Style Checker (`-s` option)
+### Style Checker (`-y` option)
 Will highlight language that could be improved such as
 
 

@@ -67,6 +67,7 @@ from argparse import ArgumentParser
 # own functions
 from checker.grammar import checkGrammar, checkStyle
 from checker.tex import checkTeX
+from checker.spelling import checkSpelling
 from checker.plagiarism import checkPlagiarism
 
 from lib.stripper import *
@@ -78,20 +79,6 @@ from textstats import showStats
 # ==========================================================
 outputLines = []
 wasCorrectionMade = False
-
-
-
-is_grammarcheck_enabled = True
-is_stylecheck_enabled = True
-
-
-def set_grammar_check():
-    global is_grammarcheck_enabled
-    is_grammarcheck_enabled = True
-
-def set_style_check():
-    global is_stylecheck_enabled
-    is_stylecheck_enabled = True
 
 
 
@@ -239,6 +226,11 @@ def parseFile( fileName, args ):
         checkSentences( text )
 
 
+    # spell check
+    if args.spell:
+        checkSpelling(text)
+
+
     # grammar check
     if args.grammar:
         corrections = checkGrammar( text )
@@ -269,7 +261,8 @@ def parseFile( fileName, args ):
 argparser = ArgumentParser(description='Checks papers and other technical texts for grammar, plagiarism and style.')
 argparser.add_argument("-g", "--grammar", action='store_true', help="check grammar")
 argparser.add_argument("-p", "--plagiarism", action='store_true', help="check plagiarism")
-argparser.add_argument("-s", "--style", action='store_true', help="check language style")
+argparser.add_argument("-s", "--spell", action='store_true', help="check spelling")
+argparser.add_argument("-y", "--style", action='store_true', help="check language style")
 argparser.add_argument("-o", "--output", dest="filename",
                     help="write report to FILE", metavar="FILE")
 argparser.add_argument("-q", "--quiet",

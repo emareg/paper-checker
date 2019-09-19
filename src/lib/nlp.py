@@ -33,20 +33,21 @@ def singular( string ):
 def plural( string ):
     ''' returns the plural of a word '''
     splural=''
-    if(string[-1] == 's'): 
+    if(string[-1] in 'sxzh'): 
         splural=string+'es'
-    elif(string[-1] == 'y' and string[-2] != 'e'): 
-        splural=string+'ies'
+    elif(string[-1] == 'y' and string[-2] not in 'aeiou'): 
+        splural=string[:-1]+'ies'
     else:
         splural=string+'s'
     return splural
 
 
 def past( string ):
+    if len(string) < 3: return string
     past=''
     if(string[-1] == 'e'): 
         past=string+'d'
-    elif(string[-1] == 'y' and string[-1] not in 'aeiou'):   # y -> ied
+    elif(string[-1] == 'y' and string[-2] not in 'aeiou'):   # y -> ied
         past=string[:-1]+'ied'  
     elif(string[-2] == 'n' and string[-1] == 'd'):    # nd -> nt
         past=string[:-1]+'t'
@@ -58,6 +59,29 @@ def past( string ):
     else:
         past=string+'ed'
     return past
+
+
+def comperative( word ):
+    cmprv=''
+    if(word[-1] == 'e'): 
+        cmprv=word+'r'
+    elif(word[-1] == 'y' and word[-2] not in 'aeiou'):
+        cmprv=word[:-1]+'ier'
+    else:
+        cmprv=word+'er'
+    return cmprv
+
+
+def superlative( word ):
+    sup=''
+    if(word[-1] == 'e'): 
+        sup=word+'st'
+    elif(word[-1] == 'y' and word[-2] not in 'aeiou'):
+        sup=word[:-1]+'iest'
+    else:
+        sup=word+'est'
+    return sup
+
 
 
 def syllables( word ):
@@ -93,6 +117,10 @@ def infinitive( word ):
     if(word[-1] == 'd' and word[-2] =='e'):
         infinitive=word[:-2]
     return infinitive
+
+
+def isNum( word ):
+    return len(re.findall(r'-?\d+(?:\.\d+)?', word)) != 0
 
 
 def num2word( num ):
