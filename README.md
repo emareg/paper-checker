@@ -15,13 +15,13 @@ Afterwards you can use the script in two ways:
 
 **1. Run the python file**
 ```
-python3 papercheck.py -gy example/testfile.tex
+python3 papercheck.py -sgy example/testfile.tex
 ```
 
 **2. Compile as an stand-alone executable (Unix only)**
 ```
 make
-./papercheck -gy example/testfile.tex
+./papercheck -sgy example/testfile.tex
 ```
 
 Supported file types: `.tex .txt .md .pdf`
@@ -32,12 +32,26 @@ The found issues are displayed in the terminal and also written into `papercheck
 
 ## Features
 
+### Spell Checker (`-s` option)
+Will highlight spelling errors. The script uses a small basic dictionary plus some additional self-made dictionaries for terms such as
+
+* technical: “microcontroller”, “superframe”, “bitmask” 
+* mathematical: “eigenvector”, “linearization”
+* chemical: todo
+
+The larger standard dictionaries are unsuitable because they
+
+* contain errors such as “longitudianl” or “schemati”
+* mask informal plural forms such as “vertexes” which should be “vertices”
+* include obsolete forms such as “latence” which should be “latency”
+
+
 ### Grammar Checker (`-g` option)
 Will highlight simple grammar mistakes such as
 
 * misuse of “a” or “an”
-* doubled auxilary verbs (e.g. “is are”)
-* doubled determiners verbs (e.g. “this the”)
+* doubled auxiliary verbs (e.g. “is are”)
+* doubled determiners (e.g. “this the”)
 * confused “then” vs. “than”
 * confused “to” vs. “too”
 * wrong person-verb combination (e.g. “This were”)
@@ -57,7 +71,7 @@ Will highlight language that could be improved such as
 ### Plagiarism Checker (`-p` option)
 **experimental!**
 
-Will find significant sentences and compare them to google search matches. This is a very poor approach but useful as a minimal effort with zero cost.
+The script will try to find significant sentences, which are then compared to Google search results. This is a very poor approach but useful as a minimal effort with zero cost.
 
 
 

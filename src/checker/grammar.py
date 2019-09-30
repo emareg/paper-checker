@@ -156,10 +156,11 @@ class ReRule:
             matched_words = match[2].group(0) if match[2].group(0)[0] != '\n' else match[2].group(0)[1:]
             sugg = self.sugg(match[2].group(1)) if callable(self.sugg) else self.sugg
             sugg = sugg.replace(r'\1', match[2].group(1))
+            desc = self.desc.replace(r'\1', match[2].group(1))
             replace = matched_words.replace(match[2].group(1), sugg, 1)
             #replace = " "+re.sub(self.regex, self.sugg, match[2].group(0))+" "
-            askAction( match[0], self.desc, matched_words, replace)   
-            corrections.append(Correction(match[0], match[1], matched_words, replace, self.desc))
+            askAction( match[0], desc, matched_words, replace)   
+            corrections.append(Correction(match[0], match[1], matched_words, replace, desc))
         return corrections
 
 
@@ -189,7 +190,7 @@ class ReSub:
 
 
 R_AvsAn = ReRule("Use 'an' because the next word starts with a vowel SOUND.", 'an', r'\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaOoIi]|[Ee][^u]|[Uu][^sn]|[Uu]n[^i]|[Uu]nin|8[- ]|hour)\w+)\W')
-R_AnvsA = ReRule("Use 'a' because the next word does not start with a vowel SOUND.", 'a', r'\s(an)\s[„“”]?(?:[^AaOoEeIiUu\\„“”][a-z]|[^AEFHILMNORSX„“”][^a-z]|[Uu]s|[Uu]ni)\w*\W')
+R_AnvsA = ReRule("Use 'a' because the next word does not start with a vowel SOUND.", 'a', r'\s(an)\s[„“”]?(?:[^AaOoEeIiUu\\„“”][a-z]|[^AEFHILMNORSX8„“”][^a-z]|[Uu]s|[Uu]ni)\w*\W')
 R_RepeatedWord = ReRule("You repeated a word, which is probably not intended.", r"", r'\s(\w+) +\1\W')
 R_RepeatedTwoWords = ReRule("You repeated two words, which is probably not intended.", r"", r'\s(\w+\s\w+) +\1\W')
 R_To_vs_Too = ReRule("Possibly 'too' instead of 'to'.", 'too', r'\s(to)\s(:?much|big|cold|early|easy|fast|few|far|low|hard|high|hot|late|large|long|narrow|short|small|soft|soon|strong|weak|wide)\W')
@@ -203,8 +204,11 @@ R_Double_Adp = ReRule("You have repeated an adposition, which is probably not in
 R_Double_Modal = ReRule("You have repeated an modal verb, which is probably not intended.", '', r'\s'+reModal+r'\s+('+reModal+r')\W')
 R_Wrong3rdPerson = ReRule("Wrong verb form after 3rd person pronoun.", '', r'\s(?:[Hh]e|[Ss]he|[Ii]t|[Oo]ne|[Tt]his)\s(?:'+reAdv+r'\s)?(be|am|have|do|were)\W')
 R_Wrong2ndPerson = ReRule("Wrong verb form after 2nd person pronoun.", '', r'\s(?:[Yy]ou|[We]e|[Tt]hey|[Tt]hese|[Tt]hose)\s(?:'+reAdv+r'\s)?(is|has|does|was)\W')
-R_Comma_Intro = ReRule("Probably missing comma after introductory phrase.", r',\1', reIntroductoryPhrase + r'(\s\w{1,15})\s')
 
+
+R_Comma_Intro = ReRule("Probably missing comma after introductory phrase.", r',\1', reIntroductoryPhrase + r'(\s\w{1,15})\s')
+R_Comma_SubCon = ReRule("Probably no comma before a subordinate conjunction. Only use a comma if it connects two *independent* clauses.", '', r'(?<=\w\s)\w{1,15}\s\w{1,15}(,)\s(as \w\w+ as|after|before|that|whether|since|until|unless|if|even if)\s')
+# Quick Trick: if you can replace so,but,and with "therefore" or "such that" it needs a comma (independent clauses)
 
 
 #R_WrongPlural = ReRule("Possibly wrong plural", '', r"\s+(?:[Aa]n?|[Aa]nother|[Ee]ach)\s+(\w+[^uis'’]s)\W')
@@ -243,6 +247,8 @@ R_Width_With = ReRule("Probably 'width' instead of 'with'.", 'width', r',\s(?:a|
 
 
 
+# todo: check missing 'to' between verbs  (?:use|try|attemp)( )baseverb  => try TO do
+
 
 
 
@@ -276,6 +282,7 @@ G_Rules = [
     R_Neither_Or,
     R_Be_Do,
     R_Comma_Intro,
+    R_Comma_SubCon,
 ]
 
 G_ExtRules = [
@@ -310,6 +317,8 @@ S_Preposition_End = ReRule("Do not use prepositions to end your sentences with."
 S_Oxford_Comma = ReRule("Use Oxford comma to make lists less ambigous.", r'\1,', r'\w+,\s+(\w{4,})\s(?:and|or)\s')
 
 
+# ToDo
+# * check for  "foo bar, too"  => use also or additinally
 
 
 
@@ -341,26 +350,12 @@ def checkPlural( text ):
 
 
 
-def checkCommas( text ):
-    matches = findRegEx( reIntroductoryPhrase , text )  # r'\.\s+'+
-    for match in matches:
-        replace = match[2].group(0).replace( match[2].group(1), match[2].group(1)+",", 1)
-        askAction( match[0], "Possibly missing comma after introductory phrase: ", match[2].group(0), replace)
-
-    matches = findRegEx( r'\w+, ('+reSubConjunction+r')\s+\w+' , text )
-    for match in matches:
-        replace = match[2].group(0).replace( ", "+match[2].group(1), " "+match[2].group(1), 1)
-        askAction( match[0], "Possibly no comma before subordinate conjunction: ", match[2].group(0), replace)
-
-
 
 def checkWrongPerson( text ):
     matches = findRegEx( r'\s(?:[Hh]e|[Ss]he|[Ii]t|[Oo]ne|[Tt]his)(:?\salso|\sonly|\s\w\w\w+ly)?\s(have|do|were)\s' , text )
     matches += findRegEx( r'\s(?:[Yy]ou|[We]e|[Tt]hey)(:?\salso|\sonly|\s\w\w\w+ly)?(?:is|has|does|was)\s' , text )
     for match in matches:
         askAction( match[0], "Probably wrong person", match[2].group(0), '')
-
-
 
 
 
@@ -414,6 +409,7 @@ def checkPairs( text ):
 
 
 def checkAbbreviations( text ):
+    # todo: check if Acronym was only used once => suspicious!
     foundAbbreviations=lstAcronyms
     matches = findRegEx( r'\s([A-Z][A-Z])\s' , text )
     for match in matches:

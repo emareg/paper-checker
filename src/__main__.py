@@ -107,6 +107,9 @@ def readInputFile( fileName ):
     else:
         raise ValueError("unknown extension: "+ext)
 
+
+    text = re.sub(r'\s(\w{2:7})-\n(\w{2:7})\s', r' \1\2\n', text)
+
     return text
 
 
@@ -128,7 +131,7 @@ def markCorrections( lines, corrections, cssclass):
 
     for corr in corrections:
         corrected_linenums += (corr.line,) 
-        lines = lines.replace(corr.match, " <span class=\"corr "+cssclass+"\" title=\"{}\">{}</span>".format(corr.desc+" Suggestion: '"+corr.sugg.replace('\n', ' ').strip()+"'", corr.match)) 
+        lines = lines.replace(corr.match, "<span class=\"corr "+cssclass+"\" title=\"{}\">{}</span>".format(corr.desc+" Suggestion: '"+corr.sugg.replace('\n', ' ').strip()+"'", corr.match)) 
 
 
         # print("CORR:", corr.line, lines[corr.line], corr.match)
@@ -159,6 +162,7 @@ def writeHTMLreport( lines, crit_linenums = [], warn_linenums = [] ):
     .ln{display: inline-block;width: 50px;user-select: none;}
     .corr{font-weight:bold;cursor:pointer;}
     .corr:hover {background-color: yellow;}
+    span.err{color:Magenta;}
     span.crit{color:red;}
     span.warn{color:orange;}
     </style>
@@ -228,7 +232,9 @@ def parseFile( fileName, args ):
 
     # spell check
     if args.spell:
-        checkSpelling(text)
+        corrections = checkSpelling(text)
+        outputLines, linenums = markCorrections(outputLines, corrections, "err")
+        warn_linenums += linenums
 
 
     # grammar check
@@ -249,7 +255,8 @@ def parseFile( fileName, args ):
 
 
     # report
-    writeHTMLreport( outputLines, crit_linenums, warn_linenums )
+    if args.style or args.grammar or args.spell:
+        writeHTMLreport( outputLines, crit_linenums, warn_linenums )
 
 
 

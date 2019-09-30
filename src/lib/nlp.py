@@ -49,8 +49,8 @@ def past( string ):
         past=string+'d'
     elif(string[-1] == 'y' and string[-2] not in 'aeiou'):   # y -> ied
         past=string[:-1]+'ied'  
-    elif(string[-2] == 'n' and string[-1] == 'd'):    # nd -> nt
-        past=string[:-1]+'t'
+    # elif(string[-2] == 'n' and string[-1] == 'd'):    # nd -> nt
+    #     past=string[:-1]+'t'
     elif(string[-2] in 'aeiou' and string[-1] not in 'aeiouxw' and string[-3] not in 'aeiou'):  # double consonant
         if(string[-1] == 'c'):
             past=string+'ked'
@@ -59,6 +59,32 @@ def past( string ):
     else:
         past=string+'ed'
     return past
+
+
+
+def adverb( word ):
+    if(word[-2:] == 'ic'): 
+        return word+'ally'
+    elif(word[-2:] == 'le'):
+        return word[:-2]+'ly' 
+    elif(word[-1] == 'y'):
+        return word[:-1]+'ily' 
+    else:
+        return word+'ly'
+
+
+
+def gerund( word ):
+    result = ''
+    if(word[-1] == 'e'): 
+        if word[-2] == 'i':
+            result = word[:-2]+'ying' 
+        else:
+            result = word[:-1]+'ing' 
+    else:
+        result = word+'ing'
+    return result
+
 
 
 def comperative( word ):
