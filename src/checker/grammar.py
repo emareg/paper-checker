@@ -61,6 +61,8 @@ from lib.stripper import *
 from pos.POS_en import *    # part of speech lists
 from lib.word_lists import *    # part of speech lists
 
+from checker import spelling
+
 
 if ANALYZE_SENTENCE:
     from pos.tagger import *
@@ -410,7 +412,9 @@ def checkPairs( text ):
 
 def checkAbbreviations( text ):
     # todo: check if Acronym was only used once => suspicious!
-    foundAbbreviations=lstAcronyms
+    dictionary = {}
+    spelling.read_acronyms(dictionary, 'src/dictionary/acronyms.md')
+    foundAbbreviations=lstAcronyms + list(dictionary.keys())
     matches = findRegEx( r'\s([A-Z][A-Z])\s' , text )
     for match in matches:
         if( match[2].group(1) not in foundAbbreviations ):
