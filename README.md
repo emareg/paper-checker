@@ -1,7 +1,7 @@
 
 # PaperCheck
 
-PaperCheck is a python script that searches for simple grammar mistakes in scientific english texts. Unlike other grammar checkers it is free and tailored for scientific texts, such as papers. It might find words that pass a spell check but are most likely not be intended in a scientific context, such as "angel" vs. "angle".
+PaperCheck is a python script that searches for simple grammar mistakes in scientific english texts. Unlike other grammar checkers it is free and tailored for scientific texts, such as papers. It might find words that pass a spell check but are most likely not intended in a scientific context, such as "angel" vs. "angle".
 
 
 ## Getting Started
@@ -11,14 +11,14 @@ git clone git@github.com:emareg/paper-checker.git
 cd paper-checker
 ```
 
-Afterwards you can use the script in two ways:
+Afterwards, you can use the script in two ways:
 
 **1. Run the python file**
 ```
 python3 papercheck.py -sgy example/testfile.tex
 ```
 
-**2. Compile as an stand-alone executable (Unix only)**
+**2. Compile as a stand-alone executable (Unix only)**
 ```
 make
 ./papercheck -sgy example/testfile.tex
