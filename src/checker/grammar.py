@@ -203,7 +203,7 @@ R_Double_Base_Verbs = ReRule("Probably wrong structure of base verbs.", '', r'\s
 R_Did_Base = ReRule("The word 'did' requires the base form of a verb.", 'BASEFORM', r'\sdid\s(?:not\s)?(?:'+reAdv+r'\s)?(\w{3,9}ed|\w{3,9}s)\W') # only base forms
 R_Double_Det = ReRule("You have repeated a determiner, which is probably not intended.", '', r'\s'+reTheDet+r'\s+('+reTheDet+r')\W')
 R_Double_Adp = ReRule("You have repeated an adposition, which is probably not intended.", '', r'\s'+reAdpos+r'\s+('+reAdpos+r')\W')
-R_Double_Modal = ReRule("You have repeated an modal verb, which is probably not intended.", '', r'\s'+reModal+r'\s+('+reModal+r')\W')
+R_Double_Modal = ReRule("You have repeated a modal verb, which is probably not intended.", '', r'\s'+reModal+r'\s+('+reModal+r')\W')
 R_Wrong3rdPerson = ReRule("Wrong verb form after 3rd person pronoun.", '', r'\s(?:[Hh]e|[Ss]he|[Ii]t|[Oo]ne|[Tt]his)\s(?:'+reAdv+r'\s)?(be|am|have|do|were)\W')
 R_Wrong2ndPerson = ReRule("Wrong verb form after 2nd person pronoun.", '', r'\s(?:[Yy]ou|[We]e|[Tt]hey|[Tt]hese|[Tt]hose)\s(?:'+reAdv+r'\s)?(is|has|does|was)\W')
 

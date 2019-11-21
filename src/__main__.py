@@ -21,9 +21,12 @@
 # - check vague quantifiers such as  "very", "most", "many" "a large number"
 # - check Figure in capital
 # - check for inconsistent terms:  block chain, blockchain, block-chain, chain of blocks
+# - resolve input/include/subfile or do not require \begin{document} for tex files
 
 # - check adposition at the end
 # - check noun cluster
+
+
 
 # command line argument: improvements or only mistakes
 
@@ -34,6 +37,7 @@
 
 
 # not found:  
+# a honor 
 # ... by but ... => comma or mistake
 # is spend => is spent
 # paranthesis => parantheses

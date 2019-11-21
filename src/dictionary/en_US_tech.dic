@@ -120,6 +120,9 @@ malfunction/DGS
 memristor/MS
 metastable
 microcontroller/SM
+microarchitectural/Y
+unroll/DGS
+callee/S
 microkernel/S
 microprocessor/SM
 middleware

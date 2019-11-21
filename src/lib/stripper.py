@@ -8,11 +8,11 @@ import re
 
 
 def stripTeX( text, preserveLines = False ):
-    if preserveLines:
+    linenum = 1
+    if preserveLines and '\\begin{'+'document}' in text:
         preamble = re.search(r'^(?:.|\n)*?\\begin\{document\}', text).group(0)
         linenum = len(preamble.splitlines())-1
-    else:
-        linenum = 1
+
 
     text = re.sub(r'^(?:.|\n)*?\\begin\{document\}', '\n'*linenum, text)
     text = re.sub(r'\\end\{document\}(?:.|\n)*?', '', text)

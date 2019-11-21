@@ -145,6 +145,7 @@ def check_words(dictionary, text):
     sentences = split2sentences( text )
     # for sentence in sentences:  
     #     words = split2words( sentence )   
+    word_counter = {}
     corrections = [] 
     for idx,line in enumerate(lines):
         words = split2words( line )    
@@ -152,6 +153,10 @@ def check_words(dictionary, text):
             if word.isupper() or isNum(word): continue
             isCorrect = (word in dictionary)
             if not isCorrect:
+                if word not in word_counter.keys(): 
+                    word_counter[word] = 1
+                else:
+                    word_counter[word] += 1
                 if word[0].isupper(): 
                     lowword = word[0].lower() + word[1:]
                     isCorrect = (lowword in dictionary)
@@ -159,9 +164,11 @@ def check_words(dictionary, text):
                     matches = re.findall(r'\W'+word+r'\W', line)
                     match = ' '+word+' ' if len(matches) == 0 else matches[0]
                     sugg = suggest(dictionary, word)
-                    corrections.append(Correction(idx+1, 0, match, sugg, 'Possibly misspelled word.'))
-                    askAction( idx, "Probably misspelled word.", match, sugg)
+                    if word_counter[word] < 5:
+                        corrections.append(Correction(idx+1, 0, match, sugg, 'Possibly misspelled word.'))
+                        askAction( idx, "Probably misspelled word.", match, sugg)
                 # print("Typo: '{}',  Sugg: {}".format(word, suggest(dictionary, word)))
+
     return corrections
 
 

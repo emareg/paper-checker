@@ -3,6 +3,10 @@
 adaption/S
 adaptive/UYP
 advisor/S
+academia/M
+analyzer/SM
+soundness
+variant/IMYS
 algorithmic/Y
 amortize/LBDSG
 amortized/U
@@ -18,6 +22,7 @@ benchmark/S
 bottommost
 bounded/U
 boundedness/U
+certification/ACM
 classification/ACS
 cohesion/S
 cohesive/UPY
