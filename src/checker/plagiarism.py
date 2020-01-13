@@ -5,8 +5,8 @@ SENTENCES_MAX = 7   # maximum analyzed sentences per document
 QUERY_WAIT_SECONDS = 2  # wait time between google queries
 
 SIMILAR_THRESHOLD = 0.7 
-
-
+SENTENCE_WORD_MIN = 15
+SENTENCE_WORD_MAX = 20
 
 # imports
 import re, sys, time
@@ -114,7 +114,7 @@ def findSignificantSentences( text ):
     significant_sentences = []
     for idx, sentence in enumerate(sentences):
         words = split2words( sentence )
-        if len(words) < 17 or len(words) > 20: continue
+        if len(words) < SENTENCE_WORD_MIN or len(words) > SENTENCE_WORD_MAX: continue
         if not any(w.lower() in common_words for w in words): continue
         if re.findall(r'\\cite|\[\d\d?\]', sentence): continue # citation in sentence
         if re.findall(r'\\cite|\[\d\d?\]\.\s+'+sentence, text, re.DOTALL): continue  # citation in previous sentence
