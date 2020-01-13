@@ -85,7 +85,8 @@ def google_search( searchstr, num=10 ):
     for result in results:
         #print("Result:", result)
         title = re.findall( r'<h3 class=.*?>(.*?)</h3>', result, re.DOTALL)[0]
-        url = re.findall( r'<div class="r">.*?<a href="(.*?)"', result, re.DOTALL)[0]
+        urls = re.findall( r'<div class="r">.*?<a href="(.*?)"', result, re.DOTALL)
+        url = urls[0] if len(urls) != 0 else ""
         desc = re.findall( r'<span class="st">(?:<span class="f">.*?</span>)?(.*?)</span>', result, re.DOTALL)[0]
         output.append({'title': title, 'url': url, 'desc': desc})
 
@@ -117,7 +118,7 @@ def findSignificantSentences( text ):
         if not any(w.lower() in common_words for w in words): continue
         if re.findall(r'\\cite|\[\d\d?\]', sentence): continue # citation in sentence
         if re.findall(r'\\cite|\[\d\d?\]\.\s+'+sentence, text, re.DOTALL): continue  # citation in previous sentence
-        if re.findall(r'\W(?:paper|authors?|et\. al\.)\W', sentence): continue  # untypical words
+        if re.findall(r'\W(?:|[Ww]e|paper|authors?|et\. al\.|Section|Table|Figure)\W', sentence): continue  # untypical words
         significant_sentences.append(sentence)
 
     return significant_sentences
