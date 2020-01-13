@@ -29,6 +29,7 @@ def statsReferences( text ):
 
 
 
+
 def calcStats( text ):
     # todo: sentences, sentence lengths, words, cohesion, text difficulty
 
@@ -45,21 +46,26 @@ def calcStats( text ):
     G_stats['word_length_avg'] = 0
     G_stats['word_length_max'] = 0
     G_stats['vague_words'] = 0
-    G_stats['syl_per_word_min'] = 1000
-    G_stats['syl_per_word_max'] = 0
-    G_stats['syl_per_word_avg'] = 0
+    G_stats['male_words'] = 0
+    G_stats['female_words'] = 0
+    G_stats['neutral_words'] = 0
     G_stats['words_per_sent_min'] = 1000
     G_stats['words_per_sent_max'] = 0
     G_stats['words_per_sent_avg'] = 0
+    G_stats['sent_short'] = 0
+    G_stats['sent_long'] = 0
 
 
     sentences = split2sentences( text )
+    #print(sentences)
 
     G_stats['sentences'] = len(sentences)
 
     all_words = []
     for sentence in sentences:
         words = split2words( sentence )
+        if len(words) < 10: G_stats['sent_short'] += 1
+        if len(words) > 30: G_stats['sent_long'] += 1
         if len(words) < G_stats['words_per_sent_min']: 
             G_stats['words_per_sent_min'] = len(words)
             G_stats['shortest_sent'] = sentence
@@ -72,16 +78,11 @@ def calcStats( text ):
 
     # look at words
     for word in all_words:
-        # #print(word+': '+str(syllables(word)))
-        # syls = syllables(word)
-        # if( syls < G_stats['syl_per_word_min'] ): 
-        #   G_stats['syl_per_word_min'] = syllables(word)
-        # if( syls > G_stats['syl_per_word_max'] ): 
-        #   G_stats['syl_per_word_max'] = syllables(word)
-        #   #G_stats['most_syls'] = word
-        # G_stats['syl_per_word_avg'] += (syllables(word) / len(all_words))
 
         if word in lstVague: G_stats['vague_words'] += 1
+        if word in ["he", "his", "him"]: G_stats['male_words'] += 1
+        if word in ["it", "its"]: G_stats['neutral_words'] += 1
+        if word in ["she", "her"]: G_stats['female_words'] += 1
         
         G_stats['characters_words'] += len(word)
         
@@ -116,15 +117,21 @@ def showStats( text ):
     print('      Words: {} (total)          '.format(G_stats['words']) )
     print('             {} (unique, {} %)'.format(G_stats['unique_words'], round(100*G_stats['unique_words']/G_stats['words'])) )
     print('             chars per word: {} .. {} ({:.2f} avg.)'.format(G_stats['word_length_min'], G_stats['word_length_max'], G_stats['word_length_avg']) )
-    # print('             syllables:  {} .. {} ({:.2f} avg.)'.format(G_stats['syl_per_word_min'], G_stats['syl_per_word_max'], G_stats['syl_per_word_avg']) )
     print('                                ')
-    print('  Sentences: {}                 '.format(G_stats['sentences']) )
+    print('  Sentences: {} (total)                '.format(G_stats['sentences']) )
+    print('             {} short, {} long'.format(G_stats['sent_short'], G_stats['sent_long']) )
     print('             words per sent: {} .. {} ({:.2f} avg.)'.format(G_stats['words_per_sent_min'], G_stats['words_per_sent_max'], G_stats['words_per_sent_avg']) )
+    
+
+    print('Vague words: {}'.format(G_stats['vague_words']))
+    print('    Genders: {} he, {} it, {} she'.format(G_stats['male_words'], G_stats['neutral_words'], G_stats['female_words']))
+
     print("----------------------------------------------------\n")
 
-    print("Vague words: {}".format(G_stats['vague_words']))
+
 
     # number of POS: nouns, verbs, etc.
+    print('Longest Sentence: {}...'.format(G_stats['longest_sent'][:50]) )   # 
     print('Most frequent words: '+str(G_stats['common_words']))
 
     statsReferences( text )

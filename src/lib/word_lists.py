@@ -106,6 +106,7 @@ tabWrongCombinations = [
  ('object orientated', 'object oriented'),
  ('time point', 'point in time'),
  ('software packet', 'software package'),
+ ('thread model', 'threat model'),
  ('(?:some|certain) extend', 'extent'),
  (r'resource[- ]constraint', 'resource-constrained'),
 ]
@@ -244,6 +245,7 @@ tabNonScientificWords = [
     ('untrue', 'false'),
     ('vicious', 'viscous'),
     ('wand', 'want'),
+    ('wend', 'went'),
     ('wax', 'way'),
     ('woks?', 'work'),
     ('widow', 'window'),

@@ -5,7 +5,7 @@ import re
 def split2sentences( text ):
     final_sents = []
     #  sents = re.split(r'(?<![.](?:\w\.))(?<![A-Z][a-z][a-z][.])(?<![A-Z][a-z][.])(?<=[.!?])(?:\s+(?=[A-Z][^.,\d])|\s*\n\s*\n(?![a-z]))', text)
-    sents = re.split(r'(?<![.](?:\w\.))(?<![A-Z][a-z][a-z][.])(?<![A-Z][a-z][.])(?<![A-Z][.])(?<=[.!?])(?:\s+(?=[A-Z][^.,\d])|\s*\n\s*\n(?![a-z]))', text)
+    sents = re.split(r'(?<![.](?:\w\.))(?<![A-Z][a-z][a-z][.])(?<![A-Z][a-z][.])(?<![A-Z][.])(?<=[.!?])(?:“?”?\s+(?=„?“?[A-Z][^.,\d])|\s*\n\s*\n(?![a-z]))', text)
     for idx, sent in enumerate(sents):
         new_sents = re.findall(r'(?:\s|^)([A-Z][^.,\d].*?\S\S[.?!])(?=>\s+[A-Z]|\W*\n\n|\s*$)', sent, re.DOTALL)  # double check
         if new_sents: final_sents += new_sents

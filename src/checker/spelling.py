@@ -160,13 +160,13 @@ def check_words(dictionary, text):
                 if word[0].isupper(): 
                     lowword = word[0].lower() + word[1:]
                     isCorrect = (lowword in dictionary)
-                if not isCorrect and word[0].islower() and len(word) > 4:
+                if not isCorrect and len(word) > 2:
                     matches = re.findall(r'\W'+word+r'\W', line)
                     match = ' '+word+' ' if len(matches) == 0 else matches[0]
                     sugg = suggest(dictionary, word)
                     if word_counter[word] < 5:
                         corrections.append(Correction(idx+1, 0, match, sugg, 'Possibly misspelled word.'))
-                        askAction( idx, "Probably misspelled word.", match, sugg)
+                        askAction( idx, "Maybe misspelled word.", match, sugg)
                 # print("Typo: '{}',  Sugg: {}".format(word, suggest(dictionary, word)))
 
     return corrections
@@ -204,6 +204,8 @@ def checkSpelling( text ):
     dictionary = read_dictionary(dictionary, 'src/dictionary/en_US_tech.dic')
     dictionary = read_dictionary(dictionary, 'src/dictionary/en_US_unit.dic')
     dictionary = read_dictionary(dictionary, 'src/dictionary/en_US_math.dic')
+    dictionary = read_dictionary(dictionary, 'src/dictionary/names_geo.dic')
+    dictionary = read_dictionary(dictionary, 'src/dictionary/names_people.dic')
     # dictionary = read_pos_dictionaries('src/dictionary/pos')
     #dictionary = read_dictionary(dictionary, 'src/dictionary/google-10000-english-usa-no-swears.txt')
 

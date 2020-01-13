@@ -75,6 +75,9 @@ orthogonality/SM
 orthogonalization/MS
 orthogonalize/DSG
 paraxial/Y
+dimensionality
+multidimensional
+multidimensionality
 pseudoprime/S
 quadratic/Y
 secant/SMY
@@ -83,6 +86,7 @@ sin
 singularity/S
 sqrt
 submatrices
+decidability
 submatrix
 superset
 surjection/S

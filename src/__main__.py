@@ -37,7 +37,7 @@
 
 
 # not found:  
-# a honor 
+# a honor,   a utility
 # ... by but ... => comma or mistake
 # is spend => is spent
 # paranthesis => parantheses

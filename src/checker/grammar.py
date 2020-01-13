@@ -1,40 +1,3 @@
-#!/bin/python
-#
-# Quick & dirty python script to check a paper for common English mistakes
-
-
-# Feature Wishlist:
-# - detection of american or british english
-# - detection Titles and consistent style (capital or not)  .
-# - detection of I/We 
-# - detection of grammar errors with be/was/were   DONE
-# - detection of plural errors "a cars"          DONE
-# - check "to" + passive
-# - check "to small, to large"                  DONE
-# - check confused verb/noun: the/a + verb
-# - check for unnecessary terms: "it is clear", "and so on"  DONE
-# - check vague quantifiers such as  "very", "most", "many" "a large number"
-# - check Figure in capital
-# - check for inconsistent terms:  block chain, blockchain, block-chain, chain of blocks
-
-# - check adposition at the end
-# - check noun cluster
-
-# if im präsens → 2. teil in future; if im perfekt → 2. teil in präsens
-# If $\Delta t$ is passed as argument, the time dependence is made obvious for the caller. 
-# If someone looks over the code later, subprograms that depend on time will be easy to spot.
-
-
-
-# not found:  
-# ... by but ... => comma or mistake
-# is spend => is spent
-# paranthesis => parantheses
-# ... consensus based ... consensus-based (always -based?)
-
-
-
-
 # Settings
 #===========================================
 
@@ -197,7 +160,7 @@ R_RepeatedWord = ReRule("You repeated a word, which is probably not intended.", 
 R_RepeatedTwoWords = ReRule("You repeated two words, which is probably not intended.", r"", r'\s(\w+\s\w+) +\1\W')
 R_To_vs_Too = ReRule("Possibly 'too' instead of 'to'.", 'too', r'\s(to)\s(:?much|big|cold|early|easy|fast|few|far|low|hard|high|hot|late|large|long|narrow|short|small|soft|soon|strong|weak|wide)\W')
 R_Then_vs_Than = ReRule("Use 'than' for comparisons instead of 'then'.", 'than', 
-    r'\s+(?:more|less|lower|higher|better|worse|larger|bigger|longer|shorter|smaller|weaker|stronger)(?: \w{4,15}){0,2}\s(then)\W')  # (:?rather|further)
+    r'\s+(?:more|less|lower|higher|better|worse|larger|bigger|longer|earlier|shorter|smaller|weaker|stronger)(?: \w{4,15}){0,2}\s(then)\W')  # (:?rather|further)
 R_Modal_Base = ReRule("Modal verbs require the base form of the following verb.", 'be', r'\s'+reModal+r'\s(?:not\s)?(?:'+reAdv+r'\s)?(to|are|been|am|is|was|were|has|had|\w{3,9}ed|\w{2,9}[^yus]s)\W') # only base forms
 R_Double_Base_Verbs = ReRule("Probably wrong structure of base verbs.", '', r'\s(are|be|been|am|is|was|were|have|has|had)(:?\s\w\w\w+)?\s+(?:be|am|is|was|were|have|has|could|will)\W') # only base forms
 R_Did_Base = ReRule("The word 'did' requires the base form of a verb.", 'BASEFORM', r'\sdid\s(?:not\s)?(?:'+reAdv+r'\s)?(\w{3,9}ed|\w{3,9}s)\W') # only base forms
@@ -245,6 +208,7 @@ R_The_Question = ReRule("Use 'the question of ...'.", 'of', r'\sthe\squestion(\s
 R_Must_To = ReRule("Do not use 'to' after 'must'.", '', r',\smust\s(to)\W') 
 R_Equally_As = ReRule("Do not use 'as' after 'equally'.", '', r',\sequally\s(as)\W') 
 R_Width_With = ReRule("Probably 'width' instead of 'with'.", 'width', r',\s(?:a|line|pulse|the) (with)\W') 
+R_wait_till = ReRule("Probably 'untill' instead of 'till'.", 'until', r',\s(?:wait|block|stay)(?:s|ed|ing)? (till)\W') 
 
 
 
@@ -300,6 +264,7 @@ G_ExtRules = [
     R_Must_To,
     R_Equally_As,
     R_Width_With,
+    R_wait_till,
 ]
 
 
@@ -345,7 +310,7 @@ G_StyleRulesExtra = [
 
 # this needs tags!
 def checkPlural( text ):
-    matches = findRegEx(r"\s+(?:[Aa]n?|[Aa]nother|[Ee]ach)\s+(\w+[^uis'’]s)\s+" , text )
+    matches = findRegEx(r"\s+(?:[Aa]n?|[Aa]nother|[Ee]ach|[Ee]very)\s+(\w+[^uis'’]s)\s+" , text )
     for match in matches:
         replace = match[2].group(0).replace(match[2].group(1), match[2].group(1)[:-1], 1)
         askAction( match[0], "Possibly wrong plural: ", match[2].group(0), replace)
@@ -459,9 +424,6 @@ def checkSentences( text ):
         if len(words) > MAX_WORDS_PER_SENT: print(bold('Sentence too long ')+'({} words): '.format(len(words))+sentence[:MAX_WORDS_PER_SENT]+'...')
         # print(sentence)
         analyzeSentence( sentence ) 
-
-
-
 
 
 
