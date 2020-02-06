@@ -97,11 +97,13 @@ def read_dictionary(dictionary, dictfile):
         #print(lines); return
         fh.close()
     except FileNotFoundError:
-        arch = zipfile.ZipFile(sys.argv[0], 'r')
-        fh = arch.open(dictfile[4:], 'r')
-        lines = fh.read().decode("utf-8")
-        fh.close()
-        print("ERROR: Dictionary File '{}' not found. Install hunspell.".format(dictfile))
+        try:
+            arch = zipfile.ZipFile(sys.argv[0], 'r')
+            fh = arch.open(dictfile[4:], 'r')
+            lines = fh.read().decode("utf-8")
+            fh.close()
+        except FileNotFoundError:
+            print("ERROR: Dictionary File '{}' not found. Install hunspell.".format(dictfile))
 
 
     for line in lines.splitlines():
