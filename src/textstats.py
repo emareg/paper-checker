@@ -102,6 +102,30 @@ def calcStats( text ):
 
 
 
+def createStats( text ):
+    global G_stats
+    calcStats(text)
+        
+    stats_str = ''
+    stats_str += ' Characters: {} (incl. spaces)  \n'.format(G_stats['letters_all'])
+    stats_str += '             {} (excl. spaces)  \n'.format(G_stats['characters_no_white'])
+    stats_str += '             {} (only words)    \n'.format(G_stats['characters_words'])
+    stats_str += '                                \n'
+    stats_str += '      Words: {} (total)         \n'.format(G_stats['words']) 
+    stats_str += '             {} (unique, {} %)  \n'.format(G_stats['unique_words'], round(100*G_stats['unique_words']/G_stats['words'])) 
+    stats_str += '             chars per word: {} .. {} ({:.2f} avg.)\n'.format(G_stats['word_length_min'], G_stats['word_length_max'], G_stats['word_length_avg']) 
+    stats_str += '                                \n'
+    stats_str += '  Sentences: {} (total)         \n'.format(G_stats['sentences']) 
+    stats_str += '             {} short, {} long  \n'.format(G_stats['sent_short'], G_stats['sent_long']) 
+    stats_str += '             words per sent: {} .. {} ({:.2f} avg.)\n'.format(G_stats['words_per_sent_min'], G_stats['words_per_sent_max'], G_stats['words_per_sent_avg']) 
+    stats_str += '                                \n'
+    stats_str += 'Vague words: {}                 \n'.format(G_stats['vague_words'])
+    stats_str += '    Genders: {} he, {} it, {} she\n'.format(G_stats['male_words'], G_stats['neutral_words'], G_stats['female_words'])
+
+    return stats_str
+
+
+
 # todo: print table, color values (good/bad)
 # metric, avg±dev, [min,max], good range
 def showStats( text ):

@@ -154,8 +154,8 @@ class ReSub:
 
 
 
-R_AvsAn = ReRule("Use 'an' because the next word starts with a vowel SOUND.", 'an', r'\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaOoIi]|[Ee][^u]|[Uu][^sn]|[Uu]n[^i]|[Uu]nin|8[- ]|hour)\w+)\W')
-R_AnvsA = ReRule("Use 'a' because the next word does not start with a vowel SOUND.", 'a', r'\s(an)\s[„“”]?(?:[^AaOoEeIiUu\\„“”][a-z]|[^AEFHILMNORSX8„“”][^a-z]|[Uu]s|[Uu]ni)\w*\W')
+R_AvsAn = ReRule("Use 'an' because the next word starts with a vowel SOUND.", 'an', r'\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaIi]|[Ee][^u]|[Uu][^sn]|[Uu]n[^i]|[Oo][^n]|[Oo]n[^e]|[Uu]nin|8[- ]|hour)\w+)\W')
+R_AnvsA = ReRule("Use 'a' because the next word does not start with a vowel SOUND.", 'a', r'\s(an)\s[„“”]?(?:[^AaOoEeIiUu\\„“”][a-z]|[^AEFHILMNORSX8„“”][^a-z]|[Uu]s|[Uu]ni|[Oo]ne)\w*\W')
 R_RepeatedWord = ReRule("You repeated a word, which is probably not intended.", r"", r'\s(\w+) +\1\W')
 R_RepeatedTwoWords = ReRule("You repeated two words, which is probably not intended.", r"", r'\s(\w+\s\w+) +\1\W')
 R_To_vs_Too = ReRule("Possibly 'too' instead of 'to'.", 'too', r'\s(to)\s(:?much|big|cold|early|easy|fast|few|far|low|hard|high|hot|late|large|long|narrow|short|small|soft|soon|strong|weak|wide)\W')
@@ -181,7 +181,7 @@ R_WrongPlural = ReRule("Possibly wrong plural", singular, r'\s'+reDetSgl+r'\s('+
 R_WrongSingular = ReRule("Possibly wrong singular", plural, r'\s'+reDetPl+r'\s('+reNounSgl+r')\W')
 
 
-R_Neither_Or = ReRule("'Neither' needs 'nor' instead of 'or'.", 'nor', r'\s[Nn]either\s[^.]+\s(or)\W')
+R_Neither_Or = ReRule("'Neither' needs 'nor' instead of 'or'.", ' nor ', r'\s[Nn]either\s[^.]+(\sor\s)')
 R_The_Are = ReRule("Probably 'there' or missing Noun?", 'there', r'\s([Tt]he)\s(?:is|are|was|were|have|has)\W')  
 
 R_Quant_of = ReRule("Missing determiner after quantifier + 'of'.", ' of ', r'\s(?:all|any|some|most|none)\sof\s(?!the|these|those|them)\W')

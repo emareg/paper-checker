@@ -75,7 +75,7 @@ from checker.spelling import checkSpelling
 from checker.plagiarism import checkPlagiarism
 
 from lib.stripper import *
-from textstats import showStats
+from textstats import showStats, createStats
 
 
 
@@ -155,7 +155,12 @@ def markCorrections( lines, corrections, cssclass):
     return lines, corrected_linenums
 
 
-def writeHTMLreport( lines, crit_linenums = [], warn_linenums = [] ):
+def createHTMLreport( lines, linenums = [[], [], []], stats = "" ):
+    
+    grammar_linenums = linenums[0]
+    style_linenums = linenums[1]
+    spell_linenums = linenums[2]
+
     head = '''
 <html>
   <head>
@@ -173,13 +178,26 @@ def writeHTMLreport( lines, crit_linenums = [], warn_linenums = [] ):
   </head>
     '''
 
+    top_header = '<h1>PaperCheck Report</h1><hr>'
 
-    out_lines = "<table><tbody>"
+    html_stats = '<h2>Text Statistics</h2><pre>{}</pre><hr>'.format(stats)
+
+    out_lines = '''
+<h2>Text Analysis</h2>
+<p>Color Legend:</p> 
+<ul>
+<li><span class="crit">Grammar Mistake</span></li>
+<li><span class="warn">Style Improvement</span></li>
+<li><span class="err">Spelling</span></li>
+</ul>
+<table><tbody>'''
     for num,line in enumerate(lines):
-        if num+1 in crit_linenums: 
+        if num+1 in grammar_linenums: 
             out_lines += "<tr><td><span class=\"ln crit\">" + str(num+1) + "</span></td><td>" + line + "</td>\n"
-        elif num+1 in warn_linenums: 
+        elif num+1 in style_linenums: 
             out_lines += "<tr><td><span class=\"ln warn\">" + str(num+1) + "</span></td><td>" + line + "</td>\n"
+        elif num+1 in spell_linenums: 
+            out_lines += "<tr><td><span class=\"ln err\">" + str(num+1) + "</span></td><td>" + line + "</td>\n"
         else:
             out_lines += "<tr><td><span class=\"ln\">" + str(num+1) + "</span></td><td>" + line + "</td>\n"
  
@@ -192,9 +210,9 @@ def writeHTMLreport( lines, crit_linenums = [], warn_linenums = [] ):
     out_lines = re.sub(r'(?<=[^\\])(%.*?)(?=\n)', r'<span style="color:gray;">\1</span>', out_lines)
 
 
-    output = head + "<body>\n{}</body>\n</html>".format(out_lines)
-    with open('papercheck_report.html', "w+") as f:
-        f.write(output)    
+    output = head + "<body>\n{}</body>\n</html>".format(top_header + html_stats + out_lines)
+    return output
+  
 
 
 
@@ -211,8 +229,13 @@ def parseFile( fileName, args ):
 
     global outputLines
     outputLines = text.splitlines(True)
-    crit_linenums = ()
-    warn_linenums = ()
+    grammar_linenums = ()
+    style_linenums = ()
+    spell_linenums = ()
+
+    # check if silent
+    if not args.verbose:
+        sys.stdout = open(os.devnull, "w")
 
 
     # process TeX
@@ -227,7 +250,9 @@ def parseFile( fileName, args ):
         
 
     # show stats
-    showStats(text)
+    #showStats(text)
+    stats = createStats( text )
+    print(stats)
 
     #regex finiter: https://docs.python.org/3/library/re.html#writing-a-tokenizer
     if ANALYZE_SENTENCE:
@@ -238,20 +263,21 @@ def parseFile( fileName, args ):
     if args.spell:
         corrections = checkSpelling(text)
         outputLines, linenums = markCorrections(outputLines, corrections, "err")
-        warn_linenums += linenums
+        spell_linenums += linenums
 
 
     # grammar check
     if args.grammar:
         corrections = checkGrammar( text )
         outputLines, linenums = markCorrections(outputLines, corrections, "crit")
-        crit_linenums += linenums
+        grammar_linenums += linenums
+
 
     # style check
     if args.style:
         corrections = checkStyle( text )
         outputLines, linenums = markCorrections(outputLines, corrections, "warn")
-        warn_linenums += linenums
+        style_linenums += linenums
 
     # plagiarism check
     if args.plagiarism:
@@ -260,8 +286,10 @@ def parseFile( fileName, args ):
 
     # report
     if args.style or args.grammar or args.spell:
-        writeHTMLreport( outputLines, crit_linenums, warn_linenums )
-
+        output = createHTMLreport( outputLines, [grammar_linenums, style_linenums, spell_linenums], stats )
+        #with open(fileBaseName+'_check_report.html', "w+") as f:
+        with open('papercheck_report.html', "w+") as f:
+            f.write(output)  
 
 
 # Main Program

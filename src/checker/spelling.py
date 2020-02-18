@@ -141,32 +141,28 @@ class Correction:
         self.desc = description
 
 
-# todo: check hypen prefixes: semi- pre- intra- inter- re- dis mis- quasi- multi-
 def check_words(dictionary, text):
     lines = text.splitlines(True)
-    sentences = split2sentences( text )
-    # for sentence in sentences:  
-    #     words = split2words( sentence )   
+  
     word_counter = {}
     corrections = [] 
     for idx,line in enumerate(lines):
-        words = split2words( line )    
+        words = split2words( line )   
         for word in words:
             if word.isupper() or isNum(word): continue
             isCorrect = (word in dictionary)
             if not isCorrect:
-                if word not in word_counter.keys(): 
-                    word_counter[word] = 1
-                else:
-                    word_counter[word] += 1
                 if word[0].isupper(): 
                     lowword = word[0].lower() + word[1:]
                     isCorrect = (lowword in dictionary)
                 if not isCorrect and len(word) > 2:
                     matches = re.findall(r'\W'+word+r'\W', line)
                     match = ' '+word+' ' if len(matches) == 0 else matches[0]
+                    if match[-1] == '-' and word in ["semi", "pre", "intra", "inter", "re", "dis", "mis", "quasi", "multi"]: continue
                     sugg = suggest(dictionary, word)
-                    if word_counter[word] < 5:
+                    if word not in word_counter.keys(): word_counter[word] = 0
+                    if word_counter[word] < 1:
+                        word_counter[word] += 1                  
                         corrections.append(Correction(idx+1, 0, match, sugg, 'Possibly misspelled word.'))
                         askAction( idx, "Maybe misspelled word.", match, sugg)
                 # print("Typo: '{}',  Sugg: {}".format(word, suggest(dictionary, word)))
