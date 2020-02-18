@@ -4,6 +4,8 @@ academia/M
 adaption/S
 adaptive/UYP
 advisor/S
+afford/DSGB
+affordance/S
 algorithmic/Y
 amortize/LBDSG
 amortized/U
@@ -26,6 +28,7 @@ classification/ACS
 cohesion/S
 cohesive/UPY
 collaborative/Y
+collude/DRSZG
 comparability/SM
 comparable/UP
 composition/CAMS
@@ -125,6 +128,7 @@ reachability
 reachable/UP
 regulation/CS
 reproducible
+rework/GDS
 satisfiability/U
 scalability/S
 scalable
@@ -137,11 +141,11 @@ serialize/GBDS
 skeptical/UY
 solvability
 solvable/UAE
-workflow/S
 soundness
 specifiable/U
 sporadical/Y
 stabilization/CSM
+stakeholder/MS
 standalone
 structural/UY
 subfigure/SM
@@ -177,3 +181,4 @@ versa
 visualization/S
 vocation/IAKFS
 whitepaper/S
+workflow/S
