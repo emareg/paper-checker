@@ -73,6 +73,12 @@ Will highlight language that could be improved such as
 
 The script will try to find significant sentences, which are then compared to Google search results. This is a very poor approach but useful as a minimal effort with zero cost.
 
+The plagiarims checker introduces some dependencies that can be installed using pip:
+```
+pip3 install requests
+```
+
+
 
 
 ### TeX checker
