@@ -22,3 +22,7 @@ check_format:
 test: default
 	python3 $(NAME).py -sgy example/testfile.pdf
 	python3 $(NAME).py -sgy example/testfile.tex
+
+install:
+	sudo apt install -y poppler-utils
+	pip3 install -r requirements.txt
