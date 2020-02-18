@@ -92,7 +92,7 @@ def read_pos_dictionaries(folder):
 def read_dictionary(dictionary, dictfile):
     lines = ""
     try:
-        fh = open(dictfile, 'r')
+        fh = open(dictfile, 'r', encoding='utf8')
         lines = fh.read()
         #print(lines); return
         fh.close()
