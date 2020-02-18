@@ -68,7 +68,7 @@ The script will try to find significant sentences, which are then compared to Go
 
 The plagiarims checker introduces some dependencies that can be installed using pip:
 ```
-pip3 install requests
+pip3 install -r requirements.txt
 ```
 
 ### TeX checker
