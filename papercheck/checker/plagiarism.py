@@ -10,8 +10,8 @@ import re, sys, time
 import html
 
 from collections import Counter
-from lib.stripper import *
-from lib.nlp import *
+from papercheck.lib.stripper import *
+from papercheck.lib.nlp import *
 
 
 # reSuffixNoun = r'\w\w+(?:a|f|i|age|ican|cy|ion|ium|ness|[cl]ity|logy|ism|[lt]ist|here|ment|omy|ver|[ea]nce|ght|ure|one|or|ship|[^o]us|[^aeiou]em|[mnpt]er|[oae][oa][dmnprkt])'

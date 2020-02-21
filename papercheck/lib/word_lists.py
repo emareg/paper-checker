@@ -187,10 +187,18 @@ tabConfusedVerbNoun = [
 
 # ToDo: add false friends + explanation for words that are equally likely
 tabFalseFriends = [
-    ("ascend|ascent", "ascend (V): increase height\nascent (N): process of increasing height"),
-    ("build|built", "build (V/N): to construct, software build\nbuilt (V): past of build"),
-    ("complaint|compliant", "complaint (N): dissatisfaction\ncompliant (J): in line with rules"),
-
+    (
+        "ascend|ascent",
+        "ascend (V): increase height\nascent (N): process of increasing height",
+    ),
+    (
+        "build|built",
+        "build (V/N): to construct, software build\nbuilt (V): past of build",
+    ),
+    (
+        "complaint|compliant",
+        "complaint (N): dissatisfaction\ncompliant (J): in line with rules",
+    ),
 ]
 
 
@@ -817,7 +825,7 @@ tabInformalAdjectives = [
     ("thrifty", ""),
     ("tidy", ""),
     ("timely", ""),
-    ("torn", ""),   # also verb?
+    ("torn", ""),  # also verb?
     ("trusty", ""),
     ("tricky", ""),
     ("tubby", ""),

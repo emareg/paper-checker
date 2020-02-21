@@ -1,6 +1,6 @@
 # own functions
-from lib.nlp import *  # language functions
-from lib.cli import *
+from papercheck.lib.nlp import *  # language functions
+from papercheck.lib.cli import *
 import re
 import os
 import zipfile
@@ -188,7 +188,6 @@ class Correction:
         self.desc = description
 
 
-
 # todo: show Capital errors only IF there is a one edit suggestion, otherwise it is probably a name and correct
 def check_words(dictionary, text):
     lines = text.splitlines(True)
@@ -211,10 +210,10 @@ def check_words(dictionary, text):
                     if match[-1] == "-" and word in [
                         "anti",
                         "bio",
-                        #"dis",
+                        # "dis",
                         "inter",
                         "intra",
-                        #"mis",
+                        # "mis",
                         "multi",
                         "non",
                         "pre",
@@ -225,7 +224,8 @@ def check_words(dictionary, text):
                     ]:
                         continue
                     sugg = suggest(dictionary, word)
-                    if sugg == "" and word[0].isupper(): continue  # do not show capital errors without suggestion
+                    if sugg == "" and word[0].isupper():
+                        continue  # do not show capital errors without suggestion
                     if word not in word_counter.keys():
                         word_counter[word] = 0
                     if word_counter[word] < 1:
@@ -265,12 +265,11 @@ def checkSpelling(text):
     )
 
     dictionary = {}
-    dictionary = read_dictionary(dictionary, "src/dictionary/en_US.dic")
-    dictionary = read_dictionary(dictionary, "src/dictionary/en-Academic.dic")
-    
-    read_acronyms(dictionary, "src/dictionary/acronyms.md")
+    dictionary = read_dictionary(dictionary, "papercheck/dictionary/en_US.dic")
+    dictionary = read_dictionary(dictionary, "papercheck/dictionary/en-Academic.dic")
+
+    read_acronyms(dictionary, "papercheck/dictionary/acronyms.md")
     if dictionary == {}:
         return
     corrections = check_words(dictionary, text)
     return corrections
-

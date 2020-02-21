@@ -1,7 +1,6 @@
 # PaperCheck
 
-[![Actions Status](https://github.com/emareg/paper-checker/workflows/Check/badge.svg)](https://github.com/emareg/paper-checker)
-[![Actions Status](https://github.com/emareg/paper-checker/workflows/Test/badge.svg)](https://github.com/emareg/paper-checker)
+[![Actions Status](https://github.com/emareg/paper-checker/workflows/CI/badge.svg)](https://github.com/emareg/paper-checker)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 PaperCheck is a python script that searches for simple grammar mistakes in scientific english texts. Unlike other grammar checkers it is free and tailored for scientific texts, such as papers. It might find words that pass a spell check but are most likely not intended in a scientific context, such as "angel" vs. "angle".
@@ -18,13 +17,13 @@ Afterwards, you can use the script in two ways:
 
 **1. Run the python file**
 ```
-python3 papercheck.py -sgy example/testfile.tex
+python3 paperchecker.py -sgy example/testfile.tex
 ```
 
 **2. Compile as a stand-alone executable (Unix only)**
 ```
 make
-./papercheck -sgy example/testfile.tex
+./paperchecker -sgy example/testfile.tex
 ```
 
 Supported file types: `.tex .txt .md .pdf`

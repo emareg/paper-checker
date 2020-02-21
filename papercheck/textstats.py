@@ -2,8 +2,8 @@ import re
 from collections import Counter
 
 
-from lib.nlp import *
-from pos.POS_en import *
+from papercheck.lib.nlp import *
+from papercheck.pos.POS_en import *
 
 
 ## Statistics
