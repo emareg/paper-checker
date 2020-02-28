@@ -56,12 +56,11 @@ CFG_PRINT_INPUT = False  # print the intput after pre-processing
 # import
 # ===========================================
 
-import fileinput
 import sys
 import os
 import re
-from argparse import ArgumentParser
-
+import argparse
+from pathlib import Path
 
 # own functions
 from checker.grammar import checkGrammar, checkStyle
@@ -312,7 +311,7 @@ def parseFile(fileName, args):
             outputLines, [grammar_linenums, style_linenums, spell_linenums], stats
         )
         # with open(fileBaseName+'_check_report.html', "w+") as f:
-        with open("papercheck_report.html", "w+") as f:
+        with open(Path(args.filename).absolute(), "w+") as f:
             f.write(output)
 
 
@@ -320,8 +319,9 @@ def parseFile(fileName, args):
 #############################################
 
 
-argparser = ArgumentParser(
-    description="Checks papers and other technical texts for grammar, plagiarism and style."
+argparser = argparse.ArgumentParser(
+    description="Checks papers and other technical texts for grammar, plagiarism and style.",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 argparser.add_argument("-g", "--grammar", action="store_true", help="check grammar")
 argparser.add_argument(
@@ -332,7 +332,12 @@ argparser.add_argument(
     "-y", "--style", action="store_true", help="check language style"
 )
 argparser.add_argument(
-    "-o", "--output", dest="filename", help="write report to FILE", metavar="FILE"
+    "-o",
+    "--output",
+    dest="filename",
+    help="write report to FILE",
+    metavar="FILE",
+    default="papercheck_report.html",
 )
 argparser.add_argument(
     "-q",
