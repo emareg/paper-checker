@@ -92,7 +92,7 @@ def readInputFile(fileName):
 
         SCRIPT_DIR = os.getcwd()
         args = [
-            "/usr/bin/pdftotext",
+            "pdftotext",
             "-enc",
             "UTF-8",
             "{}/{}".format(SCRIPT_DIR, fileName),
@@ -171,8 +171,8 @@ def createHTMLreport(lines, linenums=[[], [], []], stats=""):
   <head>
     <title>Report of papercheck</title>
     <style>body{{font-family: monospace;}}
-    body{ font-family: monospace; } 
-    td{ vertical-align: top; } 
+    body{ font-family: monospace; }
+    td{ vertical-align: top; }
     .ln{display: inline-block;width: 50px;user-select: none;}
     .corr{font-weight:bold;cursor:pointer;}
     .corr:hover {background-color: yellow;}
@@ -189,7 +189,7 @@ def createHTMLreport(lines, linenums=[[], [], []], stats=""):
 
     out_lines = """
 <h2>Text Analysis</h2>
-<p>Color Legend:</p> 
+<p>Color Legend:</p>
 <ul>
 <li><span class="crit">Grammar Mistake</span></li>
 <li><span class="warn">Style Improvement</span></li>
