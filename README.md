@@ -11,6 +11,7 @@ PaperCheck is a python script that searches for simple grammar mistakes in scien
 ```
 git clone git@github.com:emareg/paper-checker.git
 cd paper-checker
+pip install -r requirements.txt
 ```
 
 Afterwards, you can use the script in two ways:
