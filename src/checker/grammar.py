@@ -102,11 +102,12 @@ class ReRule:
         corrections = []
         matches = findRegEx(self.regex, sentence)
         for match in matches:
-            matched_words = (
-                match[2].group(0)
-                if match[2].group(0)[0] != "\n"
-                else match[2].group(0)[1:]
-            )
+            matched_words = match[2].group(0)
+            # (
+            #     match[2].group(0)
+            #     if match[2].group(0)[0] != "\n"
+            #     else match[2].group(0)[1:]
+            # )
             sugg = self.sugg(match[2].group(1)) if callable(self.sugg) else self.sugg
             sugg = sugg.replace(r"\1", match[2].group(1))
             desc = self.desc.replace(r"\1", match[2].group(1))
@@ -128,35 +129,26 @@ class ReSub:
         corrections = []
         for line in self.table:
             # print(line)
-            matches = findRegEx(r"\s(" + line[0] + r")\W", sentence)
+            matches = findRegEx(r"(\s" + line[0] + r"\W)", sentence)
             for match in matches:
-                matched_words = (
-                    match[2].group(0)
-                    if match[2].group(0)[0] != "\n"
-                    else match[2].group(0)[1:]
-                )
-                # print(match[2].lastindex)
-                # if match[2].lastindex > 1:
-                #     replace = match[2].group(0).replace(match[2].group(2), line[1], 1)
-                #     print(match[2].group(2))
-                # else:
-                replace = " " + line[1] + " "
+                matched_words = match[2].group(0)
+                replace = match[2].group(0)[0] + line[1] + match[2].group(0)[-1]
                 askAction(match[0], self.desc, match[2].group(0), replace)
                 corrections.append(
                     Correction(match[0], match[1], matched_words, replace, self.desc)
                 )
         return corrections
 
-
+# todo: found exception: an unanimuous vote.
 R_AvsAn = ReRule(
     "Use 'an' because the next word starts with a vowel SOUND.",
     "an",
-    r"\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaIi]|[Ee][^u]|[Uu][^sn]|[Uu]n[^i]|[Oo][^n]|[Oo]n[^e]|[Uu]nin|8[- ]|hour)\w+)\W",
+    r"\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaIi]|[Ee][^u]|[Uu][^sn]|[Uu]n[^ia]|[Uu]na(?!mi)|[Oo][^n]|[Oo]n[^e]|[Uu]nin|8[- ]|hour)\w+)\W",
 )
 R_AnvsA = ReRule(
-    "Use 'a' because the next word does not start with a vowel SOUND.",
+    "Use 'a' because the next word does NOT start with a vowel SOUND.",
     "a",
-    r"\s(an)\s[„“”]?(?:[^AaOoEeIiUu\\„“”][a-z]|[^AEFHILMNORSX8„“”][^a-z]|[Uu]s|[Uu]ni|[Oo]ne)\w*\W",
+    r"\s(an)\s[„“”]?(?:[^AaOoEeIiUu\\„“”\s][a-z]|[^AEFHILMNORSX8„“”\s][^a-z]|[Uu]s|[Uu]ni|[Oo]ne)\w*\W",
 )
 R_RepeatedWord = ReRule(
     "You repeated a word, which is probably not intended.", r"", r"\s(\w+) +\1\W"
@@ -260,12 +252,12 @@ R_The_Are = ReRule(
 R_Quant_of = ReRule(
     "Missing determiner after quantifier + 'of'.",
     " of ",
-    r"\s(?:all|any|some|most|none)\sof\s(?!the|these|those|them)\W",
+    r"\s(?:all|any|some|most|none|many)\sof\s(?!the|these|those|them)\W",
 )
 R_Quant_Det = ReRule(
     "Missing 'of' between quantifier and determiner.",
     " of ",
-    r"(?<=\s)(?:all|some|most)(\s)(?:the|these|those|them)\W",
+    r"(?<=\s)(?:any|some|most|none|many)(\s)(?:the|these|those|them)\W",
 )
 
 R_Be_Do = ReRule(
@@ -325,6 +317,8 @@ R_wait_till = ReRule(
 )
 
 
+R_wrong_combination = ReSub("Probably wrong word combination.", tabWrongCombinations)
+
 # todo: check missing 'to' between verbs  (?:use|try|attemp)( )baseverb  => try TO do
 
 
@@ -358,6 +352,7 @@ G_Rules = [
     R_Be_Do,
     R_Comma_Intro,
     R_Comma_SubCon,
+    R_wrong_combination,
 ]
 
 G_ExtRules = [
