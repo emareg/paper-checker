@@ -48,7 +48,7 @@ def singular(string):
 def plural(string):
     """ returns the plural of a word """
     splural = ""
-    if string[-1] in "sxzh":
+    if string[-1] in "sxz" or (string[-1] == "h" and string[-2] in "sc"):
         splural = string + "es"
     elif string[-1] == "y" and string[-2] not in "aeiou":
         splural = string[:-1] + "ies"
@@ -84,7 +84,7 @@ def past(string):
 def adverb(word):
     if word[-2:] == "ic":
         return word + "ally"
-    elif word[-2:] == "le":
+    elif len(word) > 5 and word[-3:] == "ble":
         return word[:-2] + "ly"
     elif word[-1] == "y":
         return word[:-1] + "ily"

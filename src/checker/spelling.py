@@ -81,7 +81,10 @@ def parse_affix(word, affix):
                         re.sub(r"(?<=[^aeiou])y$", "i", pfxword) + "ness"
                     )  #
                 elif char == "M":
-                    addwords.append(pfxword + "'s")  # noun
+                    if pfxword[-1] == "s":
+                        addwords.append(pfxword + "'")  # noun
+                    else:
+                        addwords.append(pfxword + "'s")  # noun
                 elif char == "B":
                     addwords.append(
                         re.sub(r"(?<=[^e])e$", "", pfxword) + "able"
@@ -185,6 +188,8 @@ class Correction:
         self.desc = description
 
 
+
+# todo: show Capital errors only IF there is a one edit suggestion, otherwise it is probably a name and correct
 def check_words(dictionary, text):
     lines = text.splitlines(True)
 
@@ -193,7 +198,7 @@ def check_words(dictionary, text):
     for idx, line in enumerate(lines):
         words = split2words(line)
         for word in words:
-            if word.isupper() or isNum(word):
+            if word.isupper() or isNum(word) or len(re.findall(r"[A-Z]", word)) != 0:
                 continue
             isCorrect = word in dictionary
             if not isCorrect:
@@ -204,18 +209,23 @@ def check_words(dictionary, text):
                     matches = re.findall(r"\W" + word + r"\W", line)
                     match = " " + word + " " if len(matches) == 0 else matches[0]
                     if match[-1] == "-" and word in [
-                        "semi",
-                        "pre",
-                        "intra",
+                        "anti",
+                        "bio",
+                        #"dis",
                         "inter",
-                        "re",
-                        "dis",
-                        "mis",
-                        "quasi",
+                        "intra",
+                        #"mis",
                         "multi",
+                        "non",
+                        "pre",
+                        "quasi",
+                        "re",
+                        "semi",
+                        "sub",
                     ]:
                         continue
                     sugg = suggest(dictionary, word)
+                    if sugg == "" and word[0].isupper(): continue  # do not show capital errors without suggestion
                     if word not in word_counter.keys():
                         word_counter[word] = 0
                     if word_counter[word] < 1:
@@ -235,12 +245,12 @@ def edits1(word):
     "All edits that are one edit away from `word`."
     letters = "esianrtolcdugmphbyfvkwz"
     splits = [(word[:i], word[i:]) for i in range(len(word) + 1)]
-    deletes = [L + R[1:] for L, R in splits if R]
+    capital = [word[0].upper() + word[1:]]
     transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1]
     replaces = [L + c + R[1:] for L, R in splits if R for c in letters]
     inserts = [L + c + R for L, R in splits for c in letters]
-    capital = [word[0].upper() + word[1:]]
-    return set(deletes + transposes + replaces + inserts + capital)
+    deletes = [L + R[1:] for L, R in splits if R]
+    return list(set(capital + transposes + replaces + inserts + deletes))
 
 
 def suggest(dictionary, wrong):
@@ -255,30 +265,12 @@ def checkSpelling(text):
     )
 
     dictionary = {}
-    # dictionary = read_dictionary(dictionary, 'src/dictionary/en_US-scowl-70.dic')
-    # dictionary = read_dictionary(dictionary, 'src/dictionary/en_US-scowl-60.dic')
-    dictionary = read_dictionary(dictionary, "src/dictionary/en_US-scowl-35.dic")
-    # dictionary = read_dictionary(dictionary, '/usr/share/en_US.dic')
-    dictionary = read_dictionary(dictionary, "src/dictionary/academic.dic")
-    dictionary = read_dictionary(dictionary, "src/dictionary/en_US_names.dic")
-    dictionary = read_dictionary(dictionary, "src/dictionary/en_US_tech.dic")
-    dictionary = read_dictionary(dictionary, "src/dictionary/en_US_unit.dic")
-    dictionary = read_dictionary(dictionary, "src/dictionary/en_US_math.dic")
-    dictionary = read_dictionary(dictionary, "src/dictionary/names_geo.dic")
-    dictionary = read_dictionary(dictionary, "src/dictionary/names_people.dic")
-    # dictionary = read_pos_dictionaries('src/dictionary/pos')
-    # dictionary = read_dictionary(dictionary, 'src/dictionary/google-10000-english-usa-no-swears.txt')
-
+    dictionary = read_dictionary(dictionary, "src/dictionary/en_US.dic")
+    dictionary = read_dictionary(dictionary, "src/dictionary/en-Academic.dic")
+    
     read_acronyms(dictionary, "src/dictionary/acronyms.md")
     if dictionary == {}:
         return
     corrections = check_words(dictionary, text)
     return corrections
 
-    # sentences = split2sentences( text )
-    # for sentence in sentences:
-    #     words = split2words( sentence )
-    #     for word in words:
-    #         isCorrect = spellchecker.spell(word)
-    #         if not isCorrect:
-    #             print("Typo: ", word)
