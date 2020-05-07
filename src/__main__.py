@@ -56,12 +56,11 @@ CFG_PRINT_INPUT = False  # print the intput after pre-processing
 # import
 # ===========================================
 
-import fileinput
 import sys
 import os
 import re
-from argparse import ArgumentParser
-
+import argparse
+from pathlib import Path
 
 # own functions
 from checker.grammar import checkGrammar, checkStyle
@@ -84,15 +83,21 @@ G_filename = ""
 
 
 def readInputFile(fileName):
+    import os
     ext = fileName.lower().split(".")[-1]
+    fileName = os.path.expanduser(fileName)
     inFileHandler = open(fileName, "rb")
 
     if ext == "pdf":
-        import os, subprocess
+        import subprocess
 
         SCRIPT_DIR = os.getcwd()
+
+        if Path(fileName).is_absolute():
+            fileName = Path(os.path.relpath(Path(fileName), SCRIPT_DIR))
+
         args = [
-            "/usr/bin/pdftotext",
+            "pdftotext",
             "-enc",
             "UTF-8",
             "{}/{}".format(SCRIPT_DIR, fileName),
@@ -161,8 +166,8 @@ def createHTMLreport(lines, linenums=[[], [], []], stats=""):
   <head>
     <title>Report of papercheck</title>
     <style>body{{font-family: monospace;}}
-    body{ font-family: monospace; } 
-    td{ vertical-align: top; } 
+    body{ font-family: monospace; }
+    td{ vertical-align: top; }
     .ln{display: inline-block;width: 50px;user-select: none;}
     .corr{font-weight:bold;cursor:pointer;}
     .corr:hover {background-color: yellow;}
@@ -179,7 +184,7 @@ def createHTMLreport(lines, linenums=[[], [], []], stats=""):
 
     out_lines = """
 <h2>Text Analysis</h2>
-<p>Color Legend:</p> 
+<p>Color Legend:</p>
 <ul>
 <li><span class="crit">Grammar Mistake</span></li>
 <li><span class="warn">Style Improvement</span></li>
@@ -305,7 +310,7 @@ def parseFile(fileName, args):
             outputLines, [grammar_linenums, style_linenums, spell_linenums], stats
         )
         # with open(fileBaseName+'_check_report.html', "w+") as f:
-        with open("papercheck_report.html", "w+") as f:
+        with open(Path(args.filename).absolute(), "w+") as f:
             f.write(output)
 
 
@@ -313,8 +318,9 @@ def parseFile(fileName, args):
 #############################################
 
 
-argparser = ArgumentParser(
-    description="Checks papers and other technical texts for grammar, plagiarism and style."
+argparser = argparse.ArgumentParser(
+    description="Checks papers and other technical texts for grammar, plagiarism and style.",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 argparser.add_argument("-g", "--grammar", action="store_true", help="check grammar")
 argparser.add_argument(
@@ -325,7 +331,12 @@ argparser.add_argument(
     "-y", "--style", action="store_true", help="check language style"
 )
 argparser.add_argument(
-    "-o", "--output", dest="filename", help="write report to FILE", metavar="FILE"
+    "-o",
+    "--output",
+    dest="filename",
+    help="write report to FILE",
+    metavar="FILE",
+    default="papercheck_report.html",
 )
 argparser.add_argument(
     "-q",
