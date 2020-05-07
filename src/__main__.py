@@ -83,13 +83,19 @@ wasCorrectionMade = False
 
 
 def readInputFile(fileName):
+    import os
     ext = fileName.lower().split(".")[-1]
+    fileName = os.path.expanduser(fileName)
     inFileHandler = open(fileName, "rb")
 
     if ext == "pdf":
-        import os, subprocess
+        import subprocess
 
         SCRIPT_DIR = os.getcwd()
+
+        if Path(fileName).is_absolute():
+            fileName = Path(os.path.relpath(Path(fileName), SCRIPT_DIR))
+
         args = [
             "pdftotext",
             "-enc",
