@@ -62,14 +62,15 @@ import re
 import argparse
 from pathlib import Path
 
-# own functions
-from checker.grammar import checkGrammar, checkStyle
-from checker.tex import checkTeX
-from checker.spelling import checkSpelling
-from checker.plagiarism import checkPlagiarism
 
-from lib.stripper import *
-from textstats import showStats, createStats
+# own functions
+from papercheck.checker.grammar import checkGrammar, checkStyle
+from papercheck.checker.tex import checkTeX
+from papercheck.checker.spelling import checkSpelling
+from papercheck.checker.plagiarism import checkPlagiarism
+
+from papercheck.lib.stripper import *
+from papercheck.textstats import showStats, createStats
 
 
 # global state variables
@@ -84,6 +85,7 @@ G_filename = ""
 
 def readInputFile(fileName):
     import os
+
     ext = fileName.lower().split(".")[-1]
     fileName = os.path.expanduser(fileName)
     inFileHandler = open(fileName, "rb")
@@ -105,7 +107,7 @@ def readInputFile(fileName):
         ]
         res = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         text = res.stdout.decode("utf-8")
-        text = re.sub(r"(?<=\n)\w\w?(?=\n)", "", text) # remove lines with single word 
+        text = re.sub(r"(?<=\n)\w\w?(?=\n)", "", text)  # remove lines with single word
         text = re.sub(r"\f", "", text)  # remove page breaks
         text = re.sub(r"ﬁ", "fi", text)  # fi Ligature ﬁ
         text = re.sub(r"ﬀ", "ff", text)  # ff Ligature ﬀ
@@ -314,42 +316,41 @@ def parseFile(fileName, args):
             f.write(output)
 
 
-# Main Program
-#############################################
+def parse_arguments():
+    argparser = argparse.ArgumentParser(
+        description="Checks papers and other technical texts for grammar, plagiarism and style.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    argparser.add_argument("-g", "--grammar", action="store_true", help="check grammar")
+    argparser.add_argument(
+        "-p", "--plagiarism", action="store_true", help="check plagiarism"
+    )
+    argparser.add_argument("-s", "--spell", action="store_true", help="check spelling")
+    argparser.add_argument(
+        "-y", "--style", action="store_true", help="check language style"
+    )
+    argparser.add_argument(
+        "-o",
+        "--output",
+        dest="filename",
+        help="write report to FILE",
+        metavar="FILE",
+        default="papercheck_report.html",
+    )
+    argparser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_false",
+        dest="verbose",
+        default=True,
+        help="don't print messages to stdout",
+    )
+    argparser.add_argument("files", nargs="+")
+
+    return argparser.parse_args()
 
 
-argparser = argparse.ArgumentParser(
-    description="Checks papers and other technical texts for grammar, plagiarism and style.",
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-)
-argparser.add_argument("-g", "--grammar", action="store_true", help="check grammar")
-argparser.add_argument(
-    "-p", "--plagiarism", action="store_true", help="check plagiarism"
-)
-argparser.add_argument("-s", "--spell", action="store_true", help="check spelling")
-argparser.add_argument(
-    "-y", "--style", action="store_true", help="check language style"
-)
-argparser.add_argument(
-    "-o",
-    "--output",
-    dest="filename",
-    help="write report to FILE",
-    metavar="FILE",
-    default="papercheck_report.html",
-)
-argparser.add_argument(
-    "-q",
-    "--quiet",
-    action="store_false",
-    dest="verbose",
-    default=True,
-    help="don't print messages to stdout",
-)
-argparser.add_argument("files", nargs="+")
-
-
-args = argparser.parse_args()
-
+# Main Content
+args = parse_arguments()
 for file in args.files:
     parseFile(file, args)

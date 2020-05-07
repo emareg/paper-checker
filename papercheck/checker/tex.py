@@ -1,6 +1,6 @@
 # imports
 import re
-from lib.nlp import *
+from papercheck.lib.nlp import *
 
 
 # global state variables

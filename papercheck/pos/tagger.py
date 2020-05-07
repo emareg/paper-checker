@@ -3,10 +3,10 @@
 # Despite the fact
 
 
-from pos.dictionary import *
-from pos.POS_en import *
+from papercheck.pos.dictionary import *
+from papercheck.pos.POS_en import *
 
-from lib.nlp import *
+from papercheck.lib.nlp import *
 
 
 ##########################################################################

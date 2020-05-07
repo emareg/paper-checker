@@ -1,6 +1,6 @@
-name: Test
+name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -18,6 +18,9 @@ jobs:
         sudo apt install -y poppler-utils
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Integration Test
-      run: |
-        make test
+    - name: Build package
+      run: make
+    - name: Check code
+      run: make check
+    - name: Test
+      run: make test

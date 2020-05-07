@@ -1,6 +1,12 @@
 # Settings
 # ===========================================
 
+from papercheck.checker import spelling
+from papercheck.lib.word_lists import *  # part of speech lists
+from papercheck.pos.POS_en import *  # part of speech lists
+from papercheck.lib.cli import *  # command line interface
+from papercheck.lib.nlp import *  # language functions
+
 ANALYZE_SENTENCE = False  # analyze sentence structure, experimental
 
 MAX_WORDS_PER_SENT = 50
@@ -16,17 +22,10 @@ AMERICAN_ENGLISH = True  # If False: British English
 
 
 # own functions
-from lib.nlp import *  # language functions
-from lib.cli import *  # command line interface
-from lib.stripper import *
-from pos.POS_en import *  # part of speech lists
-from lib.word_lists import *  # part of speech lists
-
-from checker import spelling
 
 
 if ANALYZE_SENTENCE:
-    from pos.tagger import *
+    from papercheck.pos.tagger import *
 
 
 # global state variables
@@ -138,6 +137,7 @@ class ReSub:
                     Correction(match[0], match[1], matched_words, replace, self.desc)
                 )
         return corrections
+
 
 # todo: found exception: an unanimuous vote.
 R_AvsAn = ReRule(
@@ -494,7 +494,8 @@ def checkPairs(text):
         )
 
     matches = findRegEx(r"\s+(“[^”]+“|”\s*“)", text)  # nested or subsequent “”
-    matches += findRegEx(r"\s+(‘[^’]+‘|’\s*‘)", text)  # nested or subsequent “”
+    # nested or subsequent “”
+    matches += findRegEx(r"\s+(‘[^’]+‘|’\s*‘)", text)
     for match in matches:
         askAction(match[0], "Possibly problem with quotes: ", match[2].group(0), "")
 
@@ -502,7 +503,7 @@ def checkPairs(text):
 def checkAbbreviations(text):
     # todo: check if Acronym was only used once => suspicious!
     dictionary = {}
-    spelling.read_acronyms(dictionary, "src/dictionary/acronyms.md")
+    spelling.read_acronyms(dictionary, "papercheck/dictionary/acronyms.md")
     foundAbbreviations = lstAcronyms + list(dictionary.keys())
     matches = findRegEx(r"\s([A-Z][A-Z])\s", text)
     for match in matches:
@@ -543,7 +544,7 @@ def checkSplitInfinitve(text):
             )
 
 
-## Analyze Sentences
+# Analyze Sentences
 ##########################
 
 # check length: > 50 words is too long
