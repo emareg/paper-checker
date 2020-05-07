@@ -77,7 +77,7 @@ from textstats import showStats, createStats
 # ==========================================================
 outputLines = []
 wasCorrectionMade = False
-
+G_filename = ""
 
 # helper functions
 ######################################################################################
@@ -100,7 +100,10 @@ def readInputFile(fileName):
         ]
         res = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         text = res.stdout.decode("utf-8")
-        text = re.sub(r"(?<=\n)\w\w?(?=\n)", "", text)
+        text = re.sub(r"(?<=\n)\w\w?(?=\n)", "", text) # remove lines with single word 
+        text = re.sub(r"\f", "", text)  # remove page breaks
+        text = re.sub(r"ﬁ", "fi", text)  # fi Ligature ﬁ
+        text = re.sub(r"ﬀ", "ff", text)  # ff Ligature ﬀ
 
     elif ext in ["txt", "tex", "md"]:
         text = inFileHandler.read().decode("utf-8")
@@ -109,7 +112,7 @@ def readInputFile(fileName):
     else:
         raise ValueError("unknown extension: " + ext)
 
-    text = re.sub(r"\s(\w{2:7})-\n(\w{2:7})\s", r" \1\2\n", text)
+    text = re.sub(r"\s(\w{2:7})-\n(\w{2:7})\s", r" \1\2\n", text)  # resolve hyphen
 
     return text
 
@@ -134,7 +137,7 @@ def markCorrections(lines, corrections, cssclass):
             corr.match,
             '<span class="corr '
             + cssclass
-            + '" title="{}">{}</span>'.format(
+            + '" title="{}">{}</span> '.format(
                 corr.desc
                 + " Suggestion: '"
                 + corr.sugg.replace("\n", " ").strip()
@@ -142,19 +145,6 @@ def markCorrections(lines, corrections, cssclass):
                 corr.match,
             ),
         )
-
-        # print("CORR:", corr.line, lines[corr.line], corr.match)
-        # print("lines[corr.line-1]", lines[corr.line-1])
-
-        # corrected_line = lines[corr.line-1].replace(corr.match, " <span class=\"corr "+cssclass+"\" title=\"{}\">{}</span>".format(corr.desc+" Suggestion: '"+corr.sugg.strip()+"'", corr.match))
-        # if corrected_line == lines[corr.line-1]:
-        #     corr.match = corr.match.replace('\n', ' ')
-        #     twolines = ''.join(lines[corr.line-1:corr.line+1])
-        #     twolines = twolines.replace(corr.match, " <span class=\"corr "+cssclass+"\" title=\"{}\">{}</span> ".format(corr.desc+" Suggestion: '"+corr.sugg.strip()+"'", corr.match))
-        #     print(twolines)
-        #     lines[corr.line-1], lines[corr.line] = twolines.splitlines(True)
-        # else:
-        #     lines[corr.line-1] = corrected_line
 
     lines = lines.splitlines(True)
     return lines, corrected_linenums
@@ -183,7 +173,7 @@ def createHTMLreport(lines, linenums=[[], [], []], stats=""):
   </head>
     """
 
-    top_header = "<h1>PaperCheck Report</h1><hr>"
+    top_header = "<h1>PaperCheck Report for {}</h1><hr>".format(G_filename)
 
     html_stats = "<h2>Text Statistics</h2><pre>{}</pre><hr>".format(stats)
 
@@ -257,6 +247,9 @@ def parseFile(fileName, args):
     text = readInputFile(fileName)
 
     global outputLines
+    global G_filename
+
+    G_filename = fileBaseName
     outputLines = text.splitlines(True)
     grammar_linenums = ()
     style_linenums = ()
