@@ -22,5 +22,5 @@ jobs:
       run: make
     - name: Check code
       run: make check
-    - name: Integration Test
+    - name: Test
       run: make test

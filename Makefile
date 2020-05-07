@@ -21,7 +21,10 @@ check: check_format
 check_format:
 	$(PY_FILES) | xargs black --diff --check
 
-test: default
+unit_test:
+	python3 testrunner.py
+
+test: default unit_test
 	python3 $(NAME).py -sgy example/testfile.pdf
 	python3 $(NAME).py -sgy example/testfile.tex
 
