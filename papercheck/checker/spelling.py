@@ -133,10 +133,8 @@ def read_pos_dictionaries(folder):
     return dictionary
 
 
-
-
 def read_file_or_zip(filename):
-    lines =""
+    lines = ""
     try:
         fh = open(filename, "r", encoding="utf8")
         lines = fh.read()
@@ -148,7 +146,7 @@ def read_file_or_zip(filename):
             lines = fh.read().decode("utf-8")
             fh.close()
         except FileNotFoundError:
-            print("ERROR: File '{}' not found.".format(filename))   
+            print("ERROR: File '{}' not found.".format(filename))
     return lines
 
 
@@ -177,6 +175,7 @@ def read_acronyms(acronyms, acronymfile):
         acronym = re.match(r"\W([A-Z0-9]{2,})", line)
         if acronym != None:
             acronyms[acronym] = ""
+
 
 class Correction:
     def __init__(self, line, column, match, suggestion, description):
