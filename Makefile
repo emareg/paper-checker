@@ -25,7 +25,9 @@ unit_test:
 	python3 testrunner.py
 
 test: default unit_test
-	python3 $(NAME).py -sgy example/testfile.pdf
+	./$(NAME) -sgy example/testfile.pdf
+	./$(NAME) -sgy example/testfile.pdf
+	python3 $(NAME).py -sgy example/testfile.tex
 	python3 $(NAME).py -sgy example/testfile.tex
 
 install:
