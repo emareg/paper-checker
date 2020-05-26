@@ -5,10 +5,10 @@ ZIP_FILES = $(call file_finder,-name "*.py" -o -name "*.dic")
 PY_FILES = $(call file_finder,-name "*.py")
 
 default:
-	cd ./papercheck && $(ZIP_FILES) | zip -r ../${NAME}.zip -@
-	echo '#!/usr/bin/env python3' | cat - ${NAME}.zip > ${NAME}
-	rm ${NAME}.zip
-	chmod +x ${NAME}
+	cd ./papercheck && $(ZIP_FILES) | zip -r ../$(NAME).zip -@
+	echo '#!/usr/bin/env python3' | cat - $(NAME).zip > $(NAME)
+	rm $(NAME).zip
+	chmod +x $(NAME)
 
 clean:
 	rm $(NAME)
