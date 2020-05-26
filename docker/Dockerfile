@@ -6,8 +6,4 @@ RUN apt-get update && apt-get install -y \
     zip \
     poppler-utils
 
-RUN git clone https://github.com/emareg/paper-checker.git /home/paper-checker
-
 WORKDIR /home/paper-checker
-
-RUN pip install -r requirements.txt

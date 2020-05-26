@@ -2,4 +2,7 @@ version: '3'
 services:
   papercheck_dev:
     build: .
+    volumes:
+      - ../:/home/paper-checker
+    working_dir: /home/paper-checker
     command: bash
