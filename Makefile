@@ -1,18 +1,20 @@
 file_finder = find $(1) -type f $(2) -not -path './venv/*'
 
-NAME:=paperchecker
-ZIP_FILES = $(call file_finder,papercheck,-name "*.py" -o -name "*.dic")
+NAME:=papercheck
+BINDIR:=./bin/
+ZIP_FILES = $(call file_finder,papercheck,-name "*.py" -o -name "*.dic" -o -name "*.md")
 PY_FILES = $(call file_finder,.,-name "*.py")
 
 default:
+	mkdir -p $(BINDIR)	
 	$(ZIP_FILES) | zip -r $(NAME).zip -@
 	cd papercheck && zip -u ../$(NAME).zip __main__.py
-	echo '#!/usr/bin/env python3' | cat - $(NAME).zip > $(NAME)
+	echo '#!/usr/bin/env python3' | cat - $(NAME).zip > bin/$(NAME)
 	rm $(NAME).zip
-	chmod +x $(NAME)
+	chmod +x $(BINDIR)$(NAME)
 
 clean:
-	rm $(NAME)
+	rm $(BINDIR)$(NAME)
 
 format:
 	$(PY_FILES) | xargs black
@@ -26,8 +28,8 @@ unit_test:
 	python3 testrunner.py
 
 test: default unit_test
-	./$(NAME) -sgy example/testfile.pdf
-	./$(NAME) -sgy example/testfile.pdf
+	$(BINDIR)$(NAME) -sgy example/testfile.pdf
+	$(BINDIR)$(NAME) -sgy example/testfile.pdf
 	python3 $(NAME).py -sgy example/testfile.tex
 	python3 $(NAME).py -sgy example/testfile.tex
 
@@ -36,4 +38,4 @@ setup:
 	pip3 install -r requirements.txt
 
 install: default
-	sudo cp -u $(NAME) /usr/local/bin
+	cp -u $(BINDIR)$(NAME) /home/$(USER)/.local/bin

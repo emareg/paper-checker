@@ -133,27 +133,29 @@ def read_pos_dictionaries(folder):
     return dictionary
 
 
-def read_dictionary(dictionary, dictfile):
-    lines = ""
+
+
+def read_file_or_zip(filename):
+    lines =""
     try:
-        fh = open(dictfile, "r", encoding="utf8")
+        fh = open(filename, "r", encoding="utf8")
         lines = fh.read()
-        # print(lines); return
         fh.close()
-    except FileNotFoundError:
+    except (FileNotFoundError, NotADirectoryError):
         try:
             arch = zipfile.ZipFile(sys.argv[0], "r")
-            fh = arch.open(dictfile[4:], "r")
+            fh = arch.open(filename, "r")
             lines = fh.read().decode("utf-8")
             fh.close()
         except FileNotFoundError:
-            print(
-                "ERROR: Dictionary File '{}' not found. Install hunspell.".format(
-                    dictfile
-                )
-            )
+            print("ERROR: File '{}' not found.".format(filename))   
+    return lines
 
-    for line in lines.splitlines():
+
+def read_dictionary(dictionary, dictfile):
+    text = read_file_or_zip(dictfile)
+
+    for line in text.splitlines():
         if dictfile[-4:] == ".dic":
             word, _, affix = line.strip().partition("/")
             dictionary[word] = ""
@@ -168,16 +170,13 @@ def read_dictionary(dictionary, dictfile):
 
 
 def read_acronyms(acronyms, acronymfile):
-    try:
-        with open(acronymfile, "r") as f:
-            for line in f:
-                line = line.strip()
-                acronym = re.match(r"\W([A-Z0-9]{2,})", line)
-                if acronym != None:
-                    acronyms[acronym] = ""
-    except FileNotFoundError:
-        print("ERROR: Acronym File '{}' not found.".format(acronymfile))
+    text = read_file_or_zip(acronymfile)
 
+    for line in text.splitlines():
+        line = line.strip()
+        acronym = re.match(r"\W([A-Z0-9]{2,})", line)
+        if acronym != None:
+            acronyms[acronym] = ""
 
 class Correction:
     def __init__(self, line, column, match, suggestion, description):
@@ -263,6 +262,7 @@ def checkSpelling(text):
     print(
         "\n\nChecking Spelling:\n----------------------------------------------------"
     )
+    print("CWD:", os.getcwd())
 
     dictionary = {}
     dictionary = read_dictionary(dictionary, "papercheck/dictionary/en_US.dic")
