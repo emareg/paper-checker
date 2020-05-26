@@ -30,6 +30,9 @@ test: default unit_test
 	python3 $(NAME).py -sgy example/testfile.tex
 	python3 $(NAME).py -sgy example/testfile.tex
 
-install:
+setup:
 	sudo apt install -y poppler-utils
 	pip3 install -r requirements.txt
+
+install: default
+	sudo cp -u $(NAME) /usr/local/bin
