@@ -350,7 +350,6 @@ def parse_arguments():
     return argparser.parse_args()
 
 
-if __name__ == '__main__':
-    args = parse_arguments()
-    for file in args.files:
-        parseFile(file, args)
+args = parse_arguments()
+for file in args.files:
+    parseFile(file, args)

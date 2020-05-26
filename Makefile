@@ -1,11 +1,12 @@
-file_finder = find . -type f $(1) -not -path './venv/*'
+file_finder = find $(1) -type f $(2) -not -path './venv/*'
 
 NAME:=paperchecker
-ZIP_FILES = $(call file_finder,-name "*.py" -o -name "*.dic")
-PY_FILES = $(call file_finder,-name "*.py")
+ZIP_FILES = $(call file_finder,papercheck,-name "*.py" -o -name "*.dic")
+PY_FILES = $(call file_finder,.,-name "*.py")
 
 default:
-	cd ./papercheck && $(ZIP_FILES) | zip -r ../$(NAME).zip -@
+	$(ZIP_FILES) | zip -r $(NAME).zip -@
+	cd papercheck && zip -u ../$(NAME).zip __main__.py
 	echo '#!/usr/bin/env python3' | cat - $(NAME).zip > $(NAME)
 	rm $(NAME).zip
 	chmod +x $(NAME)
