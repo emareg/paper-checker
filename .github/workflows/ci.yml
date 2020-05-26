@@ -4,9 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -24,3 +22,12 @@ jobs:
       run: make check
     - name: Test
       run: make test
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: docker build . --file docker/Dockerfile --tag papercheck
+      - name: Run setup
+        run: docker run -v $(pwd):/home/paper-checker -w /home/paper-checker papercheck bash -c "pip install -r requirements.txt && make test"

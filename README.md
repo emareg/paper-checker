@@ -10,7 +10,7 @@ PaperCheck is a python script that searches for simple grammar mistakes in scien
 ```
 git clone git@github.com:emareg/paper-checker.git
 cd paper-checker
-pip install -r requirements.txt
+make setup
 ```
 
 Afterwards, you can use the script in two ways:
@@ -29,6 +29,14 @@ make
 Supported file types: `.tex .txt .md .pdf`
 
 The found issues are displayed in the terminal and also written into `papercheck_report.html`
+
+### System wide installation
+
+```
+make install
+```
+
+This will copy the stand-alone executable to `/usr/loca/bin`
 
 ## Features
 
@@ -67,11 +75,6 @@ Will highlight language that could be improved such as
 **experimental!**
 
 The script will try to find significant sentences, which are then compared to Google search results. This is a very poor approach but useful as a minimal effort with zero cost.
-
-The plagiarims checker introduces some dependencies that can be installed using pip:
-```
-pip3 install -r requirements.txt
-```
 
 ### TeX checker
 When you run the script on `.tex` files, it will also check for certain TeX problems such as
