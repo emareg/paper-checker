@@ -56,9 +56,11 @@ class ReRule:
         # print(self.regex)
         matches = findRegEx(self.regex, sentence)
         for match in matches:
-            replace = match[2].group(0).replace(match[2].group(1), self.sugg, 1)
+            sugg = self.sugg.replace(r"\1", match[2].group(1))
+            desc = self.desc.replace(r"\1", match[2].group(1))
+            replace = match[2].group(0).replace(match[2].group(1), sugg, 1)
             # replace = " "+re.sub(self.regex, self.sugg, match[2].group(0))+" "
-            printRule(match[0], self.desc, match[2].group(0), replace)
+            printRule(match[0], desc, match[2].group(0), replace)
 
 
 def checkTeX(text):
@@ -76,20 +78,36 @@ def checkTeX(text):
     print("----------------------------------------------------\n\n")
 
 
-# LaTeX Rules
-# --------------------------------------------
-
 
 # LaTeX Rules
 # --------------------------------------------
 R_Caption_Period = ReRule(
-    " * INFO: Captions should be ended by a period '.'.",
+    " STYLE: Captions should be ended by a period '.'.",
     ".}",
     r"\\caption\{[^}]+[^. ]\s*(\}\s*)(?=\n)",
 )
 
+R_Table_Hline = ReRule(
+    " STYLE: In tables use \\toprule or \\midrule from package 'booktabs' instead of \\hline.",
+    "\\\\ \\midrule",
+    # r"\\begin\{table\}(?:.|\n)*?(\\\\\s*\\hline)(?:.|\n)*?\\end\{table\}",
+    r"\s&\s+.*?(\\\\\s*\\hline)\s*(?=\n)",
+)
 
-G_TeXRules = [R_Caption_Period]
+R_SIUnits = ReRule(
+    " STYLE: Use \\SI{ number }{ unit } from package 'siunitx'.",
+    '\\SI{ NUM }{ UNIT }',
+    r"\s(\d+\s?[nmk]?(?:[mgsAKJWCVFTH]|rad|deg|Hz|Pa|Wb))\W",
+)
+
+
+R_MathFun = ReRule(
+    " STYLE: In math mode, use \\\\1 instead of \\1 (upright font).",
+    '\\\\1',
+    r"\s\$[^$]+?(sin|cos|tan|log|min|max|exp)[^$]*?[^\$]\$\s",
+)
+
+G_TeXRules = [R_Caption_Period, R_Table_Hline, R_SIUnits, R_MathFun]
 
 
 ## Analyze TeX
@@ -143,9 +161,6 @@ def checkTeXreferences(text):
         if re.search(r"ref\{\s*" + re.escape(match) + r"\s*\}", text) == None:
             print(" * WARN: unused label: {}".format(match))
 
-    matches = findRegEx(r"\\caption\{[^}]+[^.](\s*\})\s*\n", text)
-    for match in matches:
-        print(" * WARN: caption missing period (line {})".format(match[0]))
 
 
 def checkTeXmath(text):
