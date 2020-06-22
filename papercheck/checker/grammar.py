@@ -184,8 +184,8 @@ R_Double_Base_Verbs = ReRule(
 )  # only base forms
 R_Did_Base = ReRule(
     "The word 'did' requires the base form of a verb.",
-    "BASEFORM",
-    r"\sdid\s(?:not\s)?(?:" + reAdv + r"\s)?(\w{3,9}ed|\w{3,9}s)\W",
+    "",
+    r"\sdid\s(?:not\s)?(?:" + reAdv + r"\s)?\w{3,9}(s|ed|ing)\W",
 )  # only base forms
 R_Double_Det = ReRule(
     "You have repeated a determiner, which is probably not intended.",

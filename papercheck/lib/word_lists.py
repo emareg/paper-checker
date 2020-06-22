@@ -219,8 +219,9 @@ tabLatinPlural = [
     ("indexes", "indices"),
     ("matrixes", "matrices"),
     ("formulas", "formulae"),
-    ("precise", "concise"),
+    ("radius", "radii"),
 ]
+
 
 
 tabNonScientificVerbs = [
@@ -229,10 +230,17 @@ tabNonScientificVerbs = [
     ("compere", "compare"),
     ("exorcise", "exercise"),
     ("defuse", "diffuse"),
+    ("fray", ""),
     ("moan", "sign"),
     ("sing", "sign"),
     ("snag", ""),
 ]
+
+# maybe in medical/biology context
+tabNonTechnicalWords = [
+    ("bee", "be"),
+]
+
 
 tabNonScientificWords = [
     ("altars?", "alter"),
@@ -303,8 +311,10 @@ tabNonScientificWords = [
     ("knot", "not"),
     ("knights?", "night"),
     ("loch", "lock"),
+    ("lodes?", "load"),
     ("lark", "lack"),
     ("lawn", "law"),
+    ("lees?", "less"),
     ("lest", "least"),
     ("litter", "little"),
     ("lusts?", "list"),
@@ -326,6 +336,7 @@ tabNonScientificWords = [
     ("nit", "not"),
     ("nun", "non"),
     ("ore", "or"),
+    ("oar", "or"),
     ("palate", "palette"),
     ("par", "part"),
     ("pie", "pi"),
@@ -342,6 +353,7 @@ tabNonScientificWords = [
     ("rants?", "rent"),
     ("realty", "reality"),
     ("revenge", "revenue"),
+    ("rime", "time"),
     ("rite", "write"),
     ("rise", "raise"),
     ("routs?", "route"),
@@ -353,6 +365,7 @@ tabNonScientificWords = [
     ("sate", "state"),
     ("scum", "scam"),
     ("seams", "seems"),
+    ("sew", "see"),
     ("shed", "she"),
     ("shit", "shift"),
     ("sleight", "slight"),
@@ -370,8 +383,12 @@ tabNonScientificWords = [
     ("stationery", "stationary"),
     ("steal", "steel"),
     ("steak", "stake"),
+    ("stiles?", "style"),
+    ("sties", "sites"),
     ("streight", "straight"),
     ("strait", "straight"),
+    ("sty", "stay"),
+    ("stying", "staying"),
     ("sword", "word"),
     ("temper", "tamper"),
     ("testes", "tests"),

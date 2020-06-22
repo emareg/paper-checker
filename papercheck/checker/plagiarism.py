@@ -55,6 +55,36 @@ headers_Get = {
 }
 
 
+
+
+def distance(text1, text2):
+    words_sent1 = {}
+    words_sent1 = {}
+
+    sum1=sum(i*i  for i in dict_file1.values())
+    sum2=sum(i*i  for i in dict_file2.values())
+    mod_fl1=sqrt(sum1)
+    mod_fl2=sqrt(sum2)
+    dotProduct=0
+    for key in dict_file2:
+        if key in dict_file1:
+            dotProduct+=dict_file1[key]*dict_file2[key]
+        distance=acos(dotProduct/int(mod_fl1*mod_fl2))
+    if distance==0:
+         print("Complete Match found")
+    elif distance>0 and distance<= (1/sqrt(2)): # setting the threshold to 45 degrees
+        print("Partial Match Found")
+    else:
+        print("No Match Found")
+
+
+
+
+
+
+
+
+
 def google_search(searchstr, num=10):
     import requests
     import urllib

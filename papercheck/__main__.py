@@ -37,6 +37,8 @@
 # not found:
 # a honor,   a utility
 # ... by but ... => comma or mistake
+# the all the (the all)?
+# "a XX a" / "the XX the" is probably wrong
 # is spend => is spent
 # paranthesis => parantheses
 # ... consensus based ... consensus-based (always -based?)
