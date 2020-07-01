@@ -1,5 +1,5 @@
 # Build files
-paperchecker
+bin/
 papercheck_report.html
 
 # IDE
