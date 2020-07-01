@@ -146,8 +146,7 @@ def createStats(text):
     calcStats(text)
 
     stats_str = ""
-    stats_str += " Characters: {} (incl. spaces)  \n".format(
-        G_stats["letters_all"])
+    stats_str += " Characters: {} (incl. spaces)  \n".format(G_stats["letters_all"])
     stats_str += "             {} (excl. spaces)  \n".format(
         G_stats["characters_no_white"]
     )
@@ -157,8 +156,7 @@ def createStats(text):
     stats_str += "                                \n"
     stats_str += "      Words: {} (total)         \n".format(G_stats["words"])
     stats_str += "             {} (unique, {} %)  \n".format(
-        G_stats["unique_words"], round(
-            100 * G_stats["unique_words"] / G_stats["words"])
+        G_stats["unique_words"], round(100 * G_stats["unique_words"] / G_stats["words"])
     )
     stats_str += "             chars per word: {} .. {} ({:.2f} avg.)\n".format(
         G_stats["word_length_min"],
@@ -166,8 +164,7 @@ def createStats(text):
         G_stats["word_length_avg"],
     )
     stats_str += "                                \n"
-    stats_str += "  Sentences: {} (total)         \n".format(
-        G_stats["sentences"])
+    stats_str += "  Sentences: {} (total)         \n".format(G_stats["sentences"])
     stats_str += "             {} short, {} long  \n".format(
         G_stats["sent_short"], G_stats["sent_long"]
     )
@@ -177,8 +174,7 @@ def createStats(text):
         G_stats["words_per_sent_avg"],
     )
     stats_str += "                                \n"
-    stats_str += "Vague words: {}                 \n".format(
-        G_stats["vague_words"])
+    stats_str += "Vague words: {}                 \n".format(G_stats["vague_words"])
     stats_str += "    Genders: {} he, {} it, {} she\n".format(
         G_stats["male_words"], G_stats["neutral_words"], G_stats["female_words"]
     )

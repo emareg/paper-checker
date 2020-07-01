@@ -80,7 +80,7 @@ def distance(text1, text2):
         print("No Match Found")
 
 
-def google_search(searchstr, num=10):
+def google_search(searchstr):
     import requests
     import urllib
 
@@ -97,7 +97,6 @@ def google_search(searchstr, num=10):
 
     RES_START = ">Webergebnisse</h2>"  # '<div id="search">'
     RES_END = '<div id="foot'
-    ENTRY_DEL = '<div class="g">'
     html_res = html_res[
         html_res.index(RES_START) + len(RES_START) : html_res.index(RES_END)
     ]

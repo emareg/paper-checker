@@ -60,6 +60,7 @@ from pathlib import Path
 import argparse
 import os
 import sys
+
 ANALYZE_SENTENCE = False  # analyze sentence structure, experimental
 CFG_INTERACTIVE = False  # ask for action after each error
 CFG_PRINT_INPUT = False  # print the intput after pre-processing
@@ -85,8 +86,7 @@ G_filename = ""
 def writeOutputFile(fileName, text):
     reply = ""
     while reply == "":
-        reply = input("Should the output file " +
-                      fileName + " be written? [y/n]")
+        reply = input("Should the output file " + fileName + " be written? [y/n]")
     if reply == "y":
         with open(fileName, "w+") as f:
             f.write(text)
@@ -146,8 +146,7 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
     html_stats = "<h2>Text Statistics</h2><pre>{}</pre><hr>".format(stats)
 
     if plag != "":
-        html_stats += "<h2>Plagiarism Report</h2><pre>{}</pre><hr>".format(
-            plag)
+        html_stats += "<h2>Plagiarism Report</h2><pre>{}</pre><hr>".format(plag)
 
     out_lines = """
 <h2>Text Analysis</h2>
@@ -209,8 +208,7 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
         r"(\\\w+)(?=\W)", r'<span style="color:blue;">\1</span>', out_lines
     )
     # out_lines = re.sub(r'(\n[^%]*?)([{}])', r'\1<span style="color:blue;">\2</span>', out_lines)
-    out_lines = re.sub(
-        r"(\\\\)", r'<span style="color:blue;">\1</span>', out_lines)
+    out_lines = re.sub(r"(\\\\)", r'<span style="color:blue;">\1</span>', out_lines)
     out_lines = re.sub(
         r"(?<=[^\\])(%.*?)(?=\n)", r'<span style="color:gray;">\1</span>', out_lines
     )
@@ -265,22 +263,19 @@ def parseFile(fileName, args):
     # spell check
     if args.spell:
         corrections = checkSpelling(text)
-        outputLines, linenums = markCorrections(
-            outputLines, corrections, "err")
+        outputLines, linenums = markCorrections(outputLines, corrections, "err")
         spell_linenums += linenums
 
     # grammar check
     if args.grammar:
         corrections = checkGrammar(text)
-        outputLines, linenums = markCorrections(
-            outputLines, corrections, "crit")
+        outputLines, linenums = markCorrections(outputLines, corrections, "crit")
         grammar_linenums += linenums
 
     # style check
     if args.style:
         corrections = checkStyle(text)
-        outputLines, linenums = markCorrections(
-            outputLines, corrections, "warn")
+        outputLines, linenums = markCorrections(outputLines, corrections, "warn")
         style_linenums += linenums
 
     # plagiarism check
@@ -290,8 +285,7 @@ def parseFile(fileName, args):
     # report
     if args.style or args.grammar or args.spell or args.plagiarism:
         report_out = createHTMLreport(
-            outputLines, [grammar_linenums, style_linenums,
-                          spell_linenums], stats, plag
+            outputLines, [grammar_linenums, style_linenums, spell_linenums], stats, plag
         )
         with open(fileBaseName + "_papercheck.html", "w+") as f:
             f.write(report_out)
@@ -302,13 +296,11 @@ def parse_arguments():
         description="Checks papers and other technical texts for grammar, plagiarism and style.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    argparser.add_argument(
-        "-g", "--grammar", action="store_true", help="check grammar")
+    argparser.add_argument("-g", "--grammar", action="store_true", help="check grammar")
     argparser.add_argument(
         "-p", "--plagiarism", action="store_true", help="check plagiarism"
     )
-    argparser.add_argument(
-        "-s", "--spell", action="store_true", help="check spelling")
+    argparser.add_argument("-s", "--spell", action="store_true", help="check spelling")
     argparser.add_argument(
         "-y", "--style", action="store_true", help="check language style"
     )

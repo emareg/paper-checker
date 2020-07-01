@@ -1,6 +1,7 @@
 # Build files
 bin/
 papercheck_report.html
+testfile_papercheck.html
 
 # IDE
 .idea/
