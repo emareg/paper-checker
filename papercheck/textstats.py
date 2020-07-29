@@ -27,13 +27,29 @@ lstVague = (
 )
 
 
+# todo: [13-15] => 3 refs
+# test: \cite{barba-to, me14} [BCC+ 16, GESL06, KPP10] analysis
 def statsReferences(text):
-    refs = []
-    matches = re.findall(r"\[(\d\d?)\]\.", text)
+    div = int(len(text)*0.7)
+    text = text[:div] + re.sub(r"(?:R ?EFERENCES|Bibliography|References)(?:.|\n)*", "", text[div:])
+
+    refs = {}
+    matches = re.findall(r"\\cite\{([^},]+)(?:, ?([^},]+))*\}", text)
+    matches += re.findall(r"\s\[((?:[A-Z][\w+ ]{1,3})?\d\d?)(?:(?:, |[…–])([A-Z][\w+ ]{1,3})?\d\d?)*\][.,]?(?=\s[\w[])", text)
     for match in matches:
-        refs.append(match[0])
-    print("References: ")
-    print(refs)
+        for ref in match:
+            if ref != '': refs[ref] = refs[ref] + 1 if ref in refs.keys() else 1
+    #print(sorted(refs))
+    return refs
+
+
+# TABLE III
+def statsFigures(text):
+    figs = {'figs': 0, 'tabs': 0, 'lsts': 0}
+    figs['figs'] = len(re.findall(r"\\begin\{figure\}|(?<=\n)\s*Fig(?:\.|ure) \d\d?(?:[.:]\s|\n)", text))
+    figs['tabs'] = len(re.findall(r"\\begin\{table\}|(?<=\n)\s*(?:Table|TABLE) (?:\d\d?|[IVX]{,4})(?:[.:]\s|\n)", text))
+    figs['lsts'] = len(re.findall(r"\\begin\{(?:lstlisting|algorithm|algorithmic|program)\}|(?<=\n)\s*(?:Listing|Algorithm) (?:\d\d?|[IVX]{,4})(?:[.:]\s|\n)", text))
+    return figs
 
 
 def calcStats(text):
@@ -61,8 +77,17 @@ def calcStats(text):
     G_stats["sent_short"] = 0
     G_stats["sent_long"] = 0
 
+    refs = statsReferences(text)
+    G_stats["refs_total"] = len(refs.keys())
+    G_stats["refs_cites"] = sum(refs.values())
+
+    figs = statsFigures(text)
+    G_stats["figs"] = figs['figs']
+    G_stats["tabs"] = figs['tabs']
+    G_stats["lsts"] = figs['lsts']
+
+
     sentences = split2sentences(text)
-    # print(sentences)
 
     G_stats["sentences"] = len(sentences)
 
@@ -149,62 +174,11 @@ def createStats(text):
     stats_str += "    Genders: {} he, {} it, {} she\n".format(
         G_stats["male_words"], G_stats["neutral_words"], G_stats["female_words"]
     )
+    stats_str += " References: {} refs, {} times cited\n".format(G_stats["refs_total"], G_stats["refs_cites"])
+    stats_str += "    Figures: {} figs, {} tables, {} listings\n".format(G_stats["figs"], G_stats["tabs"], G_stats["lsts"])
+    # stats_str += "                                \n"
+    # stats_str += "Most Freq. Words: {}\n".format(G_stats["common_words"])
+    # stats_str += "Longest Sentence: '{}...'\n".format(G_stats["longest_sent"][:50])
 
     return stats_str
 
-
-# todo: print table, color values (good/bad)
-# metric, avg±dev, [min,max], good range
-def showStats(text):
-    global G_stats
-    calcStats(text)
-
-    print("Text Statisics:")
-    print("----------------------------------------------------")
-    print(" Characters: {} (incl. spaces)  ".format(G_stats["letters_all"]))
-    print("             {} (excl. spaces)  ".format(G_stats["characters_no_white"]))
-    print("             {} (only words)    ".format(G_stats["characters_words"]))
-    print("                                ")
-    print("      Words: {} (total)          ".format(G_stats["words"]))
-    print(
-        "             {} (unique, {} %)".format(
-            G_stats["unique_words"],
-            round(100 * G_stats["unique_words"] / G_stats["words"]),
-        )
-    )
-    print(
-        "             chars per word: {} .. {} ({:.2f} avg.)".format(
-            G_stats["word_length_min"],
-            G_stats["word_length_max"],
-            G_stats["word_length_avg"],
-        )
-    )
-    print("                                ")
-    print("  Sentences: {} (total)                ".format(G_stats["sentences"]))
-    print(
-        "             {} short, {} long".format(
-            G_stats["sent_short"], G_stats["sent_long"]
-        )
-    )
-    print(
-        "             words per sent: {} .. {} ({:.2f} avg.)".format(
-            G_stats["words_per_sent_min"],
-            G_stats["words_per_sent_max"],
-            G_stats["words_per_sent_avg"],
-        )
-    )
-
-    print("Vague words: {}".format(G_stats["vague_words"]))
-    print(
-        "    Genders: {} he, {} it, {} she".format(
-            G_stats["male_words"], G_stats["neutral_words"], G_stats["female_words"]
-        )
-    )
-
-    print("----------------------------------------------------\n")
-
-    # number of POS: nouns, verbs, etc.
-    print("Longest Sentence: {}...".format(G_stats["longest_sent"][:50]))  #
-    print("Most frequent words: " + str(G_stats["common_words"]))
-
-    statsReferences(text)

@@ -78,7 +78,6 @@ def checkTeX(text):
     print("----------------------------------------------------\n\n")
 
 
-
 # LaTeX Rules
 # --------------------------------------------
 R_Caption_Period = ReRule(
@@ -96,14 +95,14 @@ R_Table_Hline = ReRule(
 
 R_SIUnits = ReRule(
     " STYLE: Use \\SI{ number }{ unit } from package 'siunitx'.",
-    '\\SI{ NUM }{ UNIT }',
+    "\\SI{ NUM }{ UNIT }",
     r"\s(\d+\s?[nmk]?(?:[mgsAKJWCVFTH]|rad|deg|Hz|Pa|Wb))\W",
 )
 
 
 R_MathFun = ReRule(
     " STYLE: In math mode, use \\\\1 instead of \\1 (upright font).",
-    '\\\\1',
+    "\\\\1",
     r"\s\$[^$]+?(sin|cos|tan|log|min|max|exp)[^$]*?[^\$]\$\s",
 )
 
@@ -160,7 +159,6 @@ def checkTeXreferences(text):
     for match in matches:
         if re.search(r"ref\{\s*" + re.escape(match) + r"\s*\}", text) == None:
             print(" * WARN: unused label: {}".format(match))
-
 
 
 def checkTeXmath(text):

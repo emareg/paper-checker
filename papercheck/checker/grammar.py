@@ -376,7 +376,10 @@ G_ExtRules = [
 S_NonScientific = ReSub(
     "Probably wrong word in scientific context.", tabNonScientificWords
 )
-S_Informal = ReSub("Informal word, could be substituted.", tabInformalWords+tabInformalVerbs+tabInformalAdjectives)
+S_Informal = ReSub(
+    "Informal word, could be substituted.",
+    tabInformalWords + tabInformalVerbs + tabInformalAdjectives,
+)
 S_Redundant = ReSub("Redundant or wordy phrase. Be short.", tabRedundantPhrases)
 S_ShortForms = ReSub("Short forms are informal.", tabShortForms)
 S_Vague = ReRule(
@@ -394,9 +397,7 @@ S_Large_Number = ReRule(
     "Large number, you should use a thousand separator.", "", r"[ (](\d{5,})[ ),.]"
 )
 S_Preposition_End = ReRule(
-    "Do not use prepositions to end your sentences.",
-    "",
-    r"\s(" + rePrep + r")[.!?]",
+    "Do not use prepositions to end your sentences.", "", r"\s(" + rePrep + r")[.!?]"
 )
 S_Oxford_Comma = ReRule(
     "Use Oxford comma to make lists less ambigous.",

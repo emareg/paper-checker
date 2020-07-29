@@ -55,34 +55,27 @@ headers_Get = {
 }
 
 
-
-
 def distance(text1, text2):
     words_sent1 = {}
     words_sent1 = {}
 
-    sum1=sum(i*i  for i in dict_file1.values())
-    sum2=sum(i*i  for i in dict_file2.values())
-    mod_fl1=sqrt(sum1)
-    mod_fl2=sqrt(sum2)
-    dotProduct=0
+    sum1 = sum(i * i for i in dict_file1.values())
+    sum2 = sum(i * i for i in dict_file2.values())
+    mod_fl1 = sqrt(sum1)
+    mod_fl2 = sqrt(sum2)
+    dotProduct = 0
     for key in dict_file2:
         if key in dict_file1:
-            dotProduct+=dict_file1[key]*dict_file2[key]
-        distance=acos(dotProduct/int(mod_fl1*mod_fl2))
-    if distance==0:
-         print("Complete Match found")
-    elif distance>0 and distance<= (1/sqrt(2)): # setting the threshold to 45 degrees
+            dotProduct += dict_file1[key] * dict_file2[key]
+        distance = acos(dotProduct / int(mod_fl1 * mod_fl2))
+    if distance == 0:
+        print("Complete Match found")
+    elif distance > 0 and distance <= (
+        1 / sqrt(2)
+    ):  # setting the threshold to 45 degrees
         print("Partial Match Found")
     else:
         print("No Match Found")
-
-
-
-
-
-
-
 
 
 def google_search(searchstr, num=10):
@@ -114,7 +107,7 @@ def google_search(searchstr, num=10):
     for result in results:
         # print("Result:", result)
         title = re.findall(r"<h3 class=.*?>(.*?)</h3>", result, re.DOTALL)[0]
-        urls = re.findall(r'<div class="r">.*?<a href="(.*?)"', result, re.DOTALL)
+        urls = re.findall(r'<div class="r"[^>]*?>.*?<a href="(.*?)"', result, re.DOTALL)
         url = urls[0] if len(urls) != 0 else ""
         desc = re.findall(
             r'<span class="st">(?:<span class="f">.*?</span>)?(.*?)</span>',
@@ -198,6 +191,8 @@ def compare_and_decide(sent_doc, sent_web):
 def checkPlagiarismSentence(sent):
 
     results = google_search(sent)
+    output = ""
+    plagtext = ""
 
     is_plagiarsim = False
     for res in results:
@@ -209,12 +204,19 @@ def checkPlagiarismSentence(sent):
             google_sent = re.sub(
                 "<em>(.*?)</em>", "\033[95m" + r"\1" + "\033[0m", desc_text
             )
-            print('Document: "{}"'.format(sent))
+            print('Document: "{}"\n'.format(sent))
             print('Web:      "{}"\n{}\n'.format(google_sent, res["url"]))
+            plagtext += '<li>"{}"\n<a href="{}">{}</a></li>\n'.format(desc_text, res["url"], res["url"])
 
-    if not is_plagiarsim:
+
+    if is_plagiarsim:
+        output += '<strong class="crit">Web Matches:</strong> "{}…"\n'.format(sent[: min(len(sent), 120)])
+        output += '<ul>'+plagtext+'</ul>'
+    else:
+        output += '<strong class="good">No Matches:</strong> "{}…"\n'.format(sent[: min(len(sent), 120)])
         print('\033[32mSentence OK\033[0m: "{}..."'.format(sent[: min(len(sent), 80)]))
-
+    return output
+    
 
 # ===========================================================
 # Main
@@ -222,7 +224,6 @@ def checkPlagiarismSentence(sent):
 
 
 def checkPlagiarism(text):
-
     sigsentences = findSignificantSentences(text)
     # [print(s) for s in sigsentences]
 
@@ -230,12 +231,14 @@ def checkPlagiarism(text):
     print(
         "\n\nChecking for plagiarism...\n----------------------------------------------------"
     )
-    print(
-        "Found {} significant sentences, checking {} of them...".format(
+    output = "Found {} significant sentences, checking {} of them...\n".format(
             len(sigsentences), num_sentences
         )
-    )
+    print(output)
 
     for sent in sigsentences[:num_sentences]:
-        checkPlagiarismSentence(sent)
+        sent = sent.replace('\n', ' ')
+        output += checkPlagiarismSentence(sent)
         time.sleep(2)
+
+    return output

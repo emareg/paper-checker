@@ -72,7 +72,7 @@ from papercheck.checker.spelling import checkSpelling
 from papercheck.checker.plagiarism import checkPlagiarism
 
 from papercheck.lib.stripper import *
-from papercheck.textstats import showStats, createStats
+from papercheck.textstats import createStats
 
 
 # global state variables
@@ -121,7 +121,7 @@ def markCorrections(lines, corrections, cssclass):
     return lines, corrected_linenums
 
 
-def createHTMLreport(lines, linenums=[[], [], []], stats=""):
+def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
 
     grammar_linenums = linenums[0]
     style_linenums = linenums[1]
@@ -134,19 +134,26 @@ def createHTMLreport(lines, linenums=[[], [], []], stats=""):
     <style>body{{font-family: monospace;}}
     body{ font-family: monospace; }
     td{ vertical-align: top; }
+    em{ font-weight: bold; }
     .ln{display: inline-block;width: 50px;user-select: none;}
     .corr{font-weight:bold;cursor:pointer;}
     .corr:hover {background-color: yellow;}
-    span.err{color:Magenta;}
-    span.crit{color:red;}
-    span.warn{color:orange;}
+    .err{color:Magenta;}
+    .crit{color:red;}
+    .warn{color:orange;}
+    .good{color:green;}
     </style>
   </head>
     """
 
     top_header = "<h1>PaperCheck Report for {}</h1><hr>".format(G_filename)
 
+    
     html_stats = "<h2>Text Statistics</h2><pre>{}</pre><hr>".format(stats)
+
+    if plag != "":
+        html_stats += "<h2>Plagiarism Report</h2><pre>{}</pre><hr>".format(plag)
+
 
     out_lines = """
 <h2>Text Analysis</h2>
@@ -226,6 +233,7 @@ def parseFile(fileName, args):
     grammar_linenums = ()
     style_linenums = ()
     spell_linenums = ()
+    plag = ""
 
     # check if silent
     if not args.verbose:
@@ -241,7 +249,6 @@ def parseFile(fileName, args):
             print("#{}: {}".format(idx, line), end="")
 
     # show stats
-    # showStats(text)
     stats = createStats(text)
     print(stats)
 
@@ -269,17 +276,15 @@ def parseFile(fileName, args):
 
     # plagiarism check
     if args.plagiarism:
-        checkPlagiarism(text)
+        plag = checkPlagiarism(text)
 
     # report
-    if args.style or args.grammar or args.spell:
-        output = createHTMLreport(
-            outputLines, [grammar_linenums, style_linenums, spell_linenums], stats
+    if args.style or args.grammar or args.spell or args.plagiarism:
+        report_out = createHTMLreport(
+            outputLines, [grammar_linenums, style_linenums, spell_linenums], stats, plag
         )
         with open(fileBaseName+'_papercheck.html', "w+") as f:
-            print(fileBaseName+'_papercheck.html')
-        # with open(Path(args.filename).absolute(), "w+") as f:
-            f.write(output)
+            f.write(report_out)
 
 
 def parse_arguments():

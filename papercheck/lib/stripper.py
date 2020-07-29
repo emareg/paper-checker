@@ -61,7 +61,7 @@ def resolveHyphen(text):
 
 def stripPDFtoText(text):
     text = re.sub(r"(?<=\n)\s?\w\w*?\s?(?=\n)", "", text)  # remove lines with single word
-    text = re.sub(r"(?<=\n)(?!\d\.\s|\d.\d\d?\.|[A-Z]).{,12}(?=\n)", "", text)  # remove short lines that are not headings
+    text = re.sub(r"(?<=\n)(?!\d\.\s|\d.\d\d?\.|[A-Z]).{,12}(?=[^.:,]\n)", "", text)  # remove short lines that are not headings
     text = re.sub(r"\n{4,}", "\n\n\n", text)  # remove empty parts
     text = re.sub(r"\f", "", text)  # remove page breaks
     text = re.sub(r"ﬁ", "fi", text)  # fi Ligature ﬁ
@@ -72,8 +72,7 @@ def stripPDFtoText(text):
     n = len(lines)
     s = sorted([len(x) for x in lines])
     medlen = int((sum(s[n//2-1:n//2+1])/2.0, s[n//2])[n % 2]) if n else None
-    minl = int(medlen*0.85)
-    print("medlen:", medlen)
+    minl = int(medlen*0.78)
 
     ## find lines longer
     for idx,line in enumerate(lines):
