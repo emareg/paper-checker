@@ -1,11 +1,13 @@
 lstVague = (
     "a large number",
     "a lot",
+    "almost",
     "few",
     "many",
     "most",
     "numerous",
     "some",
+    "sometimes",
     "really",
     "several",
     "often",
@@ -157,6 +159,7 @@ tabWrongCombinations = [
     ("de-factor", "de-facto"),
     ("last change", "last chance"),
     (r"(?:have|has|had) (?:the|a|no) change", "chance"),
+    (r"(?:should|will) bee", "been"),
     ("insure that", "ensure that"),
     ("must to", "must"),
     ("network package", "network packet"),
@@ -212,10 +215,6 @@ tabSynonyms = [
 ]
 
 
-## Non Scientific / Informal
-## ===================================================
-
-
 tabLatinPlural = [
     ("maximums", "maxima"),
     ("indexes", "indices"),
@@ -224,6 +223,31 @@ tabLatinPlural = [
     ("radius", "radii"),
 ]
 
+tabBritishAmerican = [
+    ("aeroplane", "airplane"),
+    ("aluminium", "aluminum"),
+    ("analyse", "analyze"),
+    ("analogue", "analog"),
+    ("catalogue", "catalog"),
+    ("defence", "defense"),
+    ("licence", "license"),
+    ("centre", "center"),
+    ("fibre", "fiber"),
+    ("behaviour", "behavior"),
+    ("colour", "color"),
+    ("flavour", "flavor"),
+    ("signalling", "signaling"),
+    ("whilst", "while"),
+    # (r'\w\wl')
+]
+
+
+## Non Scientific / Informal
+## ===================================================
+
+
+# maybe in medical/biology context
+tabNonTechnicalWords = [("bee", "be")]
 
 
 tabNonScientificVerbs = [
@@ -237,12 +261,6 @@ tabNonScientificVerbs = [
     ("sing", "sign"),
     ("snag", ""),
 ]
-
-# maybe in medical/biology context
-tabNonTechnicalWords = [
-    ("bee", "be"),
-]
-
 
 tabNonScientificWords = [
     ("altars?", "alter"),
@@ -432,6 +450,7 @@ tabInformalWords = [
     ("Also,?", "Furthermore,"),
     ("[Aa]nyways?", "nevertheless"),
     ("a couple of", "several"),
+    ("and so on", "etc."),
     ("a bit", "slightly"),
     ("a little bit", "slightly"),
     # ('about '+reNum, 'approximately'),
@@ -470,6 +489,7 @@ tabInformalWords = [
     # ("rotations", "evolutions"),
     ("rough(?:ly)?", "approximately"),
     ("so", "Therefore,"),
+    ("something", "?"),
     # ("speed", "velocity"),
     ("silly", "inappropriate"),
     ("stuff", "things"),
@@ -496,26 +516,6 @@ tabInformalWords = [
     ("Well,?", ""),
     ("[Yy]ou", "one"),
     ("[Yy]our", "one's"),
-]
-
-
-
-tabBritishAmerican = [
-    ("aeroplane", "airplane"),
-    ("aluminium", "aluminum"),
-    ("analyse", "analyze"),
-    ("analogue", "analog"),
-    ("catalogue", "catalog"),
-    ("defence", "defense"),
-    ("licence", "license"),
-    ("centre", "center"),
-    ("fibre", "fiber"),
-    ("behaviour", "behavior"),
-    ("colour", "color"),
-    ("flavour", "flavor"),
-    ("signalling", "signaling"),
-    ("whilst", "while"),
-    # (r'\w\wl')
 ]
 
 

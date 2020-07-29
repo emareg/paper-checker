@@ -5,6 +5,8 @@ from collections import Counter
 from papercheck.lib.nlp import *
 from papercheck.pos.POS_en import *
 
+from papercheck.lib.word_lists import lstVague
+
 
 ## Statistics
 ##########################
@@ -12,43 +14,48 @@ G_stats = {}
 G_words = {}
 
 
-lstVague = (
-    "a large number",
-    "a lot",
-    "few",
-    "many",
-    "most",
-    "some",
-    "really",
-    "several",
-    "often",
-    "very",
-    "quite",
-)
-
-
 # todo: [13-15] => 3 refs
 # test: \cite{barba-to, me14} [BCC+ 16, GESL06, KPP10] analysis
 def statsReferences(text):
-    div = int(len(text)*0.7)
-    text = text[:div] + re.sub(r"(?:R ?EFERENCES|Bibliography|References)(?:.|\n)*", "", text[div:])
+    div = int(len(text) * 0.7)
+    text = text[:div] + re.sub(
+        r"(?:R ?EFERENCES|Bibliography|References)(?:.|\n)*", "", text[div:]
+    )
 
     refs = {}
     matches = re.findall(r"\\cite\{([^},]+)(?:, ?([^},]+))*\}", text)
-    matches += re.findall(r"\s\[((?:[A-Z][\w+ ]{1,3})?\d\d?)(?:(?:, |[…–])([A-Z][\w+ ]{1,3})?\d\d?)*\][.,]?(?=\s[\w[])", text)
+    matches += re.findall(
+        r"\s\[((?:[A-Z][\w+ ]{1,3})?\d\d?)(?:(?:, |[…–])([A-Z][\w+ ]{1,3})?\d\d?)*\][.,]?(?=\s[\w[])",
+        text,
+    )
     for match in matches:
         for ref in match:
-            if ref != '': refs[ref] = refs[ref] + 1 if ref in refs.keys() else 1
-    #print(sorted(refs))
+            if ref != "":
+                refs[ref] = refs[ref] + 1 if ref in refs.keys() else 1
+    # print(sorted(refs))
     return refs
 
 
 # TABLE III
 def statsFigures(text):
-    figs = {'figs': 0, 'tabs': 0, 'lsts': 0}
-    figs['figs'] = len(re.findall(r"\\begin\{figure\}|(?<=\n)\s*Fig(?:\.|ure) \d\d?(?:[.:]\s|\n)", text))
-    figs['tabs'] = len(re.findall(r"\\begin\{table\}|(?<=\n)\s*(?:Table|TABLE) (?:\d\d?|[IVX]{,4})(?:[.:]\s|\n)", text))
-    figs['lsts'] = len(re.findall(r"\\begin\{(?:lstlisting|algorithm|algorithmic|program)\}|(?<=\n)\s*(?:Listing|Algorithm) (?:\d\d?|[IVX]{,4})(?:[.:]\s|\n)", text))
+    figs = {"figs": 0, "tabs": 0, "lsts": 0}
+    figs["figs"] = len(
+        re.findall(
+            r"\\begin\{figure\}|(?<=\n)\s*Fig(?:\.|ure) \d\d?(?:[.:]\s|\n)", text
+        )
+    )
+    figs["tabs"] = len(
+        re.findall(
+            r"\\begin\{table\}|(?<=\n)\s*(?:Table|TABLE) (?:\d\d?|[IVX]{,4})(?:[.:]\s|\n)",
+            text,
+        )
+    )
+    figs["lsts"] = len(
+        re.findall(
+            r"\\begin\{(?:lstlisting|algorithm|algorithmic|program)\}|(?<=\n)\s*(?:Listing|Algorithm) (?:\d\d?|[IVX]{,4})(?:[.:]\s|\n)",
+            text,
+        )
+    )
     return figs
 
 
@@ -82,10 +89,9 @@ def calcStats(text):
     G_stats["refs_cites"] = sum(refs.values())
 
     figs = statsFigures(text)
-    G_stats["figs"] = figs['figs']
-    G_stats["tabs"] = figs['tabs']
-    G_stats["lsts"] = figs['lsts']
-
+    G_stats["figs"] = figs["figs"]
+    G_stats["tabs"] = figs["tabs"]
+    G_stats["lsts"] = figs["lsts"]
 
     sentences = split2sentences(text)
 
@@ -174,11 +180,14 @@ def createStats(text):
     stats_str += "    Genders: {} he, {} it, {} she\n".format(
         G_stats["male_words"], G_stats["neutral_words"], G_stats["female_words"]
     )
-    stats_str += " References: {} refs, {} times cited\n".format(G_stats["refs_total"], G_stats["refs_cites"])
-    stats_str += "    Figures: {} figs, {} tables, {} listings\n".format(G_stats["figs"], G_stats["tabs"], G_stats["lsts"])
+    stats_str += " References: {} refs, {} times cited\n".format(
+        G_stats["refs_total"], G_stats["refs_cites"]
+    )
+    stats_str += "    Figures: {} figs, {} tables, {} listings\n".format(
+        G_stats["figs"], G_stats["tabs"], G_stats["lsts"]
+    )
     # stats_str += "                                \n"
     # stats_str += "Most Freq. Words: {}\n".format(G_stats["common_words"])
     # stats_str += "Longest Sentence: '{}...'\n".format(G_stats["longest_sent"][:50])
 
     return stats_str
-

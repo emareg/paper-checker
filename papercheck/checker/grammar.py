@@ -242,7 +242,9 @@ R_WrongSingular = ReRule(
 
 
 R_Neither_Or = ReRule(
-    "'Neither' needs 'nor' instead of 'or'.", " nor ", r"\s[Nn]either\s[^.]+(\sor\s)"
+    "'Neither' needs 'nor' instead of 'or'.",
+    " nor ",
+    r"\s[Nn]either\s(?:(?!nor|\.).)+(\sor\s)",
 )
 R_The_Are = ReRule(
     "Probably 'there' or missing Noun?",
@@ -352,7 +354,6 @@ G_Rules = [
     R_Neither_Or,
     R_Be_Do,
     R_Comma_Intro,
-    R_Comma_SubCon,
     R_wrong_combination,
 ]
 
@@ -406,8 +407,18 @@ S_Oxford_Comma = ReRule(
 )
 
 
+# not working...
+S_Split_Infintive = ReRule(
+    "An adverb probably splits an infinitive expression.",
+    r" to \2 \1",
+    r"\sto (" + reAdv + ") (\w{4,})",
+)
+
+
 # ToDo
 # * check for  "foo bar, too"  => use also or additinally
+# * check hyphens: only if used as adjective!
+# * check verb prepositions: "focus at/on"
 
 
 G_StyleRules = [
@@ -423,7 +434,7 @@ G_StyleRules = [
 ]
 
 
-G_StyleRulesExtra = []
+G_StyleRulesExtra = [R_Comma_SubCon]
 
 
 # this needs tags!
@@ -436,51 +447,6 @@ def checkPlural(text):
             match[2].group(0).replace(match[2].group(1), match[2].group(1)[:-1], 1)
         )
         askAction(match[0], "Possibly wrong plural: ", match[2].group(0), replace)
-
-
-def checkWrongPerson(text):
-    matches = findRegEx(
-        r"\s(?:[Hh]e|[Ss]he|[Ii]t|[Oo]ne|[Tt]his)(:?\salso|\sonly|\s\w\w\w+ly)?\s(have|do|were)\s",
-        text,
-    )
-    matches += findRegEx(
-        r"\s(?:[Yy]ou|[We]e|[Tt]hey)(:?\salso|\sonly|\s\w\w\w+ly)?(?:is|has|does|was)\s",
-        text,
-    )
-    for match in matches:
-        askAction(match[0], "Probably wrong person", match[2].group(0), "")
-
-
-def checkVerbPrepositions(text):
-    for verbprep in tabVerbPreposition:
-        # matches = findRegEx( r'\W+('+verbprep[0]+')\s+((?!'+verbprep[1]+')\w{2,3})\W+' , text )    # invinitive is most likely a noun!
-        verbpl = plural(verbprep[0])
-        matches = findRegEx(
-            r"\W+(\w+)\s+(" + verbpl + ")\s+((?!" + verbprep[1] + ")\w{2,3})\W+", text
-        )
-        verpt = past(verbprep[0])
-        matches += findRegEx(
-            r"\W+(\w+)\s+(" + verpt + ")\s+((?!" + verbprep[1] + ")\w{2,3})\W+", text
-        )
-        for match in matches:
-            if match[2].group(1) not in lstDeterminer and match[2].group(3) in lstAdpos:
-                print
-                replace = match[2].group(0).replace(match[2].group(3), verbprep[1], 1)
-                askAction(
-                    match[0], "Possibly wrong preposition: ", match[2].group(0), replace
-                )
-
-
-def checkHyphen(text):
-    matches = findRegEx("\w+(-)\w\w\w+ing", text)
-    for match in matches:
-        replace = str(match[2].group(0)).replace("-", " ")
-        askAction(
-            match[0],
-            "Probably no hyphen of gerund combination: ",
-            match[2].group(0),
-            replace,
-        )
 
 
 def checkPairs(text):
@@ -586,7 +552,7 @@ def checkStyle(text):
     print(
         "\n\nChecking Language Style:\n----------------------------------------------------"
     )
-    for rule in G_StyleRules:
+    for rule in G_StyleRules + G_StyleRulesExtra:
         corrections += rule.check(text)
 
     print(

@@ -20,13 +20,7 @@ def readTextFromFile(fileName):
         if Path(fileName).is_absolute():
             fileName = Path(os.path.relpath(Path(fileName), SCRIPT_DIR))
 
-        args = [
-            "pdftotext",
-            "-enc",
-            "UTF-8",
-            "{}/{}".format(SCRIPT_DIR, fileName),
-            "-",
-        ]
+        args = ["pdftotext", "-enc", "UTF-8", "{}/{}".format(SCRIPT_DIR, fileName), "-"]
         res = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         text = res.stdout.decode("utf-8")
         text = stripPDFtoText(text)
@@ -47,21 +41,33 @@ def readTextFromFile(fileName):
     return text
 
 
-
 def resolveHyphen(text):
     # note: pdftotext already removes hyphens
     #       undo this: 1. figure out average line length, check if a line almost double the length, check if word is misspelled.
     matches = re.findall(r"(\s(\w{2,7})-\n(\w{2,7})\s)", text)
     for match in matches:
-        if match[1] != "self" and match[2] not in ["based", "constrained", "defined", "case", "related", "critical", "level"]:
-            text = text.replace(match[0], match[1]+match[2]+"\n")
+        if match[1] != "self" and match[2] not in [
+            "based",
+            "constrained",
+            "defined",
+            "case",
+            "related",
+            "critical",
+            "level",
+        ]:
+            text = text.replace(match[0], match[1] + match[2] + "\n")
     return text
 
 
-
 def stripPDFtoText(text):
-    text = re.sub(r"(?<=\n)\s?\w\w*?\s?(?=\n)", "", text)  # remove lines with single word
-    text = re.sub(r"(?<=\n)(?!\d\.\s|\d.\d\d?\.|[A-Z]).{,12}(?=[^.:,]\n)", "", text)  # remove short lines that are not headings
+    # text = re.sub(r"(?<=\n)\s?\w\w*?\s?(?=\n)", "", text)  # remove lines with single word
+    # text = re.sub(r"(?<=\n)((?!hede).)*(?=\n)", "", text)  # remove lines without words
+    # text = re.sub(r"(?<=\n)(?!\d\.\s|\d.\d\d?\.|[A-Z]).{,12}(?=[^.:,]\n)", "", text)  # remove short lines that are not headings
+    text = re.sub(
+        r"(?<=\n)(?:(?:(?!\s\w{4}|\d.\d\d?\.|[A-Z]).){1,14}[^.:,]|[.:,])(?=\n)",
+        "",
+        text,
+    )  # remove short lines without words
     text = re.sub(r"\n{4,}", "\n\n\n", text)  # remove empty parts
     text = re.sub(r"\f", "", text)  # remove page breaks
     text = re.sub(r"ﬁ", "fi", text)  # fi Ligature ﬁ
@@ -71,41 +77,53 @@ def stripPDFtoText(text):
     lines = text.splitlines(True)
     n = len(lines)
     s = sorted([len(x) for x in lines])
-    medlen = int((sum(s[n//2-1:n//2+1])/2.0, s[n//2])[n % 2]) if n else None
-    minl = int(medlen*0.78)
+    medlen = (
+        int((sum(s[n // 2 - 1 : n // 2 + 1]) / 2.0, s[n // 2])[n % 2]) if n else None
+    )
+    minl = int(medlen * 0.78)
 
     ## find lines longer
-    for idx,line in enumerate(lines):
-        if len(line) > 1.6*medlen:
-            line = re.sub(rf"(.{{{minl},{medlen}}}\s\w{{4,10}})(based|constrained|defined|case|related|critical|level)", r"\1-\n\2", line)
-            line = re.sub(rf"([^\n]{{{minl},{medlen}}}\s(?:self))(\w{{3,10}})", r"\1-\n\2", line)
-            line = re.sub(rf"([^\n]{{{minl+5},{medlen+5}}})\s([^\n]{{{minl-10},}})", r"\1\n\2", line)
+    for idx, line in enumerate(lines):
+        if len(line) > 1.6 * medlen:
+            line = re.sub(
+                rf"(.{{{minl},{medlen}}}\s\w{{4,10}})(based|constrained|defined|case|related|critical|level)",
+                r"\1-\n\2",
+                line,
+            )
+            line = re.sub(
+                rf"([^\n]{{{minl},{medlen}}}\s(?:self))(\w{{3,10}})", r"\1-\n\2", line
+            )
+            line = re.sub(
+                rf"([^\n]{{{minl+5},{medlen+5}}})\s([^\n]{{{minl-10},}})",
+                r"\1\n\2",
+                line,
+            )
             # print(line)
             lines[idx] = line
-    text = ''.join(lines)
+    text = "".join(lines)
     return text
-
 
 
 # is this necessary? Will produce nice output. Maybe only insert spaces before hX and <p>HERE Start of a Sentence</p>
 # provide line-offset?
+
 
 def stripHTML(text):
     text = re.sub(r"^(?:.|\n)*?<body.*?>", "", text)
     text = re.sub(r"</body>(?:.|\n)*", "", text)
 
     # headings, paragraphs, strong, em
-    text = re.sub(r'<h\d[^>]*>((?:(?!</h\d>).)*?)</h\d>', r'\1', text)  # keep headings and lists?
-    text = re.sub(r'<p[^>]*>((?:(?!</p>).)*?)</p>', r'\1', text)
-    text = re.sub(r'<strong[^>]*>((?:(?!</strong>).)*?)</strong>', r'\1', text)
-    text = re.sub(r'<code[^>]*>((?:(?!</code>).)*?)</code>', r'\1', text)
-    text = re.sub(r'<em[^>]*>((?:(?!</em>).)*?)</em>', r'\1', text)
-    
-    text = text.replace('&nbsp;', '')
+    text = re.sub(
+        r"<h\d[^>]*>((?:(?!</h\d>).)*?)</h\d>", r"\1", text
+    )  # keep headings and lists?
+    text = re.sub(r"<p[^>]*>((?:(?!</p>).)*?)</p>", r"\1", text)
+    text = re.sub(r"<strong[^>]*>((?:(?!</strong>).)*?)</strong>", r"\1", text)
+    text = re.sub(r"<code[^>]*>((?:(?!</code>).)*?)</code>", r"\1", text)
+    text = re.sub(r"<em[^>]*>((?:(?!</em>).)*?)</em>", r"\1", text)
 
+    text = text.replace("&nbsp;", "")
 
     return text
-
 
 
 def stripTeX(text, preserveLines=False):

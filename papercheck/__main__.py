@@ -85,9 +85,6 @@ G_filename = ""
 ######################################################################################
 
 
-
-
-
 def writeOutputFile(fileName, text):
     reply = ""
     while reply == "":
@@ -148,12 +145,10 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
 
     top_header = "<h1>PaperCheck Report for {}</h1><hr>".format(G_filename)
 
-    
     html_stats = "<h2>Text Statistics</h2><pre>{}</pre><hr>".format(stats)
 
     if plag != "":
         html_stats += "<h2>Plagiarism Report</h2><pre>{}</pre><hr>".format(plag)
-
 
     out_lines = """
 <h2>Text Analysis</h2>
@@ -164,7 +159,18 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
 <li><span class="err">Spelling</span></li>
 </ul>
 <table><tbody>"""
+
+    open_tag = None
     for num, line in enumerate(lines):
+
+        # resolve open tags
+        if open_tag != None:
+            line = open_tag + line
+        open_tag = re.search(r"(<span[^>]+>)[^<]*$", line)
+        if open_tag:
+            open_tag = open_tag.group(1)
+            line += "</span>"
+
         if num + 1 in grammar_linenums:
             out_lines += (
                 '<tr><td><span class="ln crit">'
@@ -283,7 +289,7 @@ def parseFile(fileName, args):
         report_out = createHTMLreport(
             outputLines, [grammar_linenums, style_linenums, spell_linenums], stats, plag
         )
-        with open(fileBaseName+'_papercheck.html', "w+") as f:
+        with open(fileBaseName + "_papercheck.html", "w+") as f:
             f.write(report_out)
 
 

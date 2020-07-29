@@ -144,7 +144,7 @@ def findSignificantSentences(text):
             continue
         if re.findall(r"\\cite|\[\d\d?\]", sentence):
             continue  # citation in sentence
-        if re.findall(r"\\cite|\[\d\d?\]\.\s+" + sentence, text, re.DOTALL):
+        if re.findall(r"\\cite|\[\d\d?\]\.\s+" + re.escape(sentence), text, re.DOTALL):
             continue  # citation in previous sentence
         if re.findall(
             r"\W(?:|[Ww]e|paper|authors?|et\. al\.|Section|Table|Figure)\W", sentence
@@ -206,17 +206,22 @@ def checkPlagiarismSentence(sent):
             )
             print('Document: "{}"\n'.format(sent))
             print('Web:      "{}"\n{}\n'.format(google_sent, res["url"]))
-            plagtext += '<li>"{}"\n<a href="{}">{}</a></li>\n'.format(desc_text, res["url"], res["url"])
-
+            plagtext += '<li>"{}"\n<a href="{}">{}</a></li>\n'.format(
+                desc_text, res["url"], res["url"]
+            )
 
     if is_plagiarsim:
-        output += '<strong class="crit">Web Matches:</strong> "{}…"\n'.format(sent[: min(len(sent), 120)])
-        output += '<ul>'+plagtext+'</ul>'
+        output += '<strong class="crit">Web Matches:</strong> "{}…"\n'.format(
+            sent[: min(len(sent), 120)]
+        )
+        output += "<ul>" + plagtext + "</ul>"
     else:
-        output += '<strong class="good">No Matches:</strong> "{}…"\n'.format(sent[: min(len(sent), 120)])
+        output += '<strong class="good">No Matches:</strong> "{}…"\n'.format(
+            sent[: min(len(sent), 120)]
+        )
         print('\033[32mSentence OK\033[0m: "{}..."'.format(sent[: min(len(sent), 80)]))
     return output
-    
+
 
 # ===========================================================
 # Main
@@ -224,6 +229,13 @@ def checkPlagiarismSentence(sent):
 
 
 def checkPlagiarism(text):
+
+    # strip references
+    div = int(len(text) * 0.7)
+    text = text[:div] + re.sub(
+        r"(?:R ?EFERENCES|Bibliography|References)(?:.|\n)*", "", text[div:]
+    )
+
     sigsentences = findSignificantSentences(text)
     # [print(s) for s in sigsentences]
 
@@ -232,12 +244,12 @@ def checkPlagiarism(text):
         "\n\nChecking for plagiarism...\n----------------------------------------------------"
     )
     output = "Found {} significant sentences, checking {} of them...\n".format(
-            len(sigsentences), num_sentences
-        )
+        len(sigsentences), num_sentences
+    )
     print(output)
 
     for sent in sigsentences[:num_sentences]:
-        sent = sent.replace('\n', ' ')
+        sent = sent.replace("\n", " ")
         output += checkPlagiarismSentence(sent)
         time.sleep(2)
 
