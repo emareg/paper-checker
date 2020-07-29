@@ -226,7 +226,8 @@ R_Comma_Intro = ReRule(
 R_Comma_SubCon = ReRule(
     "Probably no comma before a subordinate conjunction. Only use a comma if it connects two *independent* clauses.",
     "",
-    r"(?<=\w\s)\w{1,15}\s\w{1,15}(,)\s(as \w\w+ as|after|before|that|whether|since|until|unless|if|even if)\s",
+    # r"(?<=\w\s)\w{1,15}\s\w{1,15}(,)\s(as \w\w+ as|after|before|that|whether|since|until|unless|if|even if)\s",
+    r"(?<=\w\s)\w{1,15}(,)\s(?:as \w\w+ as|after|before|that|whether|since|until|unless|if|even if)\s",
 )
 # Quick Trick: if you can replace so,but,and with "therefore" or "such that" it needs a comma (independent clauses)
 
@@ -375,7 +376,7 @@ G_ExtRules = [
 S_NonScientific = ReSub(
     "Probably wrong word in scientific context.", tabNonScientificWords
 )
-S_Informal = ReSub("Informal word, could be substituted.", tabInformalWords)
+S_Informal = ReSub("Informal word, could be substituted.", tabInformalWords+tabInformalVerbs+tabInformalAdjectives)
 S_Redundant = ReSub("Redundant or wordy phrase. Be short.", tabRedundantPhrases)
 S_ShortForms = ReSub("Short forms are informal.", tabShortForms)
 S_Vague = ReRule(
@@ -393,7 +394,7 @@ S_Large_Number = ReRule(
     "Large number, you should use a thousand separator.", "", r"[ (](\d{5,})[ ),.]"
 )
 S_Preposition_End = ReRule(
-    "Do not use prepositions to end your sentences with.",
+    "Do not use prepositions to end your sentences.",
     "",
     r"\s(" + rePrep + r")[.!?]",
 )
