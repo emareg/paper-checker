@@ -69,10 +69,11 @@ lstAcronyms = [
 
 
 tabShortForms = [
-    (r"\w+(n\'t)", "not"),
-    (r"\w+(\'re)", "are"),
-    (r"\w+(\'ve)", "have"),
-    (r"\w+(\'ll)", "will"),
+    (r"(it[’']s)", "is not"),
+    (r"\w+(n[’']t)", "not"),
+    (r"\w+([’']re)", "are"),
+    (r"\w+([’']ve)", "have"),
+    (r"\w+([’']ll)", "will"),
 ]
 
 
@@ -117,11 +118,12 @@ tabRedundantPhrases = [
     ("(?:have|has) the ability to", "can"),
     ("HIV virus", "HIV"),
     ("[Ii]n the case that", "in case"),
-    ("[Ii]n terms of", "in"),
-    ("[Ii]n order to", "to"),
+    ("[Ii]n terms of", "regarding"),
+    ("in order to", "to"),
     ("[Ii]t is apparent", ""),
     ("[Ii]t is clear", ""),
     ("[Ii]t seems that", ""),
+    ("[Ii]t can be seen that", ""),
     ("[Ii]n the process of", "while"),
     ("to such an extent", "insofar"),
     ("irregardless", "regardless"),
@@ -454,19 +456,21 @@ tabInformalWords = [
     ("kinds", "types"),
     ("kind of", "rather"),
     ("like(?! to)", "such as"),
+    ("looks", "appears"),
     ("sort of", "rather"),
     ("heaps of", "many"),
     ("huge", "large"),
     ("mess", "chaos"),
     ("nice", "attractive"),
-    ("normal", "general"),  # conventional
+    # ("normal", "general"),  # conventional
     ("places?", "location"),
     ("pity", ""),
     ("plenty", "many"),
     ("pretty", "rather"),
-    ("rotations", "evolutions"),
+    # ("rotations", "evolutions"),
+    ("rough(?:ly)?", "approximately"),
     ("so", "Therefore,"),
-    ("speed", "velocity"),
+    # ("speed", "velocity"),
     ("silly", "inappropriate"),
     ("stuff", "things"),
     ("stupid", "inappropriate"),
@@ -495,6 +499,7 @@ tabInformalWords = [
 ]
 
 
+
 tabBritishAmerican = [
     ("aeroplane", "airplane"),
     ("aluminium", "aluminum"),
@@ -518,11 +523,11 @@ tabBritishAmerican = [
 
 
 tabInformalVerbs = [
-    ("admire", ""),
-    ("amuse", ""),
-    ("annoy", ""),
-    ("ask", "request"),
-    ("asked", "requested"),
+    ("admire[sd]?", ""),
+    ("amuse[sd]?", ""),
+    ("annoy(?:s|ed|ing)?", "unpleasant"),
+    # ("ask", "request"),
+    # ("asked", "requested"),
     ("bake", ""),
     ("bang", ""),
     ("blush", ""),
@@ -531,33 +536,41 @@ tabInformalVerbs = [
     ("comes? back", "return"),
     ("check", "test"),
     ("cut down", "reduce"),
+    ("dare", ""),
     ("(?:get|got) rid of", "eliminate"),
-    ("got", "obtain"),
+    # ("got", "obtain"),
     ("go", ""),
     ("give", "provide"),
     ("guess", "estimate"),
-    ("happen", "occur"),
+    ("happen(?:s|ed|ing)?", "occur"),
     ("help(?:s|ed|ing)? out", "assist"),
     ("keep", "preserve"),
-    ("let", "permit"),
-    ("look", "observe"),
+    # ("let us", "permit"),
+    ("look(?:s|ed|ing)? into", "investigate"),
+    ("look(?:s|ed|ing)? like", "appears similar to"),
     # ('make', 'render'),
     ("mess", ""),
+    ("open(?:s|ed|ing)? up", "enable"),
     ("pick(?:s|ed|ing)? up ", "collect"),
     ("put", ""),
-    ("put together", "assembled"),
+    ("put(?:s|ting)? together", "assembled"),
     ("points? out", "indicate"),
     ("reckon", "think"),
-    ("see", "observe"),
+    # ("see", "observe"),
     ("seems?", "appear"),
     ("seemed", "appeared"),
     ("speed(?:s|ed|ing)? up", "accelerate"),
-    ("stay", "remain"),
-    ("think about", "consider"),
-    ("to be", ""),  # true?
-    ("want", ""),
+    ("stay(?:s|ed|ing)?", "remain"),
+    ("think(?:s|ing)? about", "consider"),
+    ("(?:takes|took|taken)? apart", "disassemble"),
+    ("take a (?:closer )?look", "investigate"),
+    ("take(?:s|ing)? place", "occurs"),
+    ("talk(?:ed|ing)? about", "consider"),
     ("wipe(?:s|d)? out", "eliminate"),
     ("[Ww]e got", "we obtain"),
+    # give it a go, we will not "go into"
+    # on the go, on the fly
+    # It is out of discussion
 ]
 
 
@@ -678,6 +691,7 @@ tabInformalAdjectives = [
     ("droopy", ""),
     ("dull", "tedious"),
     ("evil", "bad"),
+    ("fancy", "sophisticated"),
     ("feisty", "spirited"),
     ("fickle", "vacillating"),
     ("filthy", "polluted"),
