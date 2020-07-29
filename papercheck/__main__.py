@@ -85,45 +85,7 @@ G_filename = ""
 ######################################################################################
 
 
-def readInputFile(fileName):
-    import os
 
-    ext = fileName.lower().split(".")[-1]
-    fileName = os.path.expanduser(fileName)
-    inFileHandler = open(fileName, "rb")
-
-    if ext == "pdf":
-        import subprocess
-
-        SCRIPT_DIR = os.getcwd()
-
-        if Path(fileName).is_absolute():
-            fileName = Path(os.path.relpath(Path(fileName), SCRIPT_DIR))
-
-        args = [
-            "pdftotext",
-            "-enc",
-            "UTF-8",
-            "{}/{}".format(SCRIPT_DIR, fileName),
-            "-",
-        ]
-        res = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        text = res.stdout.decode("utf-8")
-        text = re.sub(r"(?<=\n)\w\w?(?=\n)", "", text)  # remove lines with single word
-        text = re.sub(r"\f", "", text)  # remove page breaks
-        text = re.sub(r"ﬁ", "fi", text)  # fi Ligature ﬁ
-        text = re.sub(r"ﬀ", "ff", text)  # ff Ligature ﬀ
-
-    elif ext in ["txt", "tex", "md"]:
-        text = inFileHandler.read().decode("utf-8")
-        inFileHandler.close()
-
-    else:
-        raise ValueError("unknown extension: " + ext)
-
-    text = re.sub(r"\s(\w{2:7})-\n(\w{2:7})\s", r" \1\2\n", text)  # resolve hyphen
-
-    return text
 
 
 def writeOutputFile(fileName, text):
@@ -252,8 +214,9 @@ def createHTMLreport(lines, linenums=[[], [], []], stats=""):
 
 def parseFile(fileName, args):
     fileBaseName, ext = os.path.splitext(fileName)
+    fileBaseName = os.path.basename(fileBaseName)
 
-    text = readInputFile(fileName)
+    text = readTextFromFile(fileName)
 
     global outputLines
     global G_filename
@@ -313,8 +276,9 @@ def parseFile(fileName, args):
         output = createHTMLreport(
             outputLines, [grammar_linenums, style_linenums, spell_linenums], stats
         )
-        # with open(fileBaseName+'_check_report.html', "w+") as f:
-        with open(Path(args.filename).absolute(), "w+") as f:
+        with open(fileBaseName+'_papercheck.html', "w+") as f:
+            print(fileBaseName+'_papercheck.html')
+        # with open(Path(args.filename).absolute(), "w+") as f:
             f.write(output)
 
 
