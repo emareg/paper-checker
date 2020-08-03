@@ -1,136 +1,121 @@
 # own functions
 from papercheck.lib.nlp import *  # language functions
 from papercheck.lib.cli import *
+from papercheck.pos.posdic import getDict
+from papercheck.pos.tags import *
 import re
 import os
 import zipfile
 import sys
 
 
-def parse_affix(word, affix):
+
+
+def addWord(posdic, word, tag):
+    if word not in posdic.keys():
+        posdic[word] = []
+    if tag not in posdic[word]:
+        posdic[word].append(tag)
+
+
+
+
+
+def parse_suffix_char(dic, word, sufc):
+    pass
+
+
+def parse_affix(dic, word, affix):
     addwords = []
     pfxwords = [word]
-    for char in affix:
-        if char in "AIUCEFK":
-            # prefixes
-            if char == "A":
-                pfxwords.append("re" + word)
-            elif char == "I":
-                pfxwords.append("in" + word)
-            elif char == "U":
-                pfxwords.append("un" + word)
-            elif char == "C":
-                pfxwords.append("de" + word)
-            elif char == "E":
-                pfxwords.append("dis" + word)
-            elif char == "F":
-                pfxwords.append("con" + word)
-            elif char == "K":
-                pfxwords.append("pro" + word)
+    prefixes = [c for c in affix if c in "AIUCEFK"]
+    suffixes = [c for c in affix if c not in "AIUCEFK"]
+    for char in prefixes:
+        if char == "A":
+            pfxwords.append("re" + word)
+        elif char == "I":
+            pfxwords.append("in" + word)
+        elif char == "U":
+            pfxwords.append("un" + word)
+        elif char == "C":
+            pfxwords.append("de" + word)
+        elif char == "E":
+            pfxwords.append("dis" + word)
+        elif char == "F":
+            pfxwords.append("con" + word)
+        elif char == "K":
+            pfxwords.append("pro" + word)
 
-        # suffix
-        else:
-            for pfxword in pfxwords:
-                if char == "V":
-                    addwords.append(re.sub("e$|$", "ive", pfxword))
-                elif char == "N":
-                    addwords.append(
-                        re.sub(
-                            r"(?<!ion)$",
-                            "en",
-                            re.sub("y$", "ication", re.sub("e$", "ion", pfxword)),
-                        )
-                    )
-                elif char == "X":
-                    addwords.append(
-                        re.sub(
-                            r"(?<!ions)$",
-                            "ens",
-                            re.sub("y$", "ications", re.sub("e$", "ions", pfxword)),
-                        )
-                    )
-                elif char == "H":
-                    addwords.append(re.sub(r"y$", "ie", pfxword) + "th")  #
-                elif char == "Y":
-                    addwords.append(adverb(pfxword))  # adverb
-                elif char == "G":
-                    addwords.append(re.sub(r"e$", "", pfxword) + "ing")  # gerund
-                elif char == "J":
-                    addwords.append(re.sub(r"e$", "", pfxword) + "ings")  # gerund
-                elif char == "D":
-                    addwords.append(
-                        re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
-                        + "ed"
-                    )  # past
-                elif char == "T":
-                    addwords.append(superlative(pfxword))  # superlative
-                elif char == "R":
-                    addwords.append(
-                        re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
-                        + "er"
-                    )
-                elif char == "Z":
-                    addwords.append(
-                        re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
-                        + "ers"
-                    )
-                elif char == "S":
-                    addwords.append(plural(pfxword))  # plural
-                elif char == "P":
-                    addwords.append(
-                        re.sub(r"(?<=[^aeiou])y$", "i", pfxword) + "ness"
-                    )  #
-                elif char == "M":
-                    if pfxword[-1] == "s":
-                        addwords.append(pfxword + "'")  # noun
-                    else:
-                        addwords.append(pfxword + "'s")  # noun
-                elif char == "B":
-                    addwords.append(
-                        re.sub(r"(?<=[^e])e$", "", pfxword) + "able"
-                    )  # adjective
-                elif char == "L":
-                    addwords.append(pfxword + "ment")  # noun
-        # elif char == 'R': addwords.append(comperative(word)) # comparative
+
+    for char in suffixes:
+        for pfxword in pfxwords:
+            if char == "V": 
+                newword = re.sub("e$|$", "ive", pfxword)
+                addWord(dic, newword, POS_TAG_ADJECTIVE)
+            # elif char == "N":
+            #     newword = re.sub(
+            #             r"(?<!ion)$",
+            #             "en",
+            #             re.sub("y$", "ication", re.sub("e$", "ion", pfxword)),
+            #         )
+            #     addWord(dic, newword, POS_TAG_NOUN)
+            # elif char == "X":
+            #     addwords.append(
+            #         re.sub(
+            #             r"(?<!ions)$",
+            #             "ens",
+            #             re.sub("y$", "ications", re.sub("e$", "ions", pfxword)),
+            #         )
+            #     )
+            elif char == "H":
+                addwords.append(re.sub(r"y$", "ie", pfxword) + "th")  #
+            elif char == "Y":
+                addWord(dic, adverb(pfxword), POS_TAG_ADVERB)
+            elif char == "G":
+                addWord(dic, gerund(pfxword), POS_TAG_VERB)
+            elif char == "J":
+                addwords.append(re.sub(r"e$", "", pfxword) + "ings")  # gerund
+            elif char == "D":
+                addwords.append(
+                    re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
+                    + "ed"
+                )  # past
+            elif char == "T":
+                addwords.append(superlative(pfxword))  # superlative
+            elif char == "R":
+                addwords.append(
+                    re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
+                    + "er"
+                )
+            elif char == "Z":
+                addwords.append(
+                    re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
+                    + "ers"
+                )
+            elif char == "S":
+                addwords.append(plural(pfxword))  # plural
+            elif char == "P":
+                addwords.append(
+                    re.sub(r"(?<=[^aeiou])y$", "i", pfxword) + "ness"
+                )  #
+            elif char == "M":
+                if pfxword[-1] == "s":
+                    addwords.append(pfxword + "'")  # noun
+                else:
+                    addwords.append(pfxword + "'s")  # noun
+            elif char == "B":
+                addwords.append(
+                    re.sub(r"(?<=[^e])e$", "", pfxword) + "able"
+                )  # adjective
+            elif char == "L":
+                addwords.append(pfxword + "ment")  # noun
+    # elif char == 'R': addwords.append(comperative(word)) # comparative
 
     addwords += pfxwords
     return addwords
 
 
-def read_pos_dictionaries(folder):
-    dictionary = {}
-    files = [
-        "en_basic.txt",
-        "en_modal.txt",
-        "en_adjectives.txt",
-        "en_conjunction.txt",
-        "en_letters.txt",
-        "en_determiners.txt",
-        "en_adposition.txt",
-        "en_pronoun.txt",
-        "en_irregular_verbs.txt",
-        "en_regular_verbs.txt",
-        "en_proper_nouns.txt",
-        "en_nouns_extra.txt",
-    ]
 
-    folder = re.sub(r"/$", "", folder)
-    for file in files:
-        dictionary = read_dictionary(dictionary, folder + "/" + file)
-
-    regverb_dict = {}
-    read_dictionary(regverb_dict, folder + "/" + "en_regular_verbs.txt")
-    for regverb in regverb_dict:
-        dictionary[past(regverb)] = ""
-        dictionary[plural(regverb)] = ""
-        dictionary[gerund(regverb)] = ""
-
-    noun_dict = {}
-    read_dictionary(noun_dict, folder + "/" + "en_proper_nouns.txt")
-    for noun in noun_dict:
-        dictionary[plural(noun)] = ""
-
-    return dictionary
 
 
 def read_file_or_zip(filename):
@@ -157,7 +142,7 @@ def read_dictionary(dictionary, dictfile):
         if dictfile[-4:] == ".dic":
             word, _, affix = line.strip().partition("/")
             dictionary[word] = ""
-            for additional in parse_affix(word, affix):
+            for additional in parse_affix(dictionary, word, affix):
                 dictionary[additional] = ""
         else:
             words = line.strip().split(" ")
@@ -264,8 +249,9 @@ def checkSpelling(text):
     print("CWD:", os.getcwd())
 
     dictionary = {}
-    dictionary = read_dictionary(dictionary, "papercheck/dictionary/en_US.dic")
-    dictionary = read_dictionary(dictionary, "papercheck/dictionary/en-Academic.dic")
+    # dictionary = read_dictionary(dictionary, "papercheck/dictionary/en_US.dic")
+    # dictionary = read_dictionary(dictionary, "papercheck/dictionary/en-Academic.dic")
+    dictionary = getDict()
 
     read_acronyms(dictionary, "papercheck/dictionary/acronyms.md")
     if dictionary == {}:

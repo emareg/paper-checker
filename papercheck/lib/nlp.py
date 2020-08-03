@@ -1,4 +1,4 @@
-# naturla language processing
+# natural language processing
 
 import re
 
@@ -67,15 +67,15 @@ def past(string):
         past = string[:-1] + "ied"
     # elif(string[-2] == 'n' and string[-1] == 'd'):    # nd -> nt
     #     past=string[:-1]+'t'
-    elif (
-        string[-2] in "aeiou"
-        and string[-1] not in "aeiouxw"
-        and string[-3] not in "aeiou"
-    ):  # double consonant
-        if string[-1] == "c":
-            past = string + "ked"
-        else:
-            past = string + string[-1] + "ed"
+    # elif (
+    #     string[-2] in "aeiou"
+    #     and string[-1] not in "aeiouxw"
+    #     and string[-3] not in "aeiou"
+    # ):  # double consonant
+    #     if string[-1] == "c":
+    #         past = string + "ked"
+    #     else:
+    #         past = string + string[-1] + "ed"
     else:
         past = string + "ed"
     return past
@@ -97,8 +97,10 @@ def gerund(word):
     if word[-1] == "e":
         if word[-2] == "i":
             result = word[:-2] + "ying"
-        else:
+        elif word[-2] not in "eoy":
             result = word[:-1] + "ing"
+        else:
+            result = word + "ing"
     else:
         result = word + "ing"
     return result
@@ -124,6 +126,13 @@ def superlative(word):
     else:
         sup = word + "est"
     return sup
+
+def possessive(word):
+    if word[-1] in "sz":
+        return word+"'"
+    else:
+        return word+"'s"
+
 
 
 def syllables(word):

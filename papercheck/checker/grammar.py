@@ -418,7 +418,7 @@ S_Split_Infintive = ReRule(
 # ToDo
 # * check for  "foo bar, too"  => use also or additinally
 # * check hyphens: only if used as adjective!
-# * check verb prepositions: "focus at/on"
+# * check verb prepositions: "focus at/on", "based an"
 
 
 G_StyleRules = [

@@ -4,7 +4,9 @@
 
 
 from papercheck.pos.dictionary import *
+from papercheck.pos.posdic import getDict
 from papercheck.pos.POS_en import *
+from papercheck.pos.tags import *
 
 from papercheck.lib.nlp import *
 
@@ -13,8 +15,19 @@ from papercheck.lib.nlp import *
 # adj: tal
 # noun: mn|son|ton|age|ipe|ime|[^n]g
 # verb: ify|erve|[^aouie]ect|[^w]ide|
+# singular noun with s: 'mars|mess'
 
 # verb-noun: ence
+
+
+# idea: posdict.py => one dict for all
+# * check units:  13 ms OK
+
+# process: 1. tag words, 2. resolve tags (select one), 3. 
+
+class entry:
+    pos=[] #tags
+    base=""  # only for irreg verbs?
 
 
 import re
@@ -57,7 +70,16 @@ lstIntroductoryPhrase = [
 ]
 
 
+
+
+
+G_posdic = getDict()
+
+
 ######################################################################################
+
+
+
 
 
 def analyzeSentence(sentence):
@@ -72,8 +94,9 @@ def analyzeSentence(sentence):
 
 
 def analyzeSentences(text):
-    sentences = re.split(r"(?<=[^A-Z][^A-Z][.?!:])\s+(?=[A-Z])", text)
-    for sentence in sentences:
+    # sentences = re.split(r"(?<=[^A-Z][^A-Z][.?!:])\s+(?=[A-Z])", text)
+    sentences = split2sentences(text)
+    for sentence in sentences[:6]:
         analyzeSentence(sentence)
 
 
@@ -104,6 +127,7 @@ def findSubject(sentence):
 
 def splitWords(sentence):
     lstWords = re.split("\s+|[,;:.]", sentence)
+    if '' in lstWords: lstWords.remove('')
     return lstWords
 
 
@@ -113,7 +137,18 @@ def tokenize(text):
 
 # guess POS tag based on word pattern
 def guessTag(word):
-    if word in lstAdv or word[-2:] == "ly":
+    if word == '': return 'X'
+    if len(word) == 1:
+        if word in '.,!?':
+            tag = POS_TAG_PUNCTUATION
+        else:
+            tag = POS_TAG_SYMBOL
+    elif word[0].isupper():
+        if word[-1] == 's':
+            tag = POS_TAG_NOUN_PL
+        else:
+            tag = POS_TAG_NOUN
+    elif word in lstAdv or word[-2:] == "ly":
         tag = POS_TAG_ADVERB
     elif re.match(reAdjective, word) or re.match(r"\w\w+-\w\w+", word):
         tag = POS_TAG_ADJECTIVE
@@ -124,83 +159,33 @@ def guessTag(word):
     elif re.match(reNounSgl, word):
         tag = POS_TAG_NOUN
     else:
-        tag = "X"
+        # stupid guesses
+        if word[-1:] == "s": 
+            tag = POS_TAG_NOUN_PL
+        else:
+            tag = "X"
     return tag
 
-
-# universal
-# Tag     Meaning      English Examples
-# ADJ     adjective      new, good, high, special, big, local
-# ADP     adposition      on, of, at, with, by, into, under
-# ADV     adverb         really, already, still, early, now
-# CONJ    conjunction      and, or, but, if, while, although
-# DET     determiner, article      the, a, some, most, every, no, which
-# NOUN    noun      year, home, costs, time, Africa
-# NUM     numeral      twenty-four, fourth, 1991, 14:24
-# PRT     particle      at, on, out, over per, that, up, with
-# PRON    pronoun      he, their, her, its, my, I, us
-# VERB    verb      is, say, told, given, playing, would
-# .      punctuation marks      . , ; !
-# X      other      ersatz, esprit, dunno, gr8, univeristy
-
-
-POS_TAG_ADJECTIVE = "J"
-POS_TAG_ADVERB = "ADV"
-POS_TAG_CONJUNCTION = "CONJ"
-POS_TAG_NOUN = "N"
-POS_TAG_NOUN_PL = "NPL"
-POS_TAG_VERB = "V"
-POS_TAG_BASE_VERB = "VB"
-POS_TAG_MODAL_VERB = "M"
-POS_TAG_DETERMINER = "DET"
-POS_TAG_SYMBOL = "SYM"
-POS_TAG_PREPOSITION = "ADP"
-POS_TAG_PRONOUN = "PRON"
-POS_TAG_TO = "TO"
-
-
-POS_TAG_VERB_GERUND = "g"
 
 
 def tagWords(words):
     taglist = []
     words[0] = words[0].lower()
     for word in words:
-        if word in lstDet:
-            taglist.append((word, POS_TAG_DETERMINER))
-        elif word in lstAdpos:
-            taglist.append((word, POS_TAG_PREPOSITION))
-        elif word in lstVerbBase:
-            taglist.append((word, POS_TAG_BASE_VERB))
-        elif word in lstAux:
-            taglist.append((word, POS_TAG_MODAL_VERB))
-        elif word in lstPronoun:
-            taglist.append((word, POS_TAG_PRONOUN))
-        elif word in lstSubConjunction or word in lstConjunction:
-            taglist.append((word, POS_TAG_CONJUNCTION))
-        elif word in lstAdjectives:
-            taglist.append((word, POS_TAG_ADJECTIVE))
-        elif word in lstRegularVerbs or word in [
-            x[0] for x in lstIrregularVerbs
-        ]:  # check each element
-            taglist.append((word, POS_TAG_VERB))
-        elif word[-2:] == "ly" or word in lstAdv:
-            taglist.append((word, POS_TAG_ADVERB))
-        elif word in lstPropperNoun:
-            taglist.append((word, POS_TAG_NOUN))
-        elif word in [plural(x) for x in lstPropperNoun]:
-            taglist.append((word, POS_TAG_NOUN_PL))
-        elif word == "to":
-            taglist.append((word, POS_TAG_TO))
+        if word in G_posdic.keys() and G_posdic[word]:
+            taglist.append((word, G_posdic[word]))
         else:
             guess = guessTag(word)
-            taglist.append((word, guess))
+            taglist.append((word, [guess]))
             print("POS_TAG_X: ", word, guess)
+
     return taglist
 
 
 def analyzeTags(tw):
-    tags = [x[1] for x in tw]
+    wrongs = [x[1] for x in tw if len(x[1]) == 0]
+    print("wrongs:", wrongs)
+    tags = [x[1][0] for x in tw]
     tagstring = "".join(tags)
     # print(tagstring)
     # if('Nn' in tagstring):

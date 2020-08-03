@@ -72,6 +72,7 @@ from papercheck.checker.spelling import checkSpelling
 from papercheck.checker.plagiarism import checkPlagiarism
 
 from papercheck.lib.stripper import *
+from papercheck.pos.tagger import analyzeSentences
 from papercheck.textstats import createStats
 
 
@@ -260,7 +261,7 @@ def parseFile(fileName, args):
 
     # regex finiter: https://docs.python.org/3/library/re.html#writing-a-tokenizer
     if ANALYZE_SENTENCE:
-        checkSentences(text)
+        analyzeSentences(text)
 
     # spell check
     if args.spell:

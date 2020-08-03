@@ -204,6 +204,10 @@ tabFalseFriends = [
         "complaint|compliant",
         "complaint (N): dissatisfaction\ncompliant (J): in line with rules",
     ),
+    (
+        "historic|historical",
+        "historical: refers exclusively to things that happened in the past.\nhistoric: can happen now but will have a profound impact on history",
+    ),
 ]
 
 
@@ -217,10 +221,12 @@ tabSynonyms = [
 
 tabLatinPlural = [
     ("maximums", "maxima"),
+    ("minimums", "minima"),
     ("indexes", "indices"),
     ("matrixes", "matrices"),
     ("formulas", "formulae"),
     ("radius", "radii"),
+    ("focuses", "foci"),
 ]
 
 tabBritishAmerican = [

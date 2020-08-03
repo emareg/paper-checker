@@ -1,17 +1,18 @@
 # universal POS
-# Tag     Meaning      English Examples
-# ADJ     adjective      new, good, high, special, big, local
-# ADP     adposition      on, of, at, with, by, into, under
-# ADV     adverb         really, already, still, early, now
-# CONJ    conjunction      and, or, but, if, while, although
-# DET     determiner, article      the, a, some, most, every, no, which
-# NOUN    noun      year, home, costs, time, Africa
-# NUM     numeral      twenty-four, fourth, 1991, 14:24
-# PRT     particle      at, on, out, over per, that, up, with
-# PRON    pronoun      he, their, her, its, my, I, us
-# VERB    verb      is, say, told, given, playing, would
-# .      punctuation marks      . , ; !
-# X      other      ersatz, esprit, dunno, gr8, univeristy
+# S Tag     Meaning      English Examples
+# J ADJ     adjective      new, good, high, special, big, local
+# P ADP     adposition      on, of, at, with, by, into, under
+# A ADV     adverb         really, already, still, early, now
+# C CONJ    conjunction      and, or, but, if, while, although
+# D DET     determiner, article      the, a, some, most, every, no, which
+# N NOUN    noun      year, home, costs, time, Africa
+# U NUM     numeral      twenty-four, fourth, 1991, 14:24
+# R PRT     particle      at, on, out, over per, that, up, with
+# R PRON    pronoun      he, their, her, its, my, I, us
+# V VERB    verb      is, say, told, given, playing, would
+# S .      punctuation marks      . , ; !
+# X X      other      ersatz, esprit, dunno, gr8, univeristy
+
 
 
 def regexFromLst(lst):
@@ -388,5 +389,5 @@ reSuffixNounPl = reSuffixNounPl.replace(u"|", "s|")  # re.sub(r'([^ys])\||\)', '
 reSuffixNounPl = reSuffixNounPl.replace(")", "|ings)")
 
 reNounSgl = "(?:" + rePrefixNoun + "|" + reSuffixNoun + ")"
-reNounPl = reSuffixNounPl
+reNounPl = "(?:" + rePrefixNoun + "s|" + reSuffixNounPl + ")"
 reNoun = "(?:" + reSuffixNoun + "|" + reSuffixNounPl + r")"
