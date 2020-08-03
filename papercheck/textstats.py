@@ -1,6 +1,4 @@
-import re
 from collections import Counter
-
 
 from papercheck.lib.nlp import *
 from papercheck.pos.POS_en import *
@@ -8,7 +6,7 @@ from papercheck.pos.POS_en import *
 from papercheck.lib.word_lists import lstVague
 
 
-## Statistics
+# Statistics
 ##########################
 G_stats = {}
 G_words = {}

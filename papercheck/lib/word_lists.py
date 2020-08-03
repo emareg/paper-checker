@@ -255,7 +255,6 @@ tabBritishAmerican = [
 # maybe in medical/biology context
 tabNonTechnicalWords = [("bee", "be")]
 
-
 tabNonScientificVerbs = [
     ("adept", "adapt"),
     ("adopt", "adapt"),

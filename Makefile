@@ -6,7 +6,7 @@ ZIP_FILES = $(call file_finder,papercheck,-name "*.py" -o -name "*.dic" -o -name
 PY_FILES = $(call file_finder,.,-name "*.py")
 
 default:
-	mkdir -p $(BINDIR)	
+	mkdir -p $(BINDIR)
 	$(ZIP_FILES) | zip -r $(NAME).zip -@
 	cd papercheck && zip -u ../$(NAME).zip __main__.py
 	echo '#!/usr/bin/env python3' | cat - $(NAME).zip > bin/$(NAME)
@@ -25,7 +25,7 @@ check_format:
 	$(PY_FILES) | xargs black --diff --check
 
 unit_test:
-	python3 testrunner.py
+	python3 -m unittest
 
 test: default unit_test
 	$(BINDIR)$(NAME) -sgy example/testfile.pdf

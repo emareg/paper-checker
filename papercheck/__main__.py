@@ -49,7 +49,6 @@
 
 # Settings
 # ===========================================
-
 ANALYZE_SENTENCE = False  # analyze sentence structure, experimental
 CFG_INTERACTIVE = False  # ask for action after each error
 CFG_PRINT_INPUT = False  # print the intput after pre-processing
@@ -57,12 +56,10 @@ CFG_PRINT_INPUT = False  # print the intput after pre-processing
 
 # import
 # ===========================================
-
-import sys
-import os
-import re
-import argparse
 from pathlib import Path
+import argparse
+import os
+import sys
 
 
 # own functions
