@@ -1,3 +1,11 @@
+import time
+import sys
+import re
+from papercheck.lib.nlp import *
+from papercheck.lib.stripper import *
+from collections import Counter
+import html
+
 SENTENCES_MAX = 7  # maximum analyzed sentences per document
 QUERY_WAIT_SECONDS = 2  # wait time between google queries
 
@@ -6,12 +14,6 @@ SENTENCE_WORD_MIN = 15
 SENTENCE_WORD_MAX = 20
 
 # imports
-import re, sys, time
-import html
-
-from collections import Counter
-from papercheck.lib.stripper import *
-from papercheck.lib.nlp import *
 
 
 # reSuffixNoun = r'\w\w+(?:a|f|i|age|ican|cy|ion|ium|ness|[cl]ity|logy|ism|[lt]ist|here|ment|omy|ver|[ea]nce|ght|ure|one|or|ship|[^o]us|[^aeiou]em|[mnpt]er|[oae][oa][dmnprkt])'
@@ -78,7 +80,7 @@ def distance(text1, text2):
         print("No Match Found")
 
 
-def google_search(searchstr, num=10):
+def google_search(searchstr):
     import requests
     import urllib
 
@@ -91,10 +93,10 @@ def google_search(searchstr, num=10):
         "https://www.google.com/search?q=" + q + "&ie=utf-8&oe=utf-8"
     )  # &num={}'.format(num)
     html_res = s.get(url, headers=headers_Get).text
+    s.close()
 
     RES_START = ">Webergebnisse</h2>"  # '<div id="search">'
     RES_END = '<div id="foot'
-    ENTRY_DEL = '<div class="g">'
     html_res = html_res[
         html_res.index(RES_START) + len(RES_START) : html_res.index(RES_END)
     ]
@@ -126,7 +128,7 @@ def findSignificantSentences(text):
         words = split2words(sentence)
         all_words += [x.lower() for x in words]
 
-    ##print(all_words)
+    # print(all_words)
     unique_words = set(all_words)
     long_words = [x for x in all_words if len(x) > 5]
     word_counts = Counter(long_words)

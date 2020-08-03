@@ -50,6 +50,17 @@
 # Settings
 # ===========================================
 
+from papercheck.textstats import createStats
+from papercheck.lib.stripper import *
+from papercheck.checker.plagiarism import checkPlagiarism
+from papercheck.checker.spelling import checkSpelling
+from papercheck.checker.tex import checkTeX
+from papercheck.checker.grammar import checkGrammar, checkStyle, checkSentences
+from pathlib import Path
+import argparse
+import os
+import sys
+
 ANALYZE_SENTENCE = False  # analyze sentence structure, experimental
 CFG_INTERACTIVE = False  # ask for action after each error
 CFG_PRINT_INPUT = False  # print the intput after pre-processing
@@ -58,21 +69,8 @@ CFG_PRINT_INPUT = False  # print the intput after pre-processing
 # import
 # ===========================================
 
-import sys
-import os
-import re
-import argparse
-from pathlib import Path
-
 
 # own functions
-from papercheck.checker.grammar import checkGrammar, checkStyle
-from papercheck.checker.tex import checkTeX
-from papercheck.checker.spelling import checkSpelling
-from papercheck.checker.plagiarism import checkPlagiarism
-
-from papercheck.lib.stripper import *
-from papercheck.textstats import createStats
 
 
 # global state variables
