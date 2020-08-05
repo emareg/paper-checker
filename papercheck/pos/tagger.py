@@ -23,11 +23,8 @@ from papercheck.lib.nlp import *
 # idea: posdict.py => one dict for all
 # * check units:  13 ms OK
 
-# process: 1. tag words, 2. resolve tags (select one), 3. 
+# process: 1. tag words, 2. resolve tags (select one), 3. chunk tags 4. analyze structure
 
-class entry:
-    pos=[] #tags
-    base=""  # only for irreg verbs?
 
 
 import re
@@ -86,17 +83,21 @@ def analyzeSentence(sentence):
     if isValidSentence(sentence):
         sentence = stripSimpleIntroductory(sentence)
         ses = splitSubsentences(sentence)
+        chunks = []
         for sentence in ses:
             words = splitWords(sentence)
             tw = tagWords(words)
-            print(tw, "\n=====\n")
-            analyzeTags(tw)
+            chunks.append( chunckTags(tw) )
+            # analyzeTags(tw)
+        print(chunks)
+        print("========\n")
+
 
 
 def analyzeSentences(text):
     # sentences = re.split(r"(?<=[^A-Z][^A-Z][.?!:])\s+(?=[A-Z])", text)
     sentences = split2sentences(text)
-    for sentence in sentences[:6]:
+    for sentence in sentences[:-20]:
         analyzeSentence(sentence)
 
 
@@ -114,7 +115,7 @@ def stripSimpleIntroductory(sentence):
 
 
 def splitSubsentences(sentence):
-    lstFragments = re.split("[,;]", sentence)
+    lstFragments = re.split("[,;:]", sentence)
     # lstFragments = re.split( '\(([^)]+)\)', sentence, 1 )
     # print(lstFragments)
     return lstFragments
@@ -170,28 +171,33 @@ def guessTag(word):
 
 def tagWords(words):
     taglist = []
-    words[0] = words[0].lower()
     for word in words:
-        if word in G_posdic.keys() and G_posdic[word]:
+        if len(word) == 0: continue
+        if word in G_posdic and G_posdic[word]:
             taglist.append((word, G_posdic[word]))
+        elif word.lower() in G_posdic and G_posdic[word.lower()]:
+            taglist.append((word, G_posdic[word.lower()]))
         else:
             guess = guessTag(word)
             taglist.append((word, [guess]))
-            print("POS_TAG_X: ", word, guess)
+            # print("POS_TAG_X: ", word, guess)
 
     return taglist
 
 
 def analyzeTags(tw):
-    wrongs = [x[1] for x in tw if len(x[1]) == 0]
-    print("wrongs:", wrongs)
+    # wrongs = [x[1] for x in tw if len(x[1]) == 0]
+    # print("wrongs:", wrongs)
     tags = [x[1][0] for x in tw]
     tagstring = "".join(tags)
     # print(tagstring)
+
+    
+
     # if('Nn' in tagstring):
     # print(tw)
-    if re.match("m[^b]", tagstring):  # modal without verb
-        print(tw)
+    # if re.match("m[^b]", tagstring):  # modal without verb
+    #     print(tw)
     # if(re.match('.*j*n*[nN][^p]b', tagstring)):
     # print(tw)
     # if( 'NNP,VB' in tagstring ):
@@ -202,3 +208,123 @@ def analyzeTags(tw):
     # 1.NN [^PP]+ VB (is/are)
     # NN (that/which) VB
     # with/be NN
+
+
+
+def chunckTags(tw):
+    """ will chunk tags together such as 'the red apple' being a noun phrase.
+    The function will also report simple mistakes found during chunking. """
+    chunks = [x[1][0] for x in tw]
+    chunks = resolveTags(tw)
+
+    if 'X' in chunks: 
+        print('Unable to analyze: ', [x[0] for x in tw if x[1][0] == 'X'])
+        return  # cannot analyze...
+
+    sent = [x[0] for x in tw]
+
+
+
+    # Determiner chunks
+    while True:
+        m = re.search(r'D[D]+', "".join(chunks))
+        if m == None: break
+        dets = " ".join(sent[m.start() : m.end()])
+        if dets not in ['all the', 'the most', 'all of']:
+            print('potential mistake:', dets)
+        sent[m.start() : m.end()] = []
+        chunks[m.start() : m.end()] = ['D']
+
+
+    # Verb as Adjective Chunks VN=N
+    m = re.search(r'[DP]J?V([NS])', "".join(chunks))
+    if m != None:
+        print("Adjective:", m.group(0))
+        if re.search(r' \w+(?:ed|ing) \w+$', " ".join(sent[m.start() : m.end()])):
+            sent[m.start() : m.end()] = [" ".join(sent[m.start() : m.end()])]
+            chunks[m.start() : m.end()] = [m.group(1)] 
+
+    # Noun chunks
+    # todo: [^ND]N+[^NS] is probably missing a determiner 'making protocol interactive' 
+    while True:
+        m = re.search(r'D?J*N*([NS])(?:CD?J*N*([NS]))?', "".join(chunks))
+        if m == None: break
+        tag = m.group(1).lower()
+        if m.group(2):
+            if m.group(1) == 'S' and m.group(2) == 'N':
+                print('TAG-ERR: Nouns should both be plural or singular:', m.group(0))
+            else:
+                tag = m.group(2).lower()
+        sent[m.start() : m.end()] = [" ".join(sent[m.start() : m.end()])]
+        chunks[m.start() : m.end()] = [tag]
+
+    # Verb chunks
+    while True:
+        m = re.search(r'M?B?A?V|M?A?BA?J?', "".join(chunks))
+        if m == None: break
+        sent[m.start() : m.end()] = [" ".join(sent[m.start() : m.end()])]
+        chunks[m.start() : m.end()] = ['v']
+
+
+    # meta chunk nPn ('stack usage of the implementation')
+    while True:
+        m = re.search(r'([ns])P[ns]', "".join(chunks))
+        if m == None: break
+        if 'of' in sent[m.start() : m.end()]:
+            sent[m.start() : m.end()] = [" ".join(sent[m.start() : m.end()])]
+            chunks[m.start() : m.end()] = [m.group(1)]
+        else:
+            break
+
+    # meta chunk vv if second v is 'to X'
+    while True:
+        m = re.search(r'v(v)', "".join(chunks))
+        if m == None: break
+        if sent[m.start()+1] != 'to':
+            print('TAG-ERR: Probably wrong verb structure:', m.group(0))
+        sent[m.start() : m.end()] = [" ".join(sent[m.start() : m.end()])]
+        chunks[m.start() : m.end()] = ['v']    
+
+
+
+    # print(sent)
+    # print("".join(chunks))
+
+    
+
+    return list(zip(sent, chunks))
+
+
+
+def resolveTags(tw):
+    """ function that tries to decide which POS tag to use """
+    tags = [x[1] for x in tw]
+    ws = [x[0] for x in tw]
+
+    for i,tag in enumerate(tags):
+        if len(tag) == 1:
+            tags[i] = tags[i][0]
+            continue
+        if 'V' in tag:
+            w1 = ws[max(i-1,0)]
+            w2 = ws[max(i-2,0)]
+            t1 = tags[max(i-1,0)][0]
+            t2 = tags[max(i-2,0)][0]
+
+            if ('of' in [w1, w2] or t1 == 'D'    # a N
+                or (t2 == 'D' and t1 == 'J')    # the red N
+                or (w2 == 'to' and t1 == 'V')):       # to store N
+                if 'N' in tag: tags[i] = 'N'
+                elif 'S' in tag: tags[i] = 'S'
+                elif 'J' in tag: tags[i] = 'J'
+
+            elif 'to' in [w1, w2]:
+                tags[i] = 'V'
+            elif t1 in 'MR':
+                tags[i] = 'V'
+            print('## Resolved: ', tw[i], tags[i])
+        else:
+            print('UNKNOWN TAG COMBINATION:', ws[i], tag)
+
+        tags[i] = tags[i][0]
+    return tags

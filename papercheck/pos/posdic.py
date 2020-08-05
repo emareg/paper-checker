@@ -1,11 +1,12 @@
 import re
 import os
+import sys
 import zipfile
 
 from papercheck.lib.nlp import *  # language functions
 from papercheck.pos.tags import *
 
-POS_DIR = "dictionary/pos/"
+POS_DIR = "papercheck/dictionary/pos/"
 
 
 G_posdic = {}
@@ -89,16 +90,15 @@ def parse_affix(dic, word, affix):
                         re.sub("y$", "ication", re.sub("e$", "ion", pfxword)),
                     )
                 addWord(dic, newword, POS_TAG_NOUN)
-            # elif char == "X":
-            #     addwords.append(
-            #         re.sub(
-            #             r"(?<!ions)$",
-            #             "ens",
-            #             re.sub("y$", "ications", re.sub("e$", "ions", pfxword)),
-            #         )
-            #     )
+            elif char == "X":
+                newword = re.sub(
+                        r"(?<!ions)$",
+                        "ens",
+                        re.sub("y$", "ications", re.sub("e$", "ions", pfxword)),
+                    )
+                addWord(dic, newword, POS_TAG_NOUN_PL)
             elif char == "H":
-                addwords.append(re.sub(r"y$", "ie", pfxword) + "th")  #
+                addWord(dic, re.sub(r"y$", "ie", pfxword) + "th", 'X')  #
             elif char == "Y":
                 addWord(dic, adverb(pfxword), POS_TAG_ADVERB)
             elif char == "G":
@@ -119,7 +119,7 @@ def parse_affix(dic, word, affix):
                 addWord(dic, comperative(pfxword)+'s', POS_TAG_NOUN_PL)
             elif char == "S":
                 newword = plural(pfxword)
-                if 'M' in suffixes:
+                if 'M' in suffixes or pfxword+"'s" in dic:
                     addWord(dic, newword, POS_TAG_NOUN_PL)
                 if 'G' in suffixes:
                     addWord(dic, newword, POS_TAG_VERB)
@@ -137,7 +137,11 @@ def parse_affix(dic, word, affix):
             elif char == "L":
                 addWord(dic, pfxword + "ment", POS_TAG_NOUN)
 
-        addWord(dic, pfxword, 'X')
+        if pfxword[-1:] == "'" or pfxword[-2:] == "'s":
+            addWord(dic, pfxword, 'N')
+            addWord(dic, re.sub(r"'s?", "", pfxword), 'N')
+        else:
+            addWord(dic, pfxword, 'X')
     # if word=='provide': print("word-entry:", word, prefixes, suffixes, dic["provide"])
 
 
@@ -157,6 +161,7 @@ def build_dictionary():
 
     read_txtlist(posdic, POS_DIR+"en_basic.txt", POS_TAG_BASE_VERB)
     read_txtlist(posdic, POS_DIR+"en_modal.txt", POS_TAG_MODAL_VERB)
+    read_txtlist(posdic, POS_DIR+"en_adverbs.txt", POS_TAG_ADVERB)
     read_txtlist(posdic, POS_DIR+"en_adjectives.txt", POS_TAG_ADJECTIVE)
     read_txtlist(posdic, POS_DIR+"en_conjunction.txt", POS_TAG_CONJUNCTION)
     read_txtlist(posdic, POS_DIR+"en_letters.txt", POS_TAG_SYMBOL)
@@ -164,6 +169,8 @@ def build_dictionary():
     read_txtlist(posdic, POS_DIR+"en_adposition.txt", POS_TAG_PREPOSITION)
     read_txtlist(posdic, POS_DIR+"en_pronoun.txt", POS_TAG_PRONOUN)
     read_txtlist(posdic, POS_DIR+"en_irregular_verbs.txt", POS_TAG_VERB)
+
+    # print('POS:', posdic['a'])
 
 
     noun_dict = {}

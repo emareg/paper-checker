@@ -2,7 +2,7 @@ file_finder = find $(1) -type f $(2) -not -path './venv/*'
 
 NAME:=papercheck
 BINDIR:=./bin/
-ZIP_FILES = $(call file_finder,papercheck,-name "*.py" -o -name "*.dic" -o -name "*.md")
+ZIP_FILES = $(call file_finder,papercheck,-name "*.py" -o -name "*.dic" -o -name "*.md" -o -name "*.txt")
 PY_FILES = $(call file_finder,.,-name "*.py")
 
 default:

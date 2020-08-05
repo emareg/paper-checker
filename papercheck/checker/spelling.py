@@ -11,110 +11,6 @@ import sys
 
 
 
-def addWord(posdic, word, tag):
-    if word not in posdic.keys():
-        posdic[word] = []
-    if tag not in posdic[word]:
-        posdic[word].append(tag)
-
-
-
-
-
-def parse_suffix_char(dic, word, sufc):
-    pass
-
-
-def parse_affix(dic, word, affix):
-    addwords = []
-    pfxwords = [word]
-    prefixes = [c for c in affix if c in "AIUCEFK"]
-    suffixes = [c for c in affix if c not in "AIUCEFK"]
-    for char in prefixes:
-        if char == "A":
-            pfxwords.append("re" + word)
-        elif char == "I":
-            pfxwords.append("in" + word)
-        elif char == "U":
-            pfxwords.append("un" + word)
-        elif char == "C":
-            pfxwords.append("de" + word)
-        elif char == "E":
-            pfxwords.append("dis" + word)
-        elif char == "F":
-            pfxwords.append("con" + word)
-        elif char == "K":
-            pfxwords.append("pro" + word)
-
-
-    for char in suffixes:
-        for pfxword in pfxwords:
-            if char == "V": 
-                newword = re.sub("e$|$", "ive", pfxword)
-                addWord(dic, newword, POS_TAG_ADJECTIVE)
-            # elif char == "N":
-            #     newword = re.sub(
-            #             r"(?<!ion)$",
-            #             "en",
-            #             re.sub("y$", "ication", re.sub("e$", "ion", pfxword)),
-            #         )
-            #     addWord(dic, newword, POS_TAG_NOUN)
-            # elif char == "X":
-            #     addwords.append(
-            #         re.sub(
-            #             r"(?<!ions)$",
-            #             "ens",
-            #             re.sub("y$", "ications", re.sub("e$", "ions", pfxword)),
-            #         )
-            #     )
-            elif char == "H":
-                addwords.append(re.sub(r"y$", "ie", pfxword) + "th")  #
-            elif char == "Y":
-                addWord(dic, adverb(pfxword), POS_TAG_ADVERB)
-            elif char == "G":
-                addWord(dic, gerund(pfxword), POS_TAG_VERB)
-            elif char == "J":
-                addwords.append(re.sub(r"e$", "", pfxword) + "ings")  # gerund
-            elif char == "D":
-                addwords.append(
-                    re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
-                    + "ed"
-                )  # past
-            elif char == "T":
-                addwords.append(superlative(pfxword))  # superlative
-            elif char == "R":
-                addwords.append(
-                    re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
-                    + "er"
-                )
-            elif char == "Z":
-                addwords.append(
-                    re.sub(r"e$", "", re.sub(r"(?<=[^aeiou])y$", "i", pfxword))
-                    + "ers"
-                )
-            elif char == "S":
-                addwords.append(plural(pfxword))  # plural
-            elif char == "P":
-                addwords.append(
-                    re.sub(r"(?<=[^aeiou])y$", "i", pfxword) + "ness"
-                )  #
-            elif char == "M":
-                if pfxword[-1] == "s":
-                    addwords.append(pfxword + "'")  # noun
-                else:
-                    addwords.append(pfxword + "'s")  # noun
-            elif char == "B":
-                addwords.append(
-                    re.sub(r"(?<=[^e])e$", "", pfxword) + "able"
-                )  # adjective
-            elif char == "L":
-                addwords.append(pfxword + "ment")  # noun
-    # elif char == 'R': addwords.append(comperative(word)) # comparative
-
-    addwords += pfxwords
-    return addwords
-
-
 
 
 
@@ -135,21 +31,6 @@ def read_file_or_zip(filename):
     return lines
 
 
-def read_dictionary(dictionary, dictfile):
-    text = read_file_or_zip(dictfile)
-
-    for line in text.splitlines():
-        if dictfile[-4:] == ".dic":
-            word, _, affix = line.strip().partition("/")
-            dictionary[word] = ""
-            for additional in parse_affix(dictionary, word, affix):
-                dictionary[additional] = ""
-        else:
-            words = line.strip().split(" ")
-            for word in words:
-                dictionary[word] = ""
-
-    return dictionary
 
 
 def read_acronyms(acronyms, acronymfile):
@@ -237,7 +118,7 @@ def edits1(word):
 
 
 def suggest(dictionary, wrong):
-    suggs = list(set(w for w in edits1(wrong) if w in dictionary))
+    suggs = list(set(w for w in edits1(wrong) if w in dictionary.keys()))
     return "" if len(suggs) == 0 else suggs[0]
 
 
@@ -246,14 +127,20 @@ def checkSpelling(text):
     print(
         "\n\nChecking Spelling:\n----------------------------------------------------"
     )
-    print("CWD:", os.getcwd())
+    # print("CWD:", os.getcwd())
 
     dictionary = {}
-    # dictionary = read_dictionary(dictionary, "papercheck/dictionary/en_US.dic")
-    # dictionary = read_dictionary(dictionary, "papercheck/dictionary/en-Academic.dic")
     dictionary = getDict()
 
     read_acronyms(dictionary, "papercheck/dictionary/acronyms.md")
+
+    # DEBUGGING ONLY
+    # text = ""
+    # for word in dictionary.keys():
+    #     text += word+"\n"
+    # with open("dictionary_list.log", "w+") as f:
+    #     f.write(text)
+
     if dictionary == {}:
         return
     corrections = check_words(dictionary, text)

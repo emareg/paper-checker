@@ -161,12 +161,18 @@ R_RepeatedTwoWords = ReRule(
 R_To_vs_Too = ReRule(
     "Possibly 'too' instead of 'to'.",
     "too",
-    r"\s(to)\s(:?much|big|cold|early|easy|fast|few|far|low|hard|high|hot|late|large|long|narrow|short|small|soft|soon|strong|weak|wide)\W",
+    r"\s(to)\s(:?much|big|cold|early|easy|fast|few|far|low|hard|high|hot|late|large|long|narrow|short|small|soft|soon|strong|weak|wide)(?=\W)",
 )
+R_Too_vs_To = ReRule(
+    "Possibly 'to' instead of 'too'.",
+    "to",
+    r"\s(too)\s(:?\w+" +reInfinitve+ r"|show|try|group|move|put)(?=\W)",
+)
+
 R_Then_vs_Than = ReRule(
     "Use 'than' for comparisons instead of 'then'.",
     "than",
-    r"\s+(?:more|less|lower|higher|better|worse|larger|bigger|longer|earlier|shorter|smaller|weaker|stronger)(?: \w{4,15}){0,2}\s(then)\W",
+    r"\s+(?:more|less|lower|higher|better|worse|larger|bigger|longer|earlier|shorter|smaller|weaker|stronger)(?:\s+\w{4,15}){0,2}\s+(then)(?=\W)",
 )  # (:?rather|further)
 R_Modal_Base = ReRule(
     "Modal verbs require the base form of the following verb.",
@@ -175,12 +181,12 @@ R_Modal_Base = ReRule(
     + reModal
     + r"\s(?:not\s)?(?:"
     + reAdv
-    + r"\s)?(to|are|been|am|is|was|were|has|had|\w{3,9}ed|\w{2,9}[^yus]s)\W",
+    + r"\s)?(to|are|been|am|is|was|were|has|had|\w{3,9}ed|\w{2,9}[^yus]s)(?=\W)",
 )  # only base forms
 R_Double_Base_Verbs = ReRule(
     "Probably wrong structure of base verbs.",
     "",
-    r"\s(are|be|been|am|is|was|were|have|has|had)(:?\s\w\w\w+)?\s+(?:be|am|is|was|were|have|has|could|will)\W",
+    r"\s(are|be|been|am|is|was|were|have|has|had)(:?\s\w\w\w+)?\s+(?:be|am|is|was|were|have|has|could|will)(?=\W)",
 )  # only base forms
 R_Did_Base = ReRule(
     "The word 'did' requires the base form of a verb.",
@@ -190,24 +196,24 @@ R_Did_Base = ReRule(
 R_Double_Det = ReRule(
     "You have repeated a determiner, which is probably not intended.",
     "",
-    r"\s" + reTheDet + r"\s+(" + reTheDet + r")\W",
+    r"\s" + reTheDet + r"\s+(" + reTheDet + r")(?=\W)",
 )
 R_Double_Adp = ReRule(
     "You have repeated an adposition, which is probably not intended.",
     "",
-    r"\s" + reAdpos + r"\s+(" + reAdpos + r")\W",
+    r"\s" + reAdpos + r"\s+(" + reAdpos + r")(?=\W)",
 )
 R_Double_Modal = ReRule(
     "You have repeated a modal verb, which is probably not intended.",
     "",
-    r"\s" + reModal + r"\s+(" + reModal + r")\W",
+    r"\s" + reModal + r"\s+(" + reModal + r")(?=\W)",
 )
 R_Wrong3rdPerson = ReRule(
     "Wrong verb form after 3rd person pronoun.",
-    "",
+    "is/was/does",
     r"\s(?:[Hh]e|[Ss]he|[Ii]t|[Oo]ne|[Tt]his)\s(?:"
     + reAdv
-    + r"\s)?(be|am|have|do|were)\W",
+    + r"\s)?(be|been|being|am|were|have|do|done|doing)(?=\W)",
 )
 R_Wrong2ndPerson = ReRule(
     "Wrong verb form after 2nd person pronoun.",
@@ -260,21 +266,22 @@ R_Quant_of = ReRule(
 R_Quant_Det = ReRule(
     "Missing 'of' between quantifier and determiner.",
     " of ",
-    r"(?<=\s)(?:any|some|most|none|many)(\s)(?:the|these|those|them)\W",
+    r"(?<=\s)(?:any|some|most|none|many|each)(\s)(?:the|these|those|them)\W",
 )
 
 R_Be_Do = ReRule(
-    "Probably you mean 'done' or 'doing'.",
-    "done",
-    r"\s(?:be|been|is|are|was|were)\s(?:" + reAdv + r"\s)?(do)\W",
+    "Probably 'done' or 'doing'.",
+    " done ",
+    r"\s(?:be|been|is|are|was|were)\s(?:" + reAdv + r"\s)?(do|did|does)\W",
 )
+
 
 
 # special rules
 R_If_There = ReRule(
     "'if there' must be followed by a base verb.",
-    "",
-    r"\s[Ii]f\sthere\s(?!is|was|are|were|(?:have|has)\sbeen)",
+    "f there is or will be",
+    r"[Ii](f\sthere\s(?!is|was|are|were|(?:can|cannot|could|may|might|must|shall|should|will|would)\sbe|(?:have|has)\sbeen))",
 )
 R_Num_suff = ReRule(
     "Wrong suffix of ordinal number", "", r"\s(1[^s][^t]|2[^n][^d]|3[^r][^d])"
@@ -299,7 +306,7 @@ R_Prefer_To_Gerund = ReRule(
 R_Use_To = ReRule(
     "Probably 'used' instead of 'use'.",
     "used",
-    r"\s(?:be|been|is|are|was|were)\s(use)\sto\W",
+    r"\s(?:be|been|is|are|was|were|get)\s(use)\sto\W",
 )
 R_Especially = ReRule("Consider using 'especially'.", "especially", r",\s(specially)\W")
 R_The_Question = ReRule(
@@ -345,6 +352,7 @@ G_Rules = [
     R_AvsAn,
     R_AnvsA,
     R_To_vs_Too,
+    R_Too_vs_To,
     R_Then_vs_Than,
     R_Did_Base,
     R_Wrong2ndPerson,
@@ -358,8 +366,8 @@ G_Rules = [
 ]
 
 G_ExtRules = [
-    R_If_There,
     R_Quant_of,
+    R_If_There,
     R_Quant_Det,
     R_Is_Cause,
     R_Kind_of_A,

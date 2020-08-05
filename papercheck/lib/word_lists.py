@@ -162,6 +162,8 @@ tabWrongCombinations = [
     (r"(?:should|will) bee", "been"),
     ("insure that", "ensure that"),
     ("must to", "must"),
+    ("to here", "to hear"),
+    ("in principal", "in principle"),
     ("network package", "network packet"),
     ("object orientated", "object oriented"),
     ("time point", "point in time"),
@@ -193,8 +195,8 @@ tabConfusedVerbNoun = [
 # ToDo: add false friends + explanation for words that are equally likely
 tabFalseFriends = [
     (
-        "ascend|ascent",
-        "ascend (V): increase height\nascent (N): process of increasing height",
+        "ascend|ascent|assent",
+        "ascend (V): increase height\nascent (N): process of increasing height\n assent (N): expression of approval",
     ),
     (
         "build|built",
@@ -208,6 +210,32 @@ tabFalseFriends = [
         "historic|historical",
         "historical: refers exclusively to things that happened in the past.\nhistoric: can happen now but will have a profound impact on history",
     ),
+    (
+        "tenets|tenants",
+        "tenets: guiding principles or beliefs.\ntenants: people who rent from you.",
+    ),
+    (
+        "bowls?|bowels?",
+        "bowl: round container for food.\nbowel: carries waste from the stomach.",
+    ),
+    (
+        "affects?|effects?",
+        "affect (verb): something gets changed.\neffect (noun): the change that is the result of an action.",
+    ),
+    (
+        "principals?|principles?",
+        "principal: first in order of importance.\nprinciple: foundation of beliefs.",
+    ),
+    (
+        "lose|loose",
+        "lose (V): cease to have.\nloose (Adj): not tight.",
+    ),
+    (
+        "(?:assure|ensure|insure)(?:s|ed)?",
+        "assure: to promise to someone\nensure: to make sure\ninsure: protect from damage costs",
+    ),
+    # PRECEDE-to come before PROCEED-to go forward
+    # https://www.lexico.com/grammar/commonly-confused-words
 ]
 
 
@@ -240,6 +268,7 @@ tabBritishAmerican = [
     ("centre", "center"),
     ("fibre", "fiber"),
     ("behaviour", "behavior"),
+    ("neighbour", "neighbor"),
     ("colour", "color"),
     ("flavour", "flavor"),
     ("signalling", "signaling"),
@@ -302,13 +331,16 @@ tabNonScientificWords = [
     ("contend", "content"),
     ("cousin", "cosine"),
     ("curry", "carry"),
+    ("currant", "current"),
     ("curries", "carries"),
     ("curtain", "certain"),
     ("fir", "for"),
+    ("feces?", "fence"),
     ("fur", "for"),
     ("foe", "for"),
     ("fife", "five"),
     ("fist", "first"),
+    ("Fist,", "first"),
     ("fuck", ""),
     ("damn", "dam"),
     ("discreet", "discrete"),
@@ -370,6 +402,7 @@ tabNonScientificWords = [
     ("planing", "planning"),
     ("poop", "pop"),
     ("pope", "pop"),
+    ("prostrate", "prostate"),
     ("ploy", "play"),
     ("precious", "precise"),
     ("principal", "principle"),
@@ -393,6 +426,7 @@ tabNonScientificWords = [
     ("sew", "see"),
     ("shed", "she"),
     ("shit", "shift"),
+    ("sheikh", "shake"),
     ("sleight", "slight"),
     ("slut", "slot"),
     ("sic", "six"),

@@ -1,0 +1,10 @@
+can
+cannot
+could
+may
+might
+must
+shall
+should
+will
+would

@@ -1,47 +1,7 @@
-# TechTeXTagger
-# TechTexCheck
-# TechDocCheck
-# ScriptCheck
-# techtextcheck
-# papercheck
-#
+
 # Quick & dirty python script to check a paper for common English mistakes
 
 
-# Feature Wishlist:
-# - detection of american or british english
-# - detection Titles and consistent style (capital or not)  .
-# - detection of I/We
-# - detection of grammar errors with be/was/were   DONE
-# - detection of plural errors "a cars"          DONE
-# - check "to" + passive
-# - check "to small, to large"                  DONE
-# - check confused verb/noun: the/a + verb
-# - check for unnecessary terms: "it is clear", "and so on"  DONE
-# - check vague quantifiers such as  "very", "most", "many" "a large number"
-# - check Figure in capital
-# - check for inconsistent terms:  block chain, blockchain, block-chain, chain of blocks
-# - resolve input/include/subfile or do not require \begin{document} for tex files
-
-# - check adposition at the end
-# - check noun cluster
-
-
-# command line argument: improvements or only mistakes
-
-# if im präsens → 2. teil in future; if im perfekt → 2. teil in präsens
-# If $\Delta t$ is passed as argument, the time dependence is made obvious for the caller.
-# If someone looks over the code later, subprograms that depend on time will be easy to spot.
-
-
-# not found:
-# a honor,   a utility
-# ... by but ... => comma or mistake
-# the all the (the all)?
-# "a XX a" / "the XX the" is probably wrong
-# is spend => is spent
-# paranthesis => parantheses
-# ... consensus based ... consensus-based (always -based?)
 
 
 # Statistics: http://textalyser.net/index.php?lang=en#analysis
@@ -49,7 +9,6 @@
 
 # Settings
 # ===========================================
-ANALYZE_SENTENCE = False  # analyze sentence structure, experimental
 CFG_INTERACTIVE = False  # ask for action after each error
 CFG_PRINT_INPUT = False  # print the intput after pre-processing
 
@@ -93,23 +52,31 @@ def writeOutputFile(fileName, text):
 
 
 def markCorrections(lines, corrections, cssclass):
-    corrected_linenums = ()
+    corrected_linenums = []
     lines = "".join(lines)
-    # print(lines)
 
     for corr in corrections:
-        corrected_linenums += (corr.line,)
+        corrected_linenums += [corr.line,]
+        # todo place whitespace outside
+        ms = ''
+        me = ''
+        if corr.match[0] in " (\n":
+            ms = corr.match[0]
+            corr.match = corr.match[1:]
+        if corr.match[-1] in " ),.\n":
+            me = corr.match[-1]
+            corr.match = corr.match[:-1]
         lines = lines.replace(
-            corr.match,
-            '<span class="corr '
+            ms+corr.match+me,
+            ms+'<span class="corr '
             + cssclass
-            + '" title="{}">{}</span> '.format(
+            + '" title="{}">{}</span>'.format(
                 corr.desc
                 + " Suggestion: '"
                 + corr.sugg.replace("\n", " ").strip()
                 + "'",
                 corr.match,
-            ),
+            )+me,
         )
 
     lines = lines.splitlines(True)
@@ -152,11 +119,11 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
 <h2>Text Analysis</h2>
 <p>Color Legend:</p>
 <ul>
-<li><span class="crit">Grammar Mistake</span></li>
-<li><span class="warn">Style Improvement</span></li>
-<li><span class="err">Spelling</span></li>
+<li><span class="crit">Grammar Problems: {}</span></li>
+<li><span class="warn">Style Improvement: {}</span></li>
+<li><span class="err">Spelling Errors: {}</span></li>
 </ul>
-<table><tbody>"""
+<table><tbody>""".format(len(linenums[0]), len(linenums[1]), len(linenums[2]))
 
     open_tag = None
     for num, line in enumerate(lines):
@@ -173,9 +140,9 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
             out_lines += (
                 '<tr><td><span class="ln crit">'
                 + str(num + 1)
-                + "</span></td><td>"
+                + "</span></td><td><pre>"
                 + line
-                + "</td>\n"
+                + "</pre></td>\n"
             )
         elif num + 1 in style_linenums:
             out_lines += (
@@ -234,9 +201,9 @@ def parseFile(fileName, args):
 
     G_filename = fileBaseName
     outputLines = text.splitlines(True)
-    grammar_linenums = ()
-    style_linenums = ()
-    spell_linenums = ()
+    grammar_linenums = []
+    style_linenums = []
+    spell_linenums = []
     plag = ""
 
     # check if silent
@@ -257,7 +224,7 @@ def parseFile(fileName, args):
     print(stats)
 
     # regex finiter: https://docs.python.org/3/library/re.html#writing-a-tokenizer
-    if ANALYZE_SENTENCE:
+    if args.analyze:
         analyzeSentences(text)
 
     # spell check
@@ -319,6 +286,9 @@ def parse_arguments():
         dest="verbose",
         default=True,
         help="don't print messages to stdout",
+    )
+    argparser.add_argument(
+        "-x", "--analyze", action="store_true", help="experimental"
     )
     argparser.add_argument("files", nargs="+")
 

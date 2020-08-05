@@ -1,4 +1,4 @@
-10352
+10376
 0/d
 0cm
 0em
@@ -2353,7 +2353,7 @@ achieve/DSG
 achievement/MS
 acid
 acknowledge/DSG
-acknowledgement/MS
+acknowledgment/MS
 acorn
 acoustic
 acquaintance
@@ -2660,7 +2660,7 @@ appear/AESGD
 appearance/MS
 append/SDG
 appendices
-appendix/SM
+appendix/M
 applause
 apple/MS
 applet/MS
@@ -2940,9 +2940,8 @@ bass/MS
 bastard/SM
 bat
 batch
-bath/M
+bath/MS
 bathroom
-baths
 battery/SM
 battle
 baud/M
@@ -3045,6 +3044,7 @@ bimetallism
 bin
 binary
 bind/GS
+binding/MS
 binocular/SY
 bio
 biochemistry
@@ -3278,8 +3278,8 @@ camera/MS
 camp/SM
 campaign/MDSG
 campus
+can
 can't
-can/MS
 cancel/DGS
 cancer
 candidate/SM
@@ -3381,7 +3381,7 @@ chain/MSDG
 chair/MS
 chairman
 chalk
-challenge/DSG
+challenge/MDSG
 chamber
 champagne
 champion/MS
@@ -3532,8 +3532,8 @@ clone/SM
 close/DRSMYTG
 closet
 closure
-cloth/DSG
-clothe
+cloth/MS
+clothe/SDG
 cloud/SM
 club/MS
 clue/MS
@@ -3628,6 +3628,8 @@ common/MYS
 communal
 communicate/SDG
 communication/MS
+communicational
+communicative/YPU
 communism
 communist/SM
 community/SM
@@ -4098,8 +4100,7 @@ deal/SGM
 dealer/MS
 dealt
 dear
-death/M
-deaths
+death/MS
 debate/BMGDS
 debt
 debugged
@@ -4122,6 +4123,7 @@ decide/DSG
 decimal/SYM
 decimeter/S
 decision/SM
+decisive/PYI
 deck
 declaration/SM
 declarative/Y
@@ -4214,8 +4216,7 @@ deprecate/SDG
 deprecation/MS
 depression/MS
 deprive/SDG
-depth/M
-depths
+depth/MS
 deputy
 dereference/SDG
 derivation/MS
@@ -4309,7 +4310,7 @@ dihedral/S
 dihydrogenphosphate/a
 dihydrogenphosphite/a
 dilation/M
-dilemma
+dilemma/MS
 dim
 dimension/SM
 dimensional/Y
@@ -4339,6 +4340,9 @@ discard/SDG
 disciplinary
 discipline/MS
 disclaimer/MS
+discordance/SM
+discordancy
+discordant/Y
 discount/SM
 discourage/SDG
 discovery/SM
@@ -4377,6 +4381,7 @@ distinct/Y
 distinction/MS
 distinctive/Y
 distinguish/DSG
+distinguishable
 distort/DGS
 distortion/MS
 distract/DSG
@@ -4827,7 +4832,7 @@ exclamation/MS
 exclude/DSG
 excluder/MS
 exclusion/MS
-exclusive/Y
+exclusive/YP
 exclusivity/MS
 excusable/IY
 excuse/MSDG
@@ -5414,7 +5419,7 @@ groundwater
 group/GMDS
 grow/SG
 grown
-growth/S
+growth/MS
 guanine
 guarantee/MDSG
 guard/GMDS
@@ -5465,7 +5470,7 @@ hangover
 happen/SDG
 happily
 happy/TPR
-hard/RYT
+hard/RYTP
 hardback
 hardcode/GDS
 harden/SGD
@@ -5561,7 +5566,7 @@ hide/DSG
 hidelinks
 hideous/Y
 hierarchical/Y
-hierarchy
+hierarchy/MS
 high/RYT
 highlight/GSMD
 highway/SM
@@ -5935,8 +5940,9 @@ intact
 intake
 integer/MS
 integral/MSY
-integrate/DSG
-integration/MS
+integrate/AEDSG
+integration/AEMS
+integrative/AEY
 integrity/MS
 intellect
 intellectual/Y
@@ -5966,7 +5972,7 @@ interest/SMDG
 interestingly
 interface/MGDS
 interfere/SDG
-interference
+interference/MS
 interim
 interior
 intermediary/SM
@@ -5999,6 +6005,8 @@ intervention/MS
 interview/MDGS
 intimate
 intra
+intricacy/SM
+intricate/PY
 intrinsic/Y
 introduce/DSG
 introduction/MS
@@ -6077,13 +6085,15 @@ isoperimetric
 isothiocyanate/a
 isotope/SM
 issue/MGDS
-it/USM
+it
+it's
 italic/S
 item/SM
 itemsep
 iterate/SDG
 iteration/MS
 iterative/Y
+its
 itself
 jack
 jacket/MS
@@ -6236,6 +6246,7 @@ last/YDGS
 latch/UGSD
 late/RYT
 latency/S
+latin
 latitude/SM
 latter
 lattice/MS
@@ -6284,8 +6295,7 @@ leisure
 lemma/S
 lemon
 lend/SG
-length/M
-lengths
+length/MS
 lengthy
 lenient
 lens/MS
@@ -6381,7 +6391,7 @@ locality/MS
 localizability/S
 localizable/U
 localization/CS
-locate/SDG
+locate/AESDG
 location/MS
 lock's
 lock/UDSG
@@ -6814,8 +6824,7 @@ monospace
 monotonic/Y
 monotonous/UY
 monster/MS
-month/MY
-months
+month/MSY
 mood
 moon/MS
 moral/SMY
@@ -6900,7 +6909,7 @@ myself
 mysterious/Y
 mystery/SM
 mystic
-myth/M
+myth/MS
 mythical
 mythology
 myths
@@ -7062,12 +7071,13 @@ nonzero
 noon
 nopagebreak
 nor
-norm
+norm/MS
 normal/Y
 normality/MS
 normalization/ACMS
 normalize/ADSG
 normalized/UC
+normalizer/MS
 normalsize
 north
 northern
@@ -7219,6 +7229,8 @@ opt/DGS
 optic
 optical/Y
 optimal/Y
+optimism/MS
+optimist/MS
 optimistic/Y
 optimization/MS
 optimize/DSG
@@ -7486,9 +7498,8 @@ patch/MDSG
 patent/SDG
 patentability
 patentable/U
-path/M
+path/MS
 pathetic
-paths
 patience
 patient/MS
 patronize/DSG
@@ -8323,7 +8334,10 @@ reply/SDGM
 repository/MS
 representation/SM
 representative/SM
-reproducible
+reproducibility/MS
+reproducible/Y
+repudiate/SDG
+repudiation/MS
 repulsive
 reputability
 reputable
@@ -8735,10 +8749,11 @@ sign's
 sign/ASGD
 signal/MDSG
 signature/MS
+signer/MS
 significance
 significant/Y
 silence
-silent
+silent/Y
 silicon/a
 silver/a
 similar/Y
@@ -8850,7 +8865,10 @@ sold
 solder/MSDG
 soldier/SM
 sole/MYS
+solicit/DSG
+solicitation/MS
 solid
+solidarity/MS
 solo
 solution/SM
 solvability
@@ -8894,10 +8912,13 @@ spacious/Y
 spaciousness
 spam/MSD
 spamming
-span
+span/MS
+spanned
+spanner/SM
+spanning
 spare/SM
 spark/MSDG
-spatial
+spatial/Y
 spawn/SMDG
 spawner/M
 speak/SG
@@ -9673,6 +9694,8 @@ transportation/SM
 transporter/MS
 transversal/SMY
 trap/MS
+trapdoor/MS
+trapdoor/MS
 trapped
 trapping
 trash
@@ -9726,9 +9749,8 @@ trust/SGD
 trustful/EYP
 trustless/P
 trustworthy/RPT
-truth/M
+truth/MS
 truthful/UYP
-truths
 try/ASDG
 trypsin
 ttfamily
@@ -9862,6 +9884,7 @@ uninteresting
 uninterrupted
 union/SM
 unique/YP
+unit/MS
 unitary
 unite/DSG
 unity
@@ -9887,6 +9910,7 @@ unpleasant
 unprecedented/Y
 unpredicted
 unpreserved
+unprocessed
 unrecognized
 unrelated
 unroll/DGS
@@ -10149,7 +10173,7 @@ whistle/SM
 white/MS
 whitelist/SDG
 whitepaper/S
-whitespace
+whitespace/MS
 who
 whoever
 whole
