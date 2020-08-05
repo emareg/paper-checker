@@ -1,7 +1,4 @@
-
 # Quick & dirty python script to check a paper for common English mistakes
-
-
 
 
 # Statistics: http://textalyser.net/index.php?lang=en#analysis
@@ -56,10 +53,10 @@ def markCorrections(lines, corrections, cssclass):
     lines = "".join(lines)
 
     for corr in corrections:
-        corrected_linenums += [corr.line,]
+        corrected_linenums += [corr.line]
         # todo place whitespace outside
-        ms = ''
-        me = ''
+        ms = ""
+        me = ""
         if corr.match[0] in " (\n":
             ms = corr.match[0]
             corr.match = corr.match[1:]
@@ -67,8 +64,9 @@ def markCorrections(lines, corrections, cssclass):
             me = corr.match[-1]
             corr.match = corr.match[:-1]
         lines = lines.replace(
-            ms+corr.match+me,
-            ms+'<span class="corr '
+            ms + corr.match + me,
+            ms
+            + '<span class="corr '
             + cssclass
             + '" title="{}">{}</span>'.format(
                 corr.desc
@@ -76,7 +74,8 @@ def markCorrections(lines, corrections, cssclass):
                 + corr.sugg.replace("\n", " ").strip()
                 + "'",
                 corr.match,
-            )+me,
+            )
+            + me,
         )
 
     lines = lines.splitlines(True)
@@ -123,7 +122,9 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
 <li><span class="warn">Style Improvement: {}</span></li>
 <li><span class="err">Spelling Errors: {}</span></li>
 </ul>
-<table><tbody>""".format(len(linenums[0]), len(linenums[1]), len(linenums[2]))
+<table><tbody>""".format(
+        len(linenums[0]), len(linenums[1]), len(linenums[2])
+    )
 
     open_tag = None
     for num, line in enumerate(lines):
@@ -287,9 +288,7 @@ def parse_arguments():
         default=True,
         help="don't print messages to stdout",
     )
-    argparser.add_argument(
-        "-x", "--analyze", action="store_true", help="experimental"
-    )
+    argparser.add_argument("-x", "--analyze", action="store_true", help="experimental")
     argparser.add_argument("files", nargs="+")
 
     return argparser.parse_args()

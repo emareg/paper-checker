@@ -14,7 +14,6 @@
 # X X      other      ersatz, esprit, dunno, gr8, univeristy
 
 
-
 def regexFromLst(lst):
     # for idx,item in lst:
     reglist = ["[" + x[0] + x[0].upper() + "]" + x[1:] for x in lst]

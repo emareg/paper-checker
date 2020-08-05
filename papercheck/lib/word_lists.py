@@ -226,10 +226,7 @@ tabFalseFriends = [
         "principals?|principles?",
         "principal: first in order of importance.\nprinciple: foundation of beliefs.",
     ),
-    (
-        "lose|loose",
-        "lose (V): cease to have.\nloose (Adj): not tight.",
-    ),
+    ("lose|loose", "lose (V): cease to have.\nloose (Adj): not tight."),
     (
         "(?:assure|ensure|insure)(?:s|ed)?",
         "assure: to promise to someone\nensure: to make sure\ninsure: protect from damage costs",

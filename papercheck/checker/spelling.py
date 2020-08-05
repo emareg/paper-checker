@@ -9,11 +9,6 @@ import zipfile
 import sys
 
 
-
-
-
-
-
 def read_file_or_zip(filename):
     lines = ""
     try:
@@ -29,8 +24,6 @@ def read_file_or_zip(filename):
         except FileNotFoundError:
             print("ERROR: File '{}' not found.".format(filename))
     return lines
-
-
 
 
 def read_acronyms(acronyms, acronymfile):

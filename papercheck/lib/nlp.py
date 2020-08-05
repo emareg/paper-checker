@@ -127,12 +127,12 @@ def superlative(word):
         sup = word + "est"
     return sup
 
+
 def possessive(word):
     if word[-1] in "sz":
-        return word+"'"
+        return word + "'"
     else:
-        return word+"'s"
-
+        return word + "'s"
 
 
 def syllables(word):

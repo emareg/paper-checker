@@ -166,7 +166,7 @@ R_To_vs_Too = ReRule(
 R_Too_vs_To = ReRule(
     "Possibly 'to' instead of 'too'.",
     "to",
-    r"\s(too)\s(:?\w+" +reInfinitve+ r"|show|try|group|move|put)(?=\W)",
+    r"\s(too)\s(:?\w+" + reInfinitve + r"|show|try|group|move|put)(?=\W)",
 )
 
 R_Then_vs_Than = ReRule(
@@ -274,7 +274,6 @@ R_Be_Do = ReRule(
     " done ",
     r"\s(?:be|been|is|are|was|were)\s(?:" + reAdv + r"\s)?(do|did|does)\W",
 )
-
 
 
 # special rules
