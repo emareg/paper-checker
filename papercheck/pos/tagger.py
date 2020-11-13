@@ -203,8 +203,8 @@ def analyzeTags(tw):
 
 
 def chunckTags(tw):
-    """ will chunk tags together such as 'the red apple' being a noun phrase.
-    The function will also report simple mistakes found during chunking. """
+    """will chunk tags together such as 'the red apple' being a noun phrase.
+    The function will also report simple mistakes found during chunking."""
     chunks = [x[1][0] for x in tw]
     chunks = resolveTags(tw)
 

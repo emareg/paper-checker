@@ -1,10 +1,8 @@
-
-
+% testfile for PaperCheck
 \documentclass{scrartcl}
 
 
-
-\title{A simple TeX Test File with grammar errors}
+\title{The PaperCheck TeX Test File with Errors}
 
 
 \begin{document}
@@ -12,14 +10,16 @@
 
 
 \section{General}
-This document is a small file used to illustrate how \emph{papercheck} works.
-The following sections inherit grammar mistakes, confused terms and other language constructs that should be changed or improved before publishing.
-If papercheck runs on the \verb!.tex! file it will also analyze TeX environments and commands.
+This document is a small file used to illustrate how \emph{PaperCheck} works.
+The following sections contain grammar mistakes, confused terms and other language constructs that should be changed or improved before publishing.
+If PaperCheck runs on the \verb!.tex! file it will also analyze TeX environments and commands.
 
 
 
 % one mistake per line!
+% =================================================================
 \section{Grammar Check Testing}
+% =================================================================
 It is probably a mistake when the same same word   % double word
 or the or the same two words are repeated.         % double two words
 In this the paragraph, we show simple grammar      % double determiner
@@ -28,9 +28,9 @@ might will certainly be helpful                    % double modal verb
 and should improved paper writing.                 % modal requires base verb     
 Furthermore the text                               % Comma after Intro
 is also was designed as                            % doubled base verbs  
-an unit test with                                  % a vs. an (spoken 'YOUNIT')
+an unit test with                                  % a vs. an (spoken 'You-nit')
 a error in each line.                              % an vs. a           
-We did carefully selected mistakes                  % did + past
+We did carefully selected mistakes                 % did + past
 too show how our checker works                     % too + infinitive
 and that it do not require                         % 3rd person + wrong base verb
 to much effort to run.                             % to + comparison
@@ -44,18 +44,8 @@ in one file but each these tests
 Any these tests serves a purpose.
 
 
-
-various cases of for grammar violations.
-The checks should can have a higher accuracy then the paragraphs in the style section.
-I admit that I did not spend to much time on this the test.
-This should clearly had better grammar.
-
 Neither are the “a” and “an” in the next sentence correct or any of the following nor sentences.
 There is a LED and also a 8-bit microcontroller but not an universal key or a one-time signature.
-However comma mistakes are more difficult to detect.
-Furthermore,I forget to put a space after a comma.
-
-We did not intended to make it this ugly.
 
 Some mistakes will not be detected but should be in the future.
 A internships are not plural. These figure is singular.
@@ -65,7 +55,9 @@ A internships are not plural. These figure is singular.
 
 
 
+% =================================================================
 \section{Language Style Testing}
+% =================================================================
 This section shows some confused terms and other language style issues.
 
 The massage of this paragraph is clear in the case that you missed it. We've got some words witch we should improve.
@@ -79,7 +71,9 @@ Well, I reckon that's enough of this fancy test for now. It happens twice.
 
 
 
-\section{Spelling}
+% =================================================================
+\section{Spell Check Testing}
+% =================================================================
 
 \subsection{Scientific vs. American Spelling}
 While aluminum is preferred in the US, science uses the latin derived spelling form.
@@ -100,8 +94,8 @@ not meant as an offence to
 our neighbours.
 
 
-\subsection{Non-scientific Spelling}
 
+\subsection{Non-scientific Spelling}
 The currant sate-of-the-art dictionaries include the compete palate of
 possible swords even when many of thees are rawly used on a doily bases. 
 We except theme to tall us preciously weather words ore spelled correctly
@@ -112,11 +106,11 @@ exits today will miss a huge varsity of words that are actuarially
 paced in thee wring context. Whale some are only miner errors, otters
 are so serve that thy can altar the meaning of the massage.
 
-The problem is farther complected by the fact that some therms –
+The problem is farther complected by the fact that some therms – 
 witch are in principal spelled correctly butt are probably not waned in 
-scientific pipers or pubic articles – might seam fitting at a fist glance
+scientific paperers or pubic articles – might seam fitting at a fist glance
 to a human aye because there is only a sleight visual diffidence to 
-other moor common words. Therefor, even pier reviews might nit help.
+other moor common words. Therefor, even pear reviews might hot help.
 
 Of coarse, we take this issue serous and dry to brake at lest some of 
 these repeating pattens by ruining several testes on ache word.
@@ -126,46 +120,14 @@ we can insure a high sensitivity and degrease writhing errors.
 We hope this exorcise has remonstrated the impotence of a god spell
 and gramme checker. We believe that there shout be no more thread model,
 security breech, fatal serum, or blood vassal in a scientific paper.
+ 
 
 
-\subsection{False positives}
-One of the many seeds. We move on with a simple plan.
-What I have learned is that to be on top, you have to struggle.
-That way a once oppressed successor can become a new oppressor without even realizing it.
-I have already started an hour ago.
+% todo: fewer/fever,  wonder/wander,  lick/lock,  diva into
 
 
-% spares spares
 
-
-\section{TeX Testing}\label{sec:texsection}
-% basic Tex
-A first paragraph with some stuff, some \textbf{bold text}   and other things, like a citation\cite{my:paper}.
-Some other text, part of which is <<special>>, \emph{very} "special", like $4 \times 5 = 21$.
-
-If I report $t_{min} = 13s$ or a distance of 5 m, I should use SI unit package.
-
-
-Overall there are 
-\begin{itemize}
-	\item text formatting
-	\item environments such as itemize
-\end{itemize}
-
-
-\begin{table}
-	\centering
-    \begin{tabular}{@{}rr@{}} 
-    \textbf{Key}  & \textbf{Value} \\ \hline
-    name & me \\
-    id & 123456\\
-    \end{tabular}
-    \caption{A generic table with no special meaning}
-    \label{tab:example}
-\end{table}
-
-
-\section{Spell Checker Poem}
+\section{The Famous Spell Checker Poem}
 Eye have a spelling chequer,
 It came with my Pea Sea.
 It plane lee marks four my revue
@@ -192,9 +154,48 @@ The chequer pours o'er every word
 Two cheque sum spelling rule.
 
 
-\paragraph{Further Tests}
-but bur, 
 
+\subsection{False positives}
+One of the many seeds. We move on with a simple plan.
+What I have learned is that to be on top, you have to struggle.
+That way a once oppressed successor can become a new oppressor without even realizing it.
+I have already started an hour ago.
+
+
+
+
+% =================================================================
+\section{TeX Testing}\label{sec:texsection}
+% =================================================================
+% basic Tex
+A first paragraph with some stuff, some \textbf{bold text}   and other things, like a citation\cite{my:paper}.
+Some other text, part of which is <<special>>, \emph{very} "special", like $4 \times 5 = 21$.
+
+If I report $t_{min} = 13s$ or a distance of 5 m, I should use SI unit package.
+
+
+Overall there are 
+\begin{itemize}
+	\item text formatting
+	\item environments such as itemize
+\end{itemize}
+
+
+\begin{table}
+	\centering
+    \begin{tabular}{@{}rr@{}} 
+    \textbf{Key}  & \textbf{Value} \\ \hline
+    name & me \\
+    id & 123456\\
+    \end{tabular}
+    \caption{A generic table with no special meaning}
+    \label{tab:example}
+\end{table}
+
+
+
+
+\paragraph{Further Tests}
 Ligatures correct: Deﬁnition, Oﬀicial
 Ligatures wrong: Deﬁnitiun, Oﬀiciol
 
