@@ -69,6 +69,7 @@ def calcStats(text):
     G_stats["characters_no_white"] = len(re.sub(r"\s+", "", text))
     G_stats["characters_words"] = 0
     G_stats["unique_words"] = 0
+    G_stats["unique_words_percent"] = 0
     G_stats["word_length_min"] = 1000
     G_stats["word_length_avg"] = 0
     G_stats["word_length_max"] = 0
@@ -136,6 +137,9 @@ def calcStats(text):
 
     G_stats["words"] = len(all_words)
     G_stats["unique_words"] = len(set(all_words))
+    G_stats["unique_words_percent"] = round(
+        100 * G_stats["unique_words"] / G_stats["words"] if G_stats["words"] else 0
+    )
     long_words = [x.lower() for x in all_words if len(x) > 5]
     word_count = Counter(long_words)
     G_stats["common_words"] = word_count.most_common(6)
@@ -156,7 +160,7 @@ def createStats(text):
     stats_str += "                                \n"
     stats_str += "      Words: {} (total)         \n".format(G_stats["words"])
     stats_str += "             {} (unique, {} %)  \n".format(
-        G_stats["unique_words"], round(100 * G_stats["unique_words"] / G_stats["words"])
+        G_stats["unique_words"], G_stats["unique_words_percent"]
     )
     stats_str += "             chars per word: {} .. {} ({:.2f} avg.)\n".format(
         G_stats["word_length_min"],

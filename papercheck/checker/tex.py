@@ -8,6 +8,10 @@ from papercheck.lib.nlp import *
 outputLines = []
 
 
+# suggest better packages
+tabPackages = [("unitsdef", "siunitx")]
+
+
 def bold(string):
     return "\033[1m" + string + "\033[0m"
 

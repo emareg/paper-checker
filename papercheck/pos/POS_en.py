@@ -208,7 +208,7 @@ lstSubConjunction = [
     "once",
     "since",
     "so that",
-    "that",
+    "that(?! is)",
     "though",
     "unless",
     "until",

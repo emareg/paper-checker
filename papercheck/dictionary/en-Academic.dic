@@ -1,4 +1,4 @@
-10376
+10449
 0/d
 0cm
 0em
@@ -2341,6 +2341,7 @@ accountable
 accountably/U
 accountant/SM
 accumulate/DSG
+accumulator/MS
 accuracy
 accurate/Y
 accusation/SM
@@ -2571,6 +2572,8 @@ analogous
 analogue
 analogy
 analyses
+analyses
+analysis
 analysis/M
 analyst/SM
 analytic/S
@@ -2660,6 +2663,8 @@ appear/AESGD
 appearance/MS
 append/SDG
 appendices
+appendices
+appendix
 appendix/M
 applause
 apple/MS
@@ -2872,9 +2877,11 @@ away
 awful/Y
 awkward
 ax/MS
+axes
 axial/Y
 axiom/SM
 axiomatic/Y
+axis
 axis/M
 azanium
 azide/a
@@ -2890,6 +2897,8 @@ backspace
 backup/S
 backward/S
 bacteria
+bacteria
+bacterium
 bacterium/M
 bad/Y
 badge
@@ -2931,9 +2940,11 @@ baseband/S
 baseline/MS
 baselineskip
 baselinestretch
+bases
 bash/SDG
 basic/SY
 basicstyle
+basis
 basis/M
 basket
 bass/MS
@@ -3132,7 +3143,7 @@ bootloader/MS
 bootstrap/SM
 bootstrapped
 bootstrapping
-border
+border/MS
 borderline
 bore/DSG
 boredom
@@ -3296,6 +3307,8 @@ capacity/S
 capital/MS
 capitalism
 capitalist
+capitalization/ASM
+capitalize/ASDG
 capitulate/ASDG
 caption/MS
 capture/DSG
@@ -3529,7 +3542,8 @@ clock/SM
 clockwise
 clog
 clone/SM
-close/DRSMYTG
+close/EMSDG
+close/RYT
 closet
 closure
 cloth/MS
@@ -3542,7 +3556,6 @@ cluster/MSDG
 cm/u
 coach
 coal
-coarse
 coast
 coat/MS
 coaxial/Y
@@ -3750,7 +3763,6 @@ confine/SDG
 confirm/ASDG
 confirmation/AMS
 conflict/SGMD
-conform
 conformance/S
 confront/SDG
 confuse/DSG
@@ -3976,9 +3988,13 @@ crew
 cricket
 crime/SM
 criminal/SM
+crises
+crisis
 crisis
 crisp/SM
 criteria
+criteria
+criterion
 criterion/M
 critic/SM
 critical/Y
@@ -4270,6 +4286,8 @@ device/SM
 devious/Y
 devise/DSG
 di/m
+diagnoses
+diagnosis
 diagnosis
 diagnostic/S
 diagonal
@@ -4386,7 +4404,7 @@ distort/DGS
 distortion/MS
 distract/DSG
 distress/DSG
-distribute/GDS
+distribute/AGDS
 distribution/MSA
 district
 disturb/DSG
@@ -4560,7 +4578,7 @@ educate/GDS
 education/MS
 educational/Y
 effect/SM
-effective/PY
+effective/IPY
 efficiency/I
 efficient/IY
 effort/MS
@@ -4614,6 +4632,8 @@ elimination/M
 elite
 elitist
 ellipse/SM
+ellipses
+ellipsis
 elliptic
 elliptical/Y
 else
@@ -4952,7 +4972,7 @@ fair/RYTP
 fairy
 faith
 faithful/Y
-fake
+fake/SDG
 fall/MSG
 fallacious
 fallacy
@@ -5105,6 +5125,8 @@ flute
 flux
 fly/DSMG
 foam
+foci
+focus
 focus'
 focus/UAGSD
 focusable
@@ -5158,7 +5180,7 @@ forgot
 forgotten
 fork/SGDM
 form's/A
-form/IASGD
+form/IACFSGD
 formal/IY
 formalism/MS
 formalization/MS
@@ -5168,7 +5190,9 @@ formation/I
 formatted
 formatting
 former/Y
+formula
 formula/S
+formulae
 formulae
 formulate/ASDG
 formulation/AS
@@ -5209,7 +5233,7 @@ free/DSY
 freedom
 freeing
 freeway/SM
-freeze/SG
+freeze/SDG
 frequency/SM
 frequent/Y
 fresh
@@ -5266,6 +5290,8 @@ gallium/a
 game/MS
 gamma/MS
 gang
+ganglia
+ganglion
 gap/MS
 garage
 garbage
@@ -5484,6 +5510,8 @@ harmonic/SIY
 harmonize/SDG
 harmony
 harsh
+harvest/MSDG
+harvester/MS
 has
 hash/SDG
 hassium/a
@@ -5552,6 +5580,7 @@ herring/MS
 herself
 hertz
 hesitate/SDG
+hesitation/MS
 heterogeneous/Y
 heterosexual/Y
 heuristics
@@ -5683,6 +5712,8 @@ hypertree/S
 hyphen
 hypo/p
 hypochlorite/a
+hypotheses
+hypothesis
 hypothesis
 hypothesize/SDG
 hypothetical/Y
@@ -5818,11 +5849,13 @@ indefensible
 indefinite/Y
 indent
 indeterminate
+index
 index/GMDS
 indicate/SDG
 indication/M
 indicative/YS
 indicator/MS
+indices
 indices
 indictment
 indirect/Y
@@ -6030,6 +6063,7 @@ invest/SDG
 investigate/DSG
 investigation/MS
 investment/MS
+investor/MS
 invitation/MS
 invite/DSG
 invoke/DSG
@@ -6557,13 +6591,17 @@ mathematics
 mathescape
 mathspec
 matrices
+matrices
+matrix
 matrix
 matter/MS
 mature
 max
 maxima
+maxima
 maximal/Y
 maximize/SDG
+maximum
 maximum
 may
 maybe
@@ -6714,11 +6752,16 @@ mind/MGDS
 mindless
 mine/MGDS
 miner/MS
+mineral/MS
+mineralization/C
+mineralize/CSDG
 miniaturization
+minima
 minimal
 minimalism
 minimalist
 minimize/SDG
+minimum
 minimum
 minipage
 minister/MS
@@ -6970,6 +7013,8 @@ near/RYT
 nearby
 neat/Y
 nebula
+nebula
+nebulae
 necessary/UY
 necessity/MS
 neck
@@ -7110,8 +7155,10 @@ ns/u
 nth
 nu/MS
 nuclear
+nuclei
 nuclei/M
 nucleotide/MS
+nucleus
 nucleus/M
 nuisance
 null
@@ -7124,7 +7171,6 @@ numerical/Y
 numerous
 nurse/MS
 nut/MS
-oar
 oate/c
 obey/DGS
 obfuscate/SDG
@@ -7183,6 +7229,7 @@ offset/S
 offsetting
 offspring/MS
 often
+oftentimes
 oganesson/a
 ohm/S
 oil
@@ -7258,6 +7305,7 @@ organ/MS
 organic/Y
 organism/SM
 organization/MS
+organizational/Y
 organize/AGDS
 organizer/MS
 orient/SDG
@@ -7442,6 +7490,8 @@ parallel/S
 parallelism/S
 parallelization/MS
 parallelize/GDRS
+paralyses
+paralysis
 parameter/MS
 parametric/Y
 parametrizable/U
@@ -7455,6 +7505,8 @@ parbox
 pardon
 parent/SM
 parentheses
+parentheses
+parenthesis
 parenthesis
 parindent
 parity
@@ -7605,6 +7657,8 @@ pharmacy/SM
 phase/DSMG
 phenol
 phenomena
+phenomena
+phenomenon
 phenomenon/MS
 phenyl/p
 phi/MS
@@ -8124,9 +8178,11 @@ radial/SMY
 radian/MS
 radiation
 radical/Y
+radii
 radio/SM
 radioactive/Y
 radium/a
+radius
 radius
 radix/SM
 radon/a
@@ -8135,8 +8191,8 @@ raggedleft
 raggedright
 raid/SM
 rail/SM
-railroad
-railway
+railroad/MS
+railway/MS
 rain/SDG
 rainbow
 raise/MGDS
@@ -8353,6 +8409,7 @@ rescue/MSDG
 resemblance
 resemble/SDG
 reservation/MS
+reserve's
 reservoir/SM
 resetting
 reside/SDG
@@ -8659,7 +8716,6 @@ serialize/GBDS
 series
 serious/YP
 servant/MS
-serve's/A
 serve/CAFGDS
 server/SM
 service/MS
@@ -9088,8 +9144,10 @@ straight
 straightforward
 strain/MS
 strange/YRT
+strata
 strategic
 strategy/SM
+stratum
 straw
 stray
 stream/SDGM
@@ -9347,8 +9405,12 @@ synergistic/Y
 synergy/MS
 synonym/MS
 synonymous
+synopses
+synopsis
 syntactic/Y
 syntax
+syntheses
+synthesis
 synthesis
 synthesizer
 synthetic/SMY
@@ -9515,6 +9577,8 @@ thereof
 thermal/Y
 thermodynamic/YS
 these/S
+theses
+thesis
 thesis/M
 theta/MS
 they
@@ -9525,6 +9589,7 @@ thieves
 thin
 thing/MS
 think/SG
+thinkable/UY
 thiocyanate/a
 thioformyl/p
 third/MS
@@ -9626,6 +9691,9 @@ topological/Y
 topology/SM
 tore
 torn
+tornado/M
+tornadoes
+torque/MS
 torture/MS
 toss
 total/Y
@@ -10027,7 +10095,9 @@ verse/MS
 version/FMS
 versus
 vertex
+vertex
 vertical/Y
+vertices
 vertices
 very
 vessel
@@ -10079,6 +10149,8 @@ volume/SM
 voluntarily
 voluntary
 volunteer/SGMD
+vortex
+vortices
 vote's
 vote/CGDS
 voter/SM
@@ -10157,6 +10229,7 @@ what
 whatever
 whatsoever
 wheel/MS
+wheelchair/MS
 when
 whenever
 where

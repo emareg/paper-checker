@@ -1,14 +1,5 @@
 # Settings
 # ===========================================
-
-from papercheck.checker import spelling
-from papercheck.lib.word_lists import *  # part of speech lists
-from papercheck.pos.POS_en import *  # part of speech lists
-from papercheck.lib.cli import *  # command line interface
-from papercheck.lib.nlp import *  # language functions
-
-ANALYZE_SENTENCE = False  # analyze sentence structure, experimental
-
 MAX_WORDS_PER_SENT = 50
 
 # consistency settings
@@ -19,13 +10,11 @@ AMERICAN_ENGLISH = True  # If False: British English
 
 # import
 # ===========================================
-
-
-# own functions
-
-
-if ANALYZE_SENTENCE:
-    from papercheck.pos.tagger import *
+from papercheck.checker import spelling
+from papercheck.lib.word_lists import *  # part of speech lists
+from papercheck.pos.POS_en import *  # part of speech lists
+from papercheck.lib.cli import *  # command line interface
+from papercheck.lib.nlp import *  # language functions
 
 
 # global state variables
@@ -50,7 +39,7 @@ wrongCharacters = [
 ]
 
 
-# helper functions
+# helper functions (put in own file?)
 ######################################################################################
 
 
@@ -161,18 +150,18 @@ R_RepeatedTwoWords = ReRule(
 R_To_vs_Too = ReRule(
     "Possibly 'too' instead of 'to'.",
     "too",
-    r"\s(to)\s(:?much|big|cold|early|easy|fast|few|far|low|hard|high|hot|late|large|long|narrow|short|small|soft|soon|strong|weak|wide)(?=\W)",
+    r"\s(to)\s(:?much|big|cold|early|easy|fast|few|far|low|hard|high|hot|late|large|long|narrow|short|small|soft|soon|strong|weak|wide)\W",
 )
 R_Too_vs_To = ReRule(
     "Possibly 'to' instead of 'too'.",
     "to",
-    r"\s(too)\s(:?\w+" + reInfinitve + r"|show|try|group|move|put)(?=\W)",
+    r"\s(too)\s(:?\w+" + reInfinitve + r"|show|try|group|move|put)\W",
 )
 
 R_Then_vs_Than = ReRule(
     "Use 'than' for comparisons instead of 'then'.",
     "than",
-    r"\s+(?:more|less|lower|higher|better|worse|larger|bigger|longer|earlier|shorter|smaller|weaker|stronger)(?:\s+\w{4,15}){0,2}\s+(then)(?=\W)",
+    r"\s+(?:more|less|lower|higher|better|worse|larger|bigger|longer|earlier|shorter|smaller|weaker|stronger)(?:\s+\w{4,15}){0,2}\s+(then)\W",
 )  # (:?rather|further)
 R_Modal_Base = ReRule(
     "Modal verbs require the base form of the following verb.",
@@ -181,12 +170,12 @@ R_Modal_Base = ReRule(
     + reModal
     + r"\s(?:not\s)?(?:"
     + reAdv
-    + r"\s)?(to|are|been|am|is|was|were|has|had|\w{3,9}ed|\w{2,9}[^yus]s)(?=\W)",
+    + r"\s)?(to|are|been|am|is|was|were|has|had|\w{3,9}ed|\w{2,9}[^yus]s)\W",
 )  # only base forms
 R_Double_Base_Verbs = ReRule(
     "Probably wrong structure of base verbs.",
     "",
-    r"\s(are|be|been|am|is|was|were|have|has|had)(:?\s\w\w\w+)?\s+(?:be|am|is|was|were|have|has|could|will)(?=\W)",
+    r"\s(are|be|been|am|is|was|were|have|has|had)(:?\s\w\w\w+)?\s+(?:be|am|is|was|were|have|has|could|will)\W",
 )  # only base forms
 R_Did_Base = ReRule(
     "The word 'did' requires the base form of a verb.",
@@ -196,24 +185,26 @@ R_Did_Base = ReRule(
 R_Double_Det = ReRule(
     "You have repeated a determiner, which is probably not intended.",
     "",
-    r"\s" + reTheDet + r"\s+(" + reTheDet + r")(?=\W)",
+    r"\s" + reTheDet + r"\s+(" + reTheDet + r")\W",
 )
 R_Double_Adp = ReRule(
     "You have repeated an adposition, which is probably not intended.",
     "",
-    r"\s" + reAdpos + r"\s+(" + reAdpos + r")(?=\W)",
+    r"\s" + reAdpos + r"\s+(" + reAdpos + r")\W",
 )
 R_Double_Modal = ReRule(
     "You have repeated a modal verb, which is probably not intended.",
     "",
-    r"\s" + reModal + r"\s+(" + reModal + r")(?=\W)",
+    r"\s" + reModal + r"\s+(" + reModal + r")\W",
 )
+
+# check that no aux verb is before it: "will it be ..."
 R_Wrong3rdPerson = ReRule(
     "Wrong verb form after 3rd person pronoun.",
     "is/was/does",
     r"\s(?:[Hh]e|[Ss]he|[Ii]t|[Oo]ne|[Tt]his)\s(?:"
     + reAdv
-    + r"\s)?(be|been|being|am|were|have|do|done|doing)(?=\W)",
+    + r"\s)?(been|being|am|were|have|done|doing)\W",  # be/do removed
 )
 R_Wrong2ndPerson = ReRule(
     "Wrong verb form after 2nd person pronoun.",
@@ -430,7 +421,6 @@ S_Split_Infintive = ReRule(
 
 G_StyleRules = [
     S_ShortForms,
-    S_NonScientific,
     S_Informal,
     S_Redundant,
     S_Vague,
@@ -438,10 +428,14 @@ G_StyleRules = [
     S_Large_Number,
     S_Preposition_End,
     S_Oxford_Comma,
+    R_Comma_SubCon,
 ]
 
 
-G_StyleRulesExtra = [R_Comma_SubCon]
+G_StyleRulesExtra = []
+
+
+G_WordRules = [S_NonScientific]
 
 
 # this needs tags!
