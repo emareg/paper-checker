@@ -157,6 +157,7 @@ tabRedundantPhrases = [
 
 
 tabWrongCombinations = [
+    ("at lest", "at least"),
     ("could of", "could have"),
     ("de-factor", "de-facto"),
     ("last change", "last chance"),
@@ -701,6 +702,7 @@ informalVerbs = [
 
 
 tabInformalAdjectives = [
+    ("absurd", "unreasonable"),
     ("apt", "appropriate"),
     ("austere", "strict"),
     ("awesome", "great"),

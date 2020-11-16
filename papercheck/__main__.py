@@ -82,7 +82,28 @@ def markCorrections(lines, corrections, cssclass):
     return lines, corrected_linenums
 
 
-def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
+def hlTeX(lines):
+    for idx, line in enumerate(lines):
+        # store tags
+        tags = re.findall(r"(<span[^<]*?</span>)", line)
+        for jdx, tag in enumerate(tags):
+            line = line.replace(tag, "<span{}>".format(jdx))
+
+        # highlight
+        line = re.sub(r"(\\\w+)(?=\W)", r'<span style="color:blue;">\1</span>', line)
+        line = re.sub(r"(\\\\)", r'<span style="color:blue;">\1</span>', line)
+        line = re.sub(
+            r"(?:[^\\]|^)(%.*?)(?=\n)", r'<span style="color:gray;">\1</span>', line
+        )
+
+        # restore tags
+        for jdx, tag in enumerate(tags):
+            line = line.replace("<span{}>".format(jdx), tag)
+        lines[idx] = line
+    return lines
+
+
+def createHTMLreport(lines, linenums=[[], [], []], stats="", plag="", texwarns=""):
 
     grammar_linenums = linenums[0]
     style_linenums = linenums[1]
@@ -110,6 +131,9 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
     top_header = "<h1>PaperCheck Report for {}</h1><hr>".format(G_filename)
 
     html_stats = "<h2>Text Statistics</h2><pre>{}</pre><hr>".format(stats)
+
+    if texwarns != "":
+        html_stats += "<h2>TeX Analysis</h2><pre>{}</pre><hr>".format(texwarns)
 
     if plag != "":
         html_stats += "<h2>Plagiarism Report</h2><pre>{}</pre><hr>".format(plag)
@@ -172,14 +196,8 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag=""):
 
     out_lines += "</table></tbody>"
 
-    out_lines = re.sub(
-        r"(\\\w+)(?=\W)", r'<span style="color:blue;">\1</span>', out_lines
-    )
-    # out_lines = re.sub(r'(\n[^%]*?)([{}])', r'\1<span style="color:blue;">\2</span>', out_lines)
-    out_lines = re.sub(r"(\\\\)", r'<span style="color:blue;">\1</span>', out_lines)
-    out_lines = re.sub(
-        r"(?<=[^\\])(%.*?)(?=\n)", r'<span style="color:gray;">\1</span>', out_lines
-    )
+    ## todo, fixme: put this in own function and call before replacing corrections!
+    ## Syntax Highlithing
 
     output = head + "<body>\n{}</body>\n</html>".format(
         top_header + html_stats + out_lines
@@ -212,8 +230,9 @@ def parseFile(fileName, args):
         sys.stdout = open(os.devnull, "w")
 
     # process TeX
+    texwarns = ""
     if fileName.endswith(".tex"):
-        checkTeX(text)
+        texcorrections, texwarns = checkTeX(text)
         text = stripTeX(text, True)
 
     if CFG_PRINT_INPUT:
@@ -227,6 +246,12 @@ def parseFile(fileName, args):
     # regex finiter: https://docs.python.org/3/library/re.html#writing-a-tokenizer
     if args.analyze:
         analyzeSentences(text)
+
+    # tex again
+    if fileName.endswith(".tex"):
+        outputLines, linenums = markCorrections(outputLines, texcorrections, "crit")
+        outputLines = hlTeX(outputLines)
+        grammar_linenums += linenums
 
     # spell check
     if args.spell:
@@ -253,7 +278,11 @@ def parseFile(fileName, args):
     # report
     if args.style or args.grammar or args.spell or args.plagiarism:
         report_out = createHTMLreport(
-            outputLines, [grammar_linenums, style_linenums, spell_linenums], stats, plag
+            outputLines,
+            [grammar_linenums, style_linenums, spell_linenums],
+            stats,
+            plag,
+            texwarns,
         )
         with open(fileBaseName + "_papercheck.html", "w+") as f:
             f.write(report_out)

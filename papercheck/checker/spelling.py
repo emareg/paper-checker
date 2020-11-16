@@ -62,7 +62,7 @@ def check_words(dictionary, text):
                     lowword = word[0].lower() + word[1:]
                     isCorrect = lowword in dictionary
                 if not isCorrect and len(word) > 2:
-                    matches = re.findall(r"\W" + word + r"\W", line)
+                    matches = re.findall(r"(?:\W|^)" + word + r"\W", line)
                     match = " " + word + " " if len(matches) == 0 else matches[0]
                     if match[-1] == "-" and word in [
                         "anti",
@@ -104,7 +104,7 @@ def edits1(word):
     splits = [(word[:i], word[i:]) for i in range(len(word) + 1)]
     capital = [word[0].upper() + word[1:]]
     transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1]
-    replaces = [L + c + R[1:] for L, R in splits if R for c in letters]
+    replaces = [L + c + R[1:] for L, R in splits[1:] if R for c in letters]
     inserts = [L + c + R for L, R in splits for c in letters]
     deletes = [L + R[1:] for L, R in splits if R]
     return list(set(capital + transposes + replaces + inserts + deletes))
