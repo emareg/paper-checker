@@ -63,6 +63,8 @@ def markCorrections(lines, corrections, cssclass):
         if corr.match[-1] in " ),.\n":
             me = corr.match[-1]
             corr.match = corr.match[:-1]
+        # if corr.match[0] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        #     ms="\n"
         lines = lines.replace(
             ms + corr.match + me,
             ms

@@ -6,12 +6,12 @@ from papercheck.lib.stripper import *
 from collections import Counter
 import html
 
-SENTENCES_MAX = 7  # maximum analyzed sentences per document
-QUERY_WAIT_SECONDS = 2  # wait time between google queries
+SENTENCES_MAX = 8  # maximum analyzed sentences per document
+QUERY_WAIT_SECONDS = 1.3  # wait time between google queries
 
 SIMILAR_THRESHOLD = 0.7
-SENTENCE_WORD_MIN = 15
-SENTENCE_WORD_MAX = 20
+SENTENCE_WORD_MIN = 12
+SENTENCE_WORD_MAX = 22
 
 # imports
 
@@ -137,7 +137,7 @@ def findSignificantSentences(text):
     unique_words = set(all_words)
     long_words = [x for x in all_words if len(x) > 5]
     word_counts = Counter(long_words)
-    common_word_counts = word_counts.most_common(8)
+    common_word_counts = word_counts.most_common(10)
     # print("Significant Words: ", common_word_counts)
 
     common_words = [wc[0] for wc in common_word_counts]
@@ -163,7 +163,7 @@ def findSignificantSentences(text):
 
 
 def merge_ems(span):
-    lsSmall = r"(?:a|an|at|is|in|of|to|,|-)"
+    lsSmall = r"(?:a|an|at|are|for|is|can|in|of|to|,|-)"
     span = re.sub(r"</em>( ?" + lsSmall + r" ?)<em>", r"\1", span)
     return span
 
@@ -172,6 +172,7 @@ def compare_and_decide(sent_doc, sent_web):
     # either one  long or several small bolds
     doc_words = split2words(sent_doc)
     # long_words = [ x for x in doc_words if len(x) > 2 ]
+    # print("sent_web:", sent_web)
 
     is_plagiarsim = 0
     sent_web = merge_ems(sent_web)
@@ -179,6 +180,7 @@ def compare_and_decide(sent_doc, sent_web):
     total_bold_words = 0
     long_bolds = 0
     for bold in bold_spans:
+        # print("bold-span:", bold)
         bold_words = split2words(bold)
         word_count = len(bold_words)
         total_bold_words += word_count
@@ -234,6 +236,8 @@ def checkPlagiarismSentence(sent):
 # Main
 # ===========================================================
 
+import random
+
 
 def checkPlagiarism(text):
 
@@ -255,9 +259,9 @@ def checkPlagiarism(text):
     )
     print(output)
 
-    for sent in sigsentences[:num_sentences]:
+    for sent in random.sample(sigsentences, num_sentences):
         sent = sent.replace("\n", " ")
         output += checkPlagiarismSentence(sent)
-        time.sleep(2)
+        time.sleep(QUERY_WAIT_SECONDS)
 
     return output

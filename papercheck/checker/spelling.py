@@ -64,6 +64,8 @@ def check_words(dictionary, text):
                 if not isCorrect and len(word) > 2:
                     matches = re.findall(r"(?:\W|^)" + word + r"\W", line)
                     match = " " + word + " " if len(matches) == 0 else matches[0]
+                    if match[0].isalpha():
+                        match = "\n" + match
                     if match[-1] == "-" and word in [
                         "anti",
                         "bio",
