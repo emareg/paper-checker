@@ -10,6 +10,7 @@ import sys
 
 DIC_DIR = __file__.replace("checker/spelling.py", "dictionary/")
 
+
 def read_file_or_zip(filename):
     lines = ""
     try:
