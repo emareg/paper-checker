@@ -6,8 +6,8 @@ import zipfile
 from papercheck.lib.nlp import *  # language functions
 from papercheck.pos.tags import *
 
-POS_DIR = "papercheck/dictionary/pos/"
-
+DIC_DIR = __file__.replace("pos/posdic.py", "dictionary/")
+POS_DIR = DIC_DIR + "pos/"
 
 G_posdic = {}
 G_tagcons = False
@@ -171,8 +171,8 @@ def build_dictionary():
         addWord(posdic, noun, POS_TAG_NOUN)
         addWord(posdic, plural(noun), POS_TAG_NOUN_PL)
 
-    parse_dicfile(posdic, "papercheck/dictionary/en-Academic.dic")
-    # parse_dicfile(posdic, "papercheck/dictionary/en_US.dic") # should only add tags to new words
+    parse_dicfile(posdic, DIC_DIR + "en-Academic.dic")
+    # parse_dicfile(posdic, DIC_DIR + "en_US.dic") # should only add tags to new words
 
     return posdic
 

@@ -20,7 +20,7 @@ from papercheck.lib.nlp import *  # language functions
 # global state variables
 # ==========================================================
 outputLines = []
-
+DIC_DIR = __file__.replace("checker/grammar.py", "dictionary/")
 
 # checking regex
 # ==========================================================
@@ -472,7 +472,7 @@ def checkPairs(text):
 def checkAbbreviations(text):
     # todo: check if Acronym was only used once => suspicious!
     dictionary = {}
-    spelling.read_acronyms(dictionary, "papercheck/dictionary/acronyms.md")
+    spelling.read_acronyms(dictionary, DIC_DIR + "acronyms.md")
     foundAbbreviations = lstAcronyms + list(dictionary.keys())
     matches = findRegEx(r"\s([A-Z][A-Z])\s", text)
     for match in matches:

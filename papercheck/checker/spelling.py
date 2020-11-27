@@ -8,6 +8,7 @@ import os
 import zipfile
 import sys
 
+DIC_DIR = __file__.replace("checker/spelling.py", "dictionary/")
 
 def read_file_or_zip(filename):
     lines = ""
@@ -127,7 +128,7 @@ def checkSpelling(text):
     dictionary = {}
     dictionary = getDict()
 
-    read_acronyms(dictionary, "papercheck/dictionary/acronyms.md")
+    read_acronyms(dictionary, DIC_DIR + "acronyms.md")
 
     # DEBUGGING ONLY
     # text = ""
