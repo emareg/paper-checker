@@ -7,20 +7,24 @@ import re
 import os
 import zipfile
 import sys
+import pathlib
 
-DIC_DIR = __file__.replace("checker/spelling.py", "dictionary/")
+DIC_DIR = pathlib.Path("dictionary")
 
 
 def read_file_or_zip(filename):
+    abs_filepath = pathlib.Path(__file__).resolve().parent.parent.joinpath(filename)
+
     lines = ""
     try:
-        fh = open(filename, "r", encoding="utf8")
+        fh = open(abs_filepath, "r", encoding="utf8")
         lines = fh.read()
         fh.close()
     except (FileNotFoundError, NotADirectoryError):
         try:
+            zip_filepath = pathlib.Path("papercheck").joinpath(filename)
             arch = zipfile.ZipFile(sys.argv[0], "r")
-            fh = arch.open(filename, "r")
+            fh = arch.open(str(zip_filepath), "r")
             lines = fh.read().decode("utf-8")
             fh.close()
         except FileNotFoundError:
@@ -129,7 +133,7 @@ def checkSpelling(text):
     dictionary = {}
     dictionary = getDict()
 
-    read_acronyms(dictionary, DIC_DIR + "acronyms.md")
+    read_acronyms(dictionary, DIC_DIR.joinpath("acronyms.md"))
 
     # DEBUGGING ONLY
     # text = ""

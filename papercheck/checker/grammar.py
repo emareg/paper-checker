@@ -10,6 +10,7 @@ AMERICAN_ENGLISH = True  # If False: British English
 
 # import
 # ===========================================
+import pathlib
 from papercheck.checker import spelling
 from papercheck.lib.word_lists import *  # part of speech lists
 from papercheck.pos.POS_en import *  # part of speech lists
@@ -20,7 +21,7 @@ from papercheck.lib.nlp import *  # language functions
 # global state variables
 # ==========================================================
 outputLines = []
-DIC_DIR = __file__.replace("checker/grammar.py", "dictionary/")
+DIC_DIR = pathlib.Path("dictionary")
 
 # checking regex
 # ==========================================================
@@ -472,7 +473,7 @@ def checkPairs(text):
 def checkAbbreviations(text):
     # todo: check if Acronym was only used once => suspicious!
     dictionary = {}
-    spelling.read_acronyms(dictionary, DIC_DIR + "acronyms.md")
+    spelling.read_acronyms(dictionary, DIC_DIR.joinpath("acronyms.md"))
     foundAbbreviations = lstAcronyms + list(dictionary.keys())
     matches = findRegEx(r"\s([A-Z][A-Z])\s", text)
     for match in matches:
