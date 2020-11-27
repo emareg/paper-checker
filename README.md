@@ -38,6 +38,16 @@ make install
 
 This will copy the stand-alone executable to `/usr/loca/bin`
 
+### Install as a Python package
+
+```
+pip3 install .
+cd example
+python3 -m papercheck -sgy testfile.tex
+```
+
+This will copy the stand-alone executable to `/usr/loca/bin`
+
 ## Features
 
 ### Spell Checker (`-s` option)
