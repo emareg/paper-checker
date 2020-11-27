@@ -23,7 +23,7 @@ python3 paperchecker.py -sgy example/testfile.tex
 **2. Compile as a stand-alone executable (Unix only)**
 ```
 make
-./paperchecker -sgy example/testfile.tex
+./papercheck -sgy example/testfile.tex
 ```
 
 Supported file types: `.tex .txt .md .pdf`

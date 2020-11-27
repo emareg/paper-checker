@@ -164,7 +164,9 @@ tabWrongCombinations = [
     (r"(?:have|has|had) (?:the|a|no) change", "chance"),
     (r"(?:should|will) bee", "been"),
     ("insure that", "ensure that"),
+    ("In contrast,", "By contrast"),  # In contrast must be folled by "to"
     ("must to", "must"),
+    ("need of", "need for"),
     ("to for", "for"),
     ("to here", "to hear"),
     ("in principal", "in principle"),
