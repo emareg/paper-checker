@@ -76,6 +76,8 @@ class ReRule:
             sugg = sugg.replace(r"\1", match[2].group(1))
             desc = self.desc.replace(r"\1", match[2].group(1))
             replace = matched_words.replace(match[2].group(1), sugg, 1)
+            replace = replace.replace(r"\n", " ")
+            replace = replace.replace('\\', "∖")
             # replace = " "+re.sub(self.regex, self.sugg, match[2].group(0))+" "
             printRule(match[0], desc, matched_words, replace)
             if idx == 0:
@@ -129,7 +131,8 @@ def checkTeX(text):
 R_Caption_Period = ReRule(
     "STYLE: Captions should be ended by a period '.'.",
     ".}",
-    r"\\caption\{[^}]+[^. ]\s*(\}\s*)(?=\n)",
+    r"\\caption\{[^}]+?[\w}](\s*\}\s*)(?=\n|%)",
+    #r"\\caption\{[^}]+[^. ]\s*(\}\s*)(?=\n)",  # does not match multiline, see #24
 )
 
 R_Table_Hline = ReRule(
