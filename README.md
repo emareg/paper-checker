@@ -7,21 +7,23 @@ PaperCheck is a python script that searches for simple grammar mistakes in scien
 
 ## Getting Started
 
-```
-git clone git@github.com:emareg/paper-checker.git
+```shell
+git clone https://github.com:emareg/paper-checker.git
 cd paper-checker
 make setup
 ```
 
 Afterwards, you can use the script in two ways:
 
-**1. Run the python file**
-```
+### 1. Run the python file
+
+```shell
 python3 paperchecker.py -sgy example/testfile.tex
 ```
 
-**2. Compile as a stand-alone executable (Unix only)**
-```
+### 2. Compile as a stand-alone executable (Unix only)
+
+```shll
 make
 ./papercheck -sgy example/testfile.tex
 ```
@@ -32,11 +34,11 @@ The found issues are displayed in the terminal and also written into `papercheck
 
 ### System wide installation
 
-```
+```shell
 make install
 ```
 
-This will copy the stand-alone executable to `/usr/loca/bin`
+This will copy the stand-alone executable to `~/.local/bin`
 
 ### Install as a Python package
 
@@ -49,6 +51,7 @@ python3 -m papercheck -sgy testfile.tex
 ## Features
 
 ### Spell Checker (`-s` option)
+
 Will highlight spelling errors. The script uses a small basic dictionary plus some additional self-made dictionaries for terms such as
 
 * technical: “microcontroller”, “superframe”, “bitmask”
@@ -62,6 +65,7 @@ The larger standard dictionaries are unsuitable because they
 * include obsolete forms such as “latence” which should be “latency”
 
 ### Grammar Checker (`-g` option)
+
 Will highlight simple grammar mistakes such as
 
 * misuse of “a” or “an”
@@ -72,6 +76,7 @@ Will highlight simple grammar mistakes such as
 * wrong person-verb combination (e.g. “This were”)
 
 ### Style Checker (`-y` option)
+
 Will highlight language that could be improved such as
 
 * wrong words in scientific context (e.g. “angle” vs. “angel”)
@@ -80,11 +85,13 @@ Will highlight language that could be improved such as
 <!-- * numbers below 12 are written as digits -->
 
 ### Plagiarism Checker (`-p` option)
+
 **experimental!**
 
 The script will try to find significant sentences, which are then compared to Google search results. This is a very poor approach but useful as a minimal effort with zero cost.
 
 ### TeX checker
+
 When you run the script on `.tex` files, it will also check for certain TeX problems such as
 
 * unused labels
