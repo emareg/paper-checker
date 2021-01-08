@@ -2,27 +2,31 @@ import re
 import os
 import sys
 import zipfile
+import pathlib
 
 from papercheck.lib.nlp import *  # language functions
 from papercheck.pos.tags import *
 
-POS_DIR = "papercheck/dictionary/pos/"
-
+DIC_DIR = pathlib.Path("dictionary")
+POS_DIR = DIC_DIR.joinpath("pos")
 
 G_posdic = {}
 G_tagcons = False
 
 
 def read_file_or_zip(filename):
+    abs_filepath = pathlib.Path(__file__).resolve().parent.parent.joinpath(filename)
+
     lines = ""
     try:
-        fh = open(filename, "r", encoding="utf8")
+        fh = open(abs_filepath, "r", encoding="utf8")
         lines = fh.read()
         fh.close()
     except (FileNotFoundError, NotADirectoryError):
         try:
+            zip_filepath = pathlib.Path("papercheck").joinpath(filename)
             arch = zipfile.ZipFile(sys.argv[0], "r")
-            fh = arch.open(filename, "r")
+            fh = arch.open(str(zip_filepath), "r")
             lines = fh.read().decode("utf-8")
             fh.close()
         except FileNotFoundError:
@@ -140,7 +144,7 @@ def parse_affix(dic, word, affix):
 
 
 def parse_dicfile(posdic, dicfile):
-    if dicfile[-4:] != ".dic":
+    if str(dicfile)[-4:] != ".dic":
         print("ERROR: Not a .dic file:", dicfile)
     text = read_file_or_zip(dicfile)
 
@@ -152,27 +156,27 @@ def parse_dicfile(posdic, dicfile):
 def build_dictionary():
     posdic = {}
 
-    read_txtlist(posdic, POS_DIR + "en_basic.txt", POS_TAG_BASE_VERB)
-    read_txtlist(posdic, POS_DIR + "en_modal.txt", POS_TAG_MODAL_VERB)
-    read_txtlist(posdic, POS_DIR + "en_adverbs.txt", POS_TAG_ADVERB)
-    read_txtlist(posdic, POS_DIR + "en_adjectives.txt", POS_TAG_ADJECTIVE)
-    read_txtlist(posdic, POS_DIR + "en_conjunction.txt", POS_TAG_CONJUNCTION)
-    read_txtlist(posdic, POS_DIR + "en_letters.txt", POS_TAG_SYMBOL)
-    read_txtlist(posdic, POS_DIR + "en_determiners.txt", POS_TAG_DETERMINER)
-    read_txtlist(posdic, POS_DIR + "en_adposition.txt", POS_TAG_PREPOSITION)
-    read_txtlist(posdic, POS_DIR + "en_pronoun.txt", POS_TAG_PRONOUN)
-    read_txtlist(posdic, POS_DIR + "en_irregular_verbs.txt", POS_TAG_VERB)
+    read_txtlist(posdic, POS_DIR.joinpath("en_basic.txt"), POS_TAG_BASE_VERB)
+    read_txtlist(posdic, POS_DIR.joinpath("en_modal.txt"), POS_TAG_MODAL_VERB)
+    read_txtlist(posdic, POS_DIR.joinpath("en_adverbs.txt"), POS_TAG_ADVERB)
+    read_txtlist(posdic, POS_DIR.joinpath("en_adjectives.txt"), POS_TAG_ADJECTIVE)
+    read_txtlist(posdic, POS_DIR.joinpath("en_conjunction.txt"), POS_TAG_CONJUNCTION)
+    read_txtlist(posdic, POS_DIR.joinpath("en_letters.txt"), POS_TAG_SYMBOL)
+    read_txtlist(posdic, POS_DIR.joinpath("en_determiners.txt"), POS_TAG_DETERMINER)
+    read_txtlist(posdic, POS_DIR.joinpath("en_adposition.txt"), POS_TAG_PREPOSITION)
+    read_txtlist(posdic, POS_DIR.joinpath("en_pronoun.txt"), POS_TAG_PRONOUN)
+    read_txtlist(posdic, POS_DIR.joinpath("en_irregular_verbs.txt"), POS_TAG_VERB)
 
     # print('POS:', posdic['a'])
 
     noun_dict = {}
-    read_txtlist(noun_dict, POS_DIR + "en_proper_nouns.txt", POS_TAG_NOUN)
+    read_txtlist(noun_dict, POS_DIR.joinpath("en_proper_nouns.txt"), POS_TAG_NOUN)
     for noun in noun_dict:
         addWord(posdic, noun, POS_TAG_NOUN)
         addWord(posdic, plural(noun), POS_TAG_NOUN_PL)
 
-    parse_dicfile(posdic, "papercheck/dictionary/en-Academic.dic")
-    # parse_dicfile(posdic, "papercheck/dictionary/en_US.dic") # should only add tags to new words
+    parse_dicfile(posdic, DIC_DIR.joinpath("en-Academic.dic"))
+    # parse_dicfile(posdic, DIC_DIR + "en_US.dic") # should only add tags to new words
 
     return posdic
 
