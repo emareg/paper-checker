@@ -39,18 +39,19 @@ def statsFigures(text):
     figs = {"figs": 0, "tabs": 0, "lsts": 0}
     figs["figs"] = len(
         re.findall(
-            r"\\begin\{figure\}|(?<=\n)\s*Fig(?:\.|ure) \d\d?(?:[.:]\s|\n)", text
+            r"\\begin\{figure\}|(?<=\n)\s*Fig(?:\.|ure) (?:\d\d?|[0-9A]\.\d\d?)(?:[.:]\s|\n)",
+            text,
         )
     )
     figs["tabs"] = len(
         re.findall(
-            r"\\begin\{table\}|(?<=\n)\s*(?:Table|TABLE) (?:\d\d?|[IVX]{,4})(?:[.:]\s|\n)",
+            r"\\begin\{table\}|(?<=\n)\s*(?:Table|TABLE) (?:\d\d?|[0-9A]\.\d\d?|[IVX]{,4})(?:[.:]\s|\n)",
             text,
         )
     )
     figs["lsts"] = len(
         re.findall(
-            r"\\begin\{(?:lstlisting|algorithm|algorithmic|program)\}|(?<=\n)\s*(?:Listing|Algorithm) (?:\d\d?|[IVX]{,4})(?:[.:]\s|\n)",
+            r"\\begin\{(?:lstlisting|algorithm|algorithmic|program)\}|(?<=\n)\s*(?:Listing|Algorithm) (?:\d\d?|[0-9A]\.\d\d?|[IVX]{,4})(?:[.:]\s|\n)",
             text,
         )
     )

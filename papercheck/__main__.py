@@ -115,7 +115,8 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag="", texwarns="
     <title>Report of papercheck</title>
     <style>body{{font-family: monospace;}}
     body{ font-family: monospace; }
-    td{ vertical-align: top; }
+    td{ vertical-align: top; max-width: 90vw; }
+    pre{ white-space: pre-line; }
     em{ font-weight: bold; }
     .ln{display: inline-block;width: 50px;user-select: none;}
     .corr{font-weight:bold;cursor:pointer;}
