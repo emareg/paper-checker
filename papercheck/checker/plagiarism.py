@@ -108,10 +108,11 @@ def google_search(searchstr):
         r'<div class="g">(.*?)(?=><div class="g">)', html_res, re.DOTALL
     )
     for result in results:
-        # print("Result:", result, "\n\n")
+        #print("Result:", result, "\n\n")
         title = re.findall(r"<h3 class=.*?>(.*?)</h3>", result, re.DOTALL)[0]
         urls = re.findall(
-            r'<div class="rc?"[^>]*?>.*?<a href="(.*?)"', result, re.DOTALL
+            #r'<div class="rc?"[^>]*?>.*?<a href="(.*?)"', result, re.DOTALL
+            r'<a href="(https?.*?)"', result, re.DOTALL
         )
         url = urls[0] if len(urls) != 0 else ""
         desc = re.findall(
