@@ -1,6 +1,7 @@
 import re
 from papercheck.lib.cli import *  # command line interface
 
+
 class Correction:
     def __init__(self, line, column, match, suggestion, description):
         self.line = line
@@ -39,10 +40,8 @@ class ReRule:
         self.sugg = suggestion
         self.regex = regex
 
-
     def _check_single(self, text, regex, sugg):
         pass
-
 
     def check(self, sentence):
         # print(self.regex)
@@ -67,7 +66,6 @@ class ReRule:
         return corrections
 
 
-
 class ReSub(ReRule):
     def __init__(self, description, table):
         self.desc = description
@@ -88,25 +86,20 @@ class ReSub(ReRule):
         return corrections
 
 
-
-
 class ComplexRule:
-
-    def checkText(self, text: str) -> list: 
+    def checkText(self, text: str) -> list:
         raise NotImplementedError
 
 
-
 class Checker:
-
     def __init__(self, name):
         self.name = name
         self.reRules = []
 
     def addRules(self, rules: list):
-        if not rules or len(rules) == 0: return
+        if not rules or len(rules) == 0:
+            return
         self.reRules += rules
-
 
     def checkText(self, text: str):
         corrections = []
@@ -119,4 +112,3 @@ class Checker:
         for sent in sents:
             corrections += self.checkText(sent)
         return corrections
-

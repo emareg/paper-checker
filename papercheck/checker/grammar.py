@@ -41,8 +41,6 @@ wrongCharacters = [
 ]
 
 
-
-
 # todo: found exception: an unanimuous vote.
 R_AvsAn = ReRule(
     "Use 'an' because the next word starts with a vowel SOUND.",
