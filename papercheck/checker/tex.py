@@ -88,23 +88,6 @@ class ReRule:
         return corrections, text_out
 
 
-# class ReRule:
-#     def __init__(self, description, suggestion="", regex=r""):
-#         self.desc = description
-#         self.sugg = suggestion
-#         self.regex = regex
-
-#     def check(self, sentence):
-#         # print(self.regex)
-#         matches = findRegEx(self.regex, sentence)
-#         for match in matches:
-#             sugg = self.sugg.replace(r"\1", match[2].group(1))
-#             desc = self.desc.replace(r"\1", match[2].group(1))
-#             replace = match[2].group(0).replace(match[2].group(1), sugg, 1)
-#             # replace = " "+re.sub(self.regex, self.sugg, match[2].group(0))+" "
-#             printRule(match[0], desc, match[2].group(0), replace)
-
-
 def checkTeX(text):
     global outputLines
     outputLines = text.splitlines(True)

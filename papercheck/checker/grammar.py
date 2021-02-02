@@ -11,6 +11,7 @@ AMERICAN_ENGLISH = True  # If False: British English
 # import
 # ===========================================
 import pathlib
+from papercheck.checker import ReRule, ReSub, findRegEx
 from papercheck.checker import spelling
 from papercheck.lib.word_lists import *  # part of speech lists
 from papercheck.pos.POS_en import *  # part of speech lists
@@ -40,93 +41,6 @@ wrongCharacters = [
 ]
 
 
-# helper functions (put in own file?)
-######################################################################################
-
-
-def findRegEx(regex, text):
-    matches = []
-    regex = regex + r"|(\n)"
-    line_num = 1
-    line_start = 0
-    for mo in re.finditer(regex, text):
-        try:
-            if mo.group(mo.lastindex) == "\n":
-                line_start = mo.end()
-                line_num += 1
-            else:
-                column = mo.start() - line_start
-                if mo.group(0)[0] == "\n":
-                    line_num += 1
-                matches.append((line_num, column, mo))
-                if "\n" in mo.group(0)[1:]:
-                    line_num += mo.group(0).count("\n")
-        except Exception as e:
-            print(mo)
-            print(e)
-    return matches
-
-
-# features
-######################################################################################
-
-
-class Correction:
-    def __init__(self, line, column, match, suggestion, description):
-        self.line = line
-        self.col = column
-        self.match = match
-        self.sugg = suggestion
-        self.desc = description
-
-
-class ReRule:
-    def __init__(self, description, suggestion="", regex=r""):
-        self.desc = description
-        self.sugg = suggestion
-        self.regex = regex
-
-    def check(self, sentence):
-        # print(self.regex)
-        corrections = []
-        matches = findRegEx(self.regex, sentence)
-        for match in matches:
-            matched_words = match[2].group(0)
-            # (
-            #     match[2].group(0)
-            #     if match[2].group(0)[0] != "\n"
-            #     else match[2].group(0)[1:]
-            # )
-            sugg = self.sugg(match[2].group(1)) if callable(self.sugg) else self.sugg
-            sugg = sugg.replace(r"\1", match[2].group(1))
-            desc = self.desc.replace(r"\1", match[2].group(1))
-            replace = matched_words.replace(match[2].group(1), sugg, 1)
-            # replace = " "+re.sub(self.regex, self.sugg, match[2].group(0))+" "
-            askAction(match[0], desc, matched_words, replace)
-            corrections.append(
-                Correction(match[0], match[1], matched_words, replace, desc)
-            )
-        return corrections
-
-
-class ReSub:
-    def __init__(self, description, table, verbs=False):
-        self.desc = description
-        self.table = table
-
-    def check(self, sentence):
-        corrections = []
-        for line in self.table:
-            # print(line)
-            matches = findRegEx(r"(\s" + line[0] + r"\W)", sentence)
-            for match in matches:
-                matched_words = match[2].group(0)
-                replace = match[2].group(0)[0] + line[1] + match[2].group(0)[-1]
-                askAction(match[0], self.desc, match[2].group(0), replace)
-                corrections.append(
-                    Correction(match[0], match[1], matched_words, replace, self.desc)
-                )
-        return corrections
 
 
 # todo: found exception: an unanimuous vote.
@@ -486,7 +400,7 @@ def checkAbbreviations(text):
             )
             foundAbbreviations.append(match[2].group(1))
 
-    matches = findRegEx(r"\s([A-Z][A-Z][A-Z][A-Z]?[A-Z]?)\s(?!\(|“)", text)
+    matches = findRegEx(r"\s([A-Z]{3,5})\s(?!\(|“)", text)
     for match in matches:
         if (
             "(" + match[2].group(1) + ")" not in text
@@ -502,7 +416,7 @@ def checkAbbreviations(text):
 
 
 def checkSplitInfinitve(text):
-    matches = findRegEx(r"\sto (" + reAdv + ") (\w{4,})", text)
+    matches = findRegEx(r"\sto (" + reAdv + r") (\w{4,})", text)
     for match in matches:
         if match[2].group(2) not in lstDeterminer + lstAdpos + lstConjunction + lstAdv:
             replace = "to " + match[2].group(2) + " " + match[2].group(1)

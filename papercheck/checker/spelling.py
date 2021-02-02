@@ -115,7 +115,15 @@ def edits1(word):
     replaces = [L + c + R[1:] for L, R in splits[1:] if R for c in letters]
     inserts = [L + c + R for L, R in splits for c in letters]
     deletes = [L + R[1:] for L, R in splits if R]
-    return list(set(capital + transposes + replaces + inserts + deletes))
+
+    special = []
+    if len(word) > 5 and word[-2:] == "ic": special.append(word+"al")
+    if len(word) > 7 and word[-4:] == "ical": special.append(word[:-2])
+    if len(word) > 7 and word[-4:] == "icly": special.append(word[:-2]+"ally")
+    return list(set(capital + transposes + replaces + inserts + deletes + special))
+
+
+    
 
 
 def suggest(dictionary, wrong):

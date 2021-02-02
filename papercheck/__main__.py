@@ -55,6 +55,7 @@ def markCorrections(lines, corrections, cssclass):
     for corr in corrections:
         corrected_linenums += [corr.line]
         # todo place whitespace outside
+        # todo: replace only specific lines to prevent spelling errors shown many times
         ms = ""
         me = ""
         if corr.match[0] in " (\n":
