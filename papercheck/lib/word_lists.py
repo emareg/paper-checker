@@ -261,6 +261,7 @@ tabLatinPlural = [
 ]
 
 tabBritishAmerican = [
+    ("analyser", "analyzer"),
     ("aeroplane", "airplane"),
     ("aluminium", "aluminum"),
     ("analyse", "analyze"),
@@ -352,6 +353,7 @@ tabNonScientificWords = [
     ("dome", "done"),
     ("duel", "dual"),
     ("goof", "good"),
+    ("easiness", "ease"),
     ("ether", "either"),
     ("ere", "here"),
     ("hail", "hall"),
@@ -521,6 +523,7 @@ tabInformalWords = [
     ("sort of", "rather"),
     ("heaps of", "many"),
     ("huge", "large"),
+    ("looking ones", ""),
     ("mess", "chaos"),
     ("nice", "attractive"),
     # ("normal", "general"),  # conventional

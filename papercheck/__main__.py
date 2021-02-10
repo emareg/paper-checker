@@ -48,39 +48,50 @@ def writeOutputFile(fileName, text):
             f.write(text)
 
 
-def markCorrections(lines, corrections, cssclass):
+# insert the title content for spans
+def finalizeCorrections(lines, spans):
+    lines = "".join(lines)
+    # print(lines)
+    for idx, span in enumerate(spans):
+        # print("replacing <span{}>".format(str(idx)), "with", span)
+        lines = lines.replace("<span{}>".format(str(idx)), span)
+    lines = lines.splitlines(True)
+    return lines
+
+
+def markCorrections(lines, corrections, cssclass, spans=[]):
     corrected_linenums = []
+
     lines = "".join(lines)
 
     for corr in corrections:
         corrected_linenums += [corr.line]
+
+        # lines[corr.line-1] = lines[corr.line-1].replace(
+        #         corr.match, span
+        #     )
+
+        # todo: should build a html list an only apply marks to HTML inner
         # todo place whitespace outside
         # todo: replace only specific lines to prevent spelling errors shown many times
         ms = ""
         me = ""
-        if corr.match[0] in " (\n":
+        if corr.match[0] in " (\n":  # FIXME: this might cause line shifts!
             ms = corr.match[0]
             corr.match = corr.match[1:]
         if corr.match[-1] in " ),.\n":
             me = corr.match[-1]
             corr.match = corr.match[:-1]
-        lines = lines.replace(
-            ms + corr.match + me,
-            ms
-            + '<span class="corr '
-            + cssclass
-            + '" title="{}">{}</span>'.format(
-                corr.desc
-                + " Suggestion: '"
-                + corr.sugg.replace("\n", " ").strip()
-                + "'",
-                corr.match,
-            )
-            + me,
+        spanmark = '<span class="corr {}" title="{} Suggestion: \'{}\'">'.format(
+            cssclass, corr.desc, corr.sugg.replace("\n", " ").strip()
         )
+        span = "<span" + str(len(spans)) + ">" + corr.match + "</span>"
+
+        lines = lines.replace(ms + corr.match + me, ms + span + me)
+        spans.append(spanmark)
 
     lines = lines.splitlines(True)
-    return lines, corrected_linenums
+    return lines, corrected_linenums, spans
 
 
 def hlTeX(lines):
@@ -121,6 +132,7 @@ def createHTMLreport(lines, linenums=[[], [], []], stats="", plag="", texwarns="
     em{ font-weight: bold; }
     .ln{display: inline-block;width: 50px;user-select: none;}
     .corr{font-weight:bold;cursor:pointer;}
+    .corr .corr{background-color: #eee; outline: 1px solid gray; padding: .2em;}
     .corr:hover {background-color: yellow;}
     .err{color:Magenta;}
     .crit{color:red;}
@@ -249,29 +261,41 @@ def parseFile(fileName, args):
     if args.analyze:
         analyzeSentences(text)
 
+    spans = []
     # tex again
     if fileName.endswith(".tex"):
-        outputLines, linenums = markCorrections(outputLines, texcorrections, "crit")
+        outputLines, linenums, spans = markCorrections(
+            outputLines, texcorrections, "crit", spans
+        )
         outputLines = hlTeX(outputLines)
         grammar_linenums += linenums
 
     # spell check
     if args.spell:
         corrections = checkSpelling(text)
-        outputLines, linenums = markCorrections(outputLines, corrections, "err")
+        outputLines, linenums, spans = markCorrections(
+            outputLines, corrections, "err", spans
+        )
         spell_linenums += linenums
 
     # grammar check
     if args.grammar:
         corrections = checkGrammar(text)
-        outputLines, linenums = markCorrections(outputLines, corrections, "crit")
+        outputLines, linenums, spans = markCorrections(
+            outputLines, corrections, "crit", spans
+        )
         grammar_linenums += linenums
 
     # style check
     if args.style:
         corrections = checkStyle(text)
-        outputLines, linenums = markCorrections(outputLines, corrections, "warn")
+        outputLines, linenums, spans = markCorrections(
+            outputLines, corrections, "warn", spans
+        )
         style_linenums += linenums
+
+    # apply spans
+    outputLines = finalizeCorrections(outputLines, spans)
 
     # plagiarism check
     if args.plagiarism:

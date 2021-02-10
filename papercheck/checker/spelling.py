@@ -123,7 +123,9 @@ def edits1(word):
         special.append(word[:-2])
     if len(word) > 7 and word[-4:] == "icly":
         special.append(word[:-2] + "ally")
-    return list(set(capital + transposes + replaces + inserts + deletes + special))
+    if len(word) > 5 and "ise" in word:
+        special.append(word.replace("ise", "ize"))
+    return special + list(set(capital + transposes + replaces + inserts + deletes))
 
 
 def suggest(dictionary, wrong):

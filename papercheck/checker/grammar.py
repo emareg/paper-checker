@@ -11,7 +11,7 @@ AMERICAN_ENGLISH = True  # If False: British English
 # import
 # ===========================================
 import pathlib
-from papercheck.checker import ReRule, ReSub, findRegEx
+from papercheck.checker.rules import ReRule, ReSub, findRegEx
 from papercheck.checker import spelling
 from papercheck.lib.word_lists import *  # part of speech lists
 from papercheck.pos.POS_en import *  # part of speech lists
@@ -83,7 +83,7 @@ R_Modal_Base = ReRule(
     + reModal
     + r"\s(?:not\s)?(?:"
     + reAdv
-    + r"\s)?(to|are|been|am|is|was|were|has|had|\w{3,9}ed|\w{2,9}[^yus]s)\W",
+    + r"\s)?(to|are|been|am|is|was|were|has|had|\w{2,9}[^e]ed|\w{2,9}[^yus]s)\W",
 )  # only base forms
 R_Double_Base_Verbs = ReRule(
     "Probably wrong structure of base verbs.",

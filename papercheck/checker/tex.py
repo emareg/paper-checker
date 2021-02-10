@@ -1,6 +1,8 @@
 # imports
 import re
 from papercheck.lib.nlp import *
+from papercheck.checker.rules import ReRule, findRegEx
+from papercheck.lib.cli import *  # command line interface
 
 
 # global state variables
@@ -12,85 +14,7 @@ outputLines = []
 tabPackages = [("unitsdef", "siunitx")]
 
 
-def bold(string):
-    return "\033[1m" + string + "\033[0m"
-
-
-def red(string):
-    return "\033[91m" + string + "\033[0m"
-
-
-def green(string):
-    return "\033[32m" + string + "\033[0m"
-
-
-def printRule(ln, msg, match, replace):
-    global outputLines
-    print(bold("Line " + str(ln)) + ": " + msg)
-    num_n = match.count("\n")
-    outcopy = outputLines[ln - 1 : ln + num_n]
-    replacestr = green('⇒"' + replace + '"') if (replace != "") else ""
-    print("".join(outcopy).replace(match, red('"' + match + '"') + replacestr))
-
-
-def findRegEx(regex, text):
-    matches = []
-    regex = regex + r"|(\n)"
-    line_num = 1
-    line_start = 0
-    for mo in re.finditer(regex, text):
-        if mo.group(mo.lastindex) == "\n":
-            line_start = mo.end()
-            line_num += 1
-        else:
-            column = mo.start() - line_start
-            matches.append((line_num, column, mo))
-            if "\n" in mo.group(0):
-                line_num += mo.group(0).count("\n")
-    return matches
-
-
-class Correction:
-    def __init__(self, line, column, match, suggestion, description):
-        self.line = line
-        self.col = column
-        self.match = match
-        self.sugg = suggestion
-        self.desc = description
-
-
-class ReRule:
-    def __init__(self, description, suggestion="", regex=r""):
-        self.desc = description
-        self.sugg = suggestion
-        self.regex = regex
-
-    def check(self, sentence):
-        # print(self.regex)
-        corrections = []
-        text_out = ""
-        matches = findRegEx(self.regex, sentence)
-        for idx, match in enumerate(matches):
-            matched_words = match[2].group(0)
-            sugg = self.sugg(match[2].group(1)) if callable(self.sugg) else self.sugg
-            sugg = sugg.replace(r"\1", match[2].group(1))
-            desc = self.desc.replace(r"\1", match[2].group(1))
-            replace = matched_words.replace(match[2].group(1), sugg, 1)
-            replace = replace.replace(r"\n", " ")
-            replace = replace.replace("\\", "∖")
-            # replace = " "+re.sub(self.regex, self.sugg, match[2].group(0))+" "
-            printRule(match[0], desc, matched_words, replace)
-            if idx == 0:
-                text_out += " * {}\n".format(desc)
-            corrections.append(
-                Correction(match[0], match[1], matched_words, replace, desc)
-            )
-        return corrections, text_out
-
-
 def checkTeX(text):
-    global outputLines
-    outputLines = text.splitlines(True)
     corrections = []
     warnings = ""
 
@@ -100,9 +24,7 @@ def checkTeX(text):
     text = re.sub(r"(?<!\\)\%.*?\n", r"\n", text)  # remove comments
     # checkTeXheadings( text )
     for rule in G_TeXRules:
-        c, w = rule.check(text)
-        corrections += c
-        warnings += w
+        corrections += rule.check(text)
 
     warnings += checkTeXreferences(text)
     warnings += checkTeXmath(text)
@@ -116,6 +38,13 @@ R_Caption_Period = ReRule(
     ".}",
     r"\\caption\{[^}]+?[\w}](\s*\}\s*)(?=\n|%)",
     # r"\\caption\{[^}]+[^. ]\s*(\}\s*)(?=\n)",  # does not match multiline, see #24
+)
+
+R_ItemPeriod = ReRule(
+    "STYLE: Itemize/Enumerate items should be ended by punctuation (,.) if they are part of a sentence.",
+    "\\1,",
+    r"\\item\s([^\n]+?\s(?!(?:and|or|[,.!;:]))(?:\w*))(?=\n\s*\\item|\n\s*\\end)",
+    # r"\\item\s[^\n]+?\s(?!(?:and|or|[,.!;:]))(\w*)\n\s*(?:\\item|\\end)",
 )
 
 R_Table_Hline = ReRule(
@@ -136,19 +65,52 @@ R_SIUnits = ReRule(
 R_MathFun = ReRule(
     "STYLE: In math mode, use \\\\1 instead of \\1 (upright font).",
     "\\\\1",
-    r"\s\$[^$]+?[^\\](sin|cos|tan|log|min|max|exp)[^$]*?[^\$]\$\s",
+    r"\s\$[^$]+?[^\\](sin|cos|tan|log|min|max|exp)[^$]*?[^\$]\$\W",
 )
 
-G_TeXRules = [R_Caption_Period, R_Table_Hline, R_SIUnits, R_MathFun]
+R_MultiCite = ReRule(
+    "STYLE: Put consecutive citations in one together: \\cite{label1, label2}.",
+    "\\cite{label1, label2}",
+    r"((?:\\cite\{[\w :]+?\}[ ,]*){2,})",
+)
+
+R_CiteAfterPeriod = ReRule(
+    "STYLE: Citations after the period to cite the entire paragraph is uncommon and non standard.",
+    "\\cite{\\2}.",
+    r"(\.\s*\\cite\{([\w :]+?)\})",
+)
+
+R_RefTarget = ReRule(
+    "STYLE: Any refernece should state its type (Section|Table|Figure|Eq.|Listing).",
+    " Figure \\ref{",
+    r"\s(?:in|the|at|on|to|for)(\s*\\ref\{)",
+    # r"\s(?!(?:Table|Figure|Section|Listing|Equation|Algorithm|Appendix))(\w*)\s*\\ref\{",
+)
+
+
+# sort by severety as lower rules cannot overwrite higher rules
+G_TeXRules = [
+    R_MultiCite,
+    R_RefTarget,
+    R_Caption_Period,
+    R_ItemPeriod,
+    R_Table_Hline,
+    R_MathFun,
+    R_SIUnits,
+    R_CiteAfterPeriod,
+]
 
 
 ## Analyze TeX
 # - check itemize starts with capital/lowercase consistent, headings consistent
+# - check that itemize item ends with period, comma, or column [.,:?]
 # - check that each section has at least 2 subsections etc.
-# - check that itemize has dots, comma
+# - check Tables with numbers should be right aligned
 # - check caption has period, analyze abstract,
-# - check number of references and how often cited
 # - check label/ref, centering in figure, tables with @{} consistence, check SI units
+# - warn if cite is used after a period DONE
+# - check that \ref is not used without a name such as Figure|Table|Section|Equation DONE
+# - check number of references and how often cited DONE
 # - check figures referenced in text  DONE
 ##########################
 
