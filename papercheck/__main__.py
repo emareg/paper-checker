@@ -27,6 +27,7 @@ from papercheck.checker.plagiarism import checkPlagiarism
 from papercheck.lib.stripper import *
 from papercheck.pos.tagger import analyzeSentences
 from papercheck.textstats import createStats
+from papercheck.ui.report import *
 
 
 # global state variables
@@ -92,131 +93,6 @@ def markCorrections(lines, corrections, cssclass, spans=[]):
 
     lines = lines.splitlines(True)
     return lines, corrected_linenums, spans
-
-
-def hlTeX(lines):
-    for idx, line in enumerate(lines):
-        # store tags
-        tags = re.findall(r"(<span[^<]*?</span>)", line)
-        for jdx, tag in enumerate(tags):
-            line = line.replace(tag, "<span{}>".format(jdx))
-
-        # highlight
-        line = re.sub(r"(\\\w+)(?=\W)", r'<span style="color:blue;">\1</span>', line)
-        line = re.sub(r"(\\\\)", r'<span style="color:blue;">\1</span>', line)
-        line = re.sub(
-            r"(?:[^\\]|^)(%.*?)(?=\n)", r'<span style="color:gray;">\1</span>', line
-        )
-
-        # restore tags
-        for jdx, tag in enumerate(tags):
-            line = line.replace("<span{}>".format(jdx), tag)
-        lines[idx] = line
-    return lines
-
-
-def createHTMLreport(lines, linenums=[[], [], []], stats="", plag="", texwarns=""):
-
-    grammar_linenums = linenums[0]
-    style_linenums = linenums[1]
-    spell_linenums = linenums[2]
-
-    head = """
-<html>
-  <head>
-    <title>Report of papercheck</title>
-    <style>body{{font-family: monospace;}}
-    body{ font-family: monospace; }
-    td{ vertical-align: top; max-width: 90vw; }
-    pre{ white-space: pre-wrap; }
-    em{ font-weight: bold; }
-    .ln{display: inline-block;width: 50px;user-select: none;}
-    .corr{font-weight:bold;cursor:pointer;}
-    .corr .corr{background-color: #eee; outline: 1px solid gray; padding: .2em;}
-    .corr:hover {background-color: yellow;}
-    .err{color:Magenta;}
-    .crit{color:red;}
-    .warn{color:orange;}
-    .good{color:green;}
-    </style>
-  </head>
-    """
-
-    top_header = "<h1>PaperCheck Report for {}</h1><hr>".format(G_filename)
-
-    html_stats = "<h2>Text Statistics</h2><pre>{}</pre><hr>".format(stats)
-
-    if texwarns != "":
-        html_stats += "<h2>TeX Analysis</h2><pre>{}</pre><hr>".format(texwarns)
-
-    if plag != "":
-        html_stats += "<h2>Plagiarism Report</h2><pre>{}</pre><hr>".format(plag)
-
-    out_lines = """
-<h2>Text Analysis</h2>
-<p>Color Legend:</p>
-<ul>
-<li><span class="crit">Grammar Problems: {}</span></li>
-<li><span class="warn">Style Improvement: {}</span></li>
-<li><span class="err">Spelling Errors: {}</span></li>
-</ul>
-<table><tbody>""".format(
-        len(linenums[0]), len(linenums[1]), len(linenums[2])
-    )
-
-    open_tag = None
-    for num, line in enumerate(lines):
-
-        # resolve open tags
-        if open_tag != None:
-            line = open_tag + line
-        open_tag = re.search(r"(<span[^>]+>)[^<]*$", line)
-        if open_tag:
-            open_tag = open_tag.group(1)
-            line += "</span>"
-
-        if num + 1 in grammar_linenums:
-            out_lines += (
-                '<tr><td><span class="ln crit">'
-                + str(num + 1)
-                + "</span></td><td><pre>"
-                + line
-                + "</pre></td>\n"
-            )
-        elif num + 1 in style_linenums:
-            out_lines += (
-                '<tr><td><span class="ln warn">'
-                + str(num + 1)
-                + "</span></td><td>"
-                + line
-                + "</td>\n"
-            )
-        elif num + 1 in spell_linenums:
-            out_lines += (
-                '<tr><td><span class="ln err">'
-                + str(num + 1)
-                + "</span></td><td>"
-                + line
-                + "</td>\n"
-            )
-        else:
-            out_lines += (
-                '<tr><td><span class="ln">'
-                + str(num + 1)
-                + "</span></td><td>"
-                + line
-                + "</td>\n"
-            )
-
-    out_lines += "</table></tbody>"
-
-    ## todo, fixme: put this in own function and call before replacing corrections!
-    ## Syntax Highlithing
-
-    output = head + "<body>\n{}</body>\n</html>".format(
-        top_header + html_stats + out_lines
-    )
-    return output
 
 
 # main parsing function
@@ -303,15 +179,15 @@ def parseFile(fileName, args):
 
     # report
     if args.style or args.grammar or args.spell or args.plagiarism:
-        report_out = createHTMLreport(
-            outputLines,
-            [grammar_linenums, style_linenums, spell_linenums],
-            stats,
-            plag,
-            texwarns,
+        report = HTMLReport()
+        report.setTitle("PaperCheck Report for " + fileBaseName)
+        report.addSection("Statistics", stats)
+        report.addSection("TeX Warnings", texwarns)
+        report.addSection("Plagiarism", plag)
+        report.addCorrectedLines(
+            outputLines, [grammar_linenums, style_linenums, spell_linenums]
         )
-        with open(fileBaseName + "_papercheck.html", "w+") as f:
-            f.write(report_out)
+        report.writeToFile(fileBaseName + "_papercheck.html")
 
 
 def parse_arguments():

@@ -1,5 +1,5 @@
 import re
-from papercheck.lib.cli import *  # command line interface
+from papercheck.ui.cli import *  # command line interface
 
 
 class Correction:

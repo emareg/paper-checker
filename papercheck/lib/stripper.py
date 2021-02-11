@@ -159,7 +159,10 @@ def stripTeX(text, preserveLines=False):
             r"(\\begin\{" + env + r"\*?\}(?:.|(\n))*?\\end\{" + env + r"\*?\})", text
         )
         for match in matches:
-            text = text.replace(match[0], "\n" * (len(str.splitlines(match[0])) - 1))
+            text = text.replace(
+                match[0],
+                "\\begin{" + env + "}" + "\n" * (len(str.splitlines(match[0])) - 1),
+            )
 
     # strip environments
     lstTeXEnv = [

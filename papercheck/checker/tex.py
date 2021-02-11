@@ -2,7 +2,6 @@
 import re
 from papercheck.lib.nlp import *
 from papercheck.checker.rules import ReRule, findRegEx
-from papercheck.lib.cli import *  # command line interface
 
 
 # global state variables
@@ -134,7 +133,6 @@ def checkTeXheadings(text):
                     and word[0].islower()
                     and word not in lstAdpos + lstDet + lstConjunction
                 ):
-                    # askAction( match[0], "Lowercase letter in heading:" , word, word.capitalize())
                     print("Lowercase letter in heading: ", match[2].group(1))
                     break
 

@@ -11,11 +11,10 @@ AMERICAN_ENGLISH = True  # If False: British English
 # import
 # ===========================================
 import pathlib
-from papercheck.checker.rules import ReRule, ReSub, findRegEx
+from papercheck.checker.rules import ReRule, ReSub, findRegEx, Correction
 from papercheck.checker import spelling
 from papercheck.lib.word_lists import *  # part of speech lists
 from papercheck.pos.POS_en import *  # part of speech lists
-from papercheck.lib.cli import *  # command line interface
 from papercheck.lib.nlp import *  # language functions
 
 
@@ -360,7 +359,7 @@ def checkPlural(text):
         replace = (
             match[2].group(0).replace(match[2].group(1), match[2].group(1)[:-1], 1)
         )
-        askAction(match[0], "Possibly wrong plural: ", match[2].group(0), replace)
+        # askAction(match[0], "Possibly wrong plural: ", match[2].group(0), replace)
 
 
 def checkPairs(text):
@@ -371,26 +370,25 @@ def checkPairs(text):
     # matches += findRegEx( r'(\w\w+\(\w)' , text ) # no space before
     # @todo: check that the line is not code : no +-/= in the same line
     for match in matches:
-        askAction(
-            match[0], "Possibly problem with parentheses: ", match[2].group(0), ""
-        )
+        print(match[0], "Possibly problem with parentheses: ", match[2].group(0), "")
 
     matches = findRegEx(r"\s+(“[^”]+“|”\s*“)", text)  # nested or subsequent “”
     # nested or subsequent “”
     matches += findRegEx(r"\s+(‘[^’]+‘|’\s*‘)", text)
     for match in matches:
-        askAction(match[0], "Possibly problem with quotes: ", match[2].group(0), "")
+        print(match[0], "Possibly problem with quotes: ", match[2].group(0), "")
 
 
 def checkAbbreviations(text):
     # todo: check if Acronym was only used once => suspicious!
     dictionary = {}
+    corrections = []
     spelling.read_acronyms(dictionary, DIC_DIR.joinpath("acronyms.md"))
     foundAbbreviations = lstAcronyms + list(dictionary.keys())
     matches = findRegEx(r"\s([A-Z][A-Z])\s", text)
     for match in matches:
         if match[2].group(1) not in foundAbbreviations:
-            askAction(
+            print(
                 match[0],
                 "Found two character acronym, could be written in full words.",
                 match[2].group(0),
@@ -399,18 +397,24 @@ def checkAbbreviations(text):
             foundAbbreviations.append(match[2].group(1))
 
     matches = findRegEx(r"\s([A-Z]{3,5})\s(?!\(|“)", text)
+    desc = "Acronym '{}' was probably never introduced"
     for match in matches:
         if (
             "(" + match[2].group(1) + ")" not in text
             and match[2].group(1) not in foundAbbreviations
         ):
-            askAction(
-                match[0],
-                "Found acronym that was probably never introduced.",
-                match[2].group(0),
-                "",
-            )
+            print("Line {}: {}.".format(match[0], desc.format(match[2].group(0))))
             foundAbbreviations.append(match[2].group(1))
+            corrections.append(
+                Correction(
+                    match[0],
+                    match[1],
+                    match[2].group(0),
+                    "?",
+                    desc.format(match[2].group(0)),
+                )
+            )
+    return corrections
 
 
 def checkSplitInfinitve(text):
@@ -418,7 +422,7 @@ def checkSplitInfinitve(text):
     for match in matches:
         if match[2].group(2) not in lstDeterminer + lstAdpos + lstConjunction + lstAdv:
             replace = "to " + match[2].group(2) + " " + match[2].group(1)
-            askAction(
+            print(
                 match[0],
                 "An adverb probably splits an infinitive expression.",
                 match[2].group(0),
@@ -439,7 +443,7 @@ def checkSentences(text):
         # check length
         if len(words) > MAX_WORDS_PER_SENT:
             print(
-                bold("Sentence too long ")
+                "Sentence too long "
                 + "({} words): ".format(len(words))
                 + sentence[:MAX_WORDS_PER_SENT]
                 + "..."
@@ -474,8 +478,8 @@ def checkStyle(text):
     )
 
     # checkHyphen( text )     # few false alarms
-    checkSplitInfinitve(text)
-    checkAbbreviations(text)
+    # checkSplitInfinitve(text)
+    corrections += checkAbbreviations(text)
     # checkPairs( text )   # many false alarms
 
     return corrections

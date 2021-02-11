@@ -1,6 +1,5 @@
 # own functions
 from papercheck.lib.nlp import *  # language functions
-from papercheck.lib.cli import *
 from papercheck.pos.posdic import getDict
 from papercheck.pos.tags import *
 import re
@@ -100,7 +99,6 @@ def check_words(dictionary, text):
                                 idx + 1, 0, match, sugg, "Possibly misspelled word."
                             )
                         )
-                        askAction(idx, "Maybe misspelled word.", match, sugg)
                 # print("Typo: '{}',  Sugg: {}".format(word, suggest(dictionary, word)))
 
     return corrections
