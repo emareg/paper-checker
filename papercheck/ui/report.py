@@ -1,6 +1,12 @@
 import re
 
 
+class LineMarks:
+    crit = []
+    err = []
+    warn = []
+
+
 def hlTeX(lines):
     for idx, line in enumerate(lines):
         # store tags
@@ -57,13 +63,45 @@ class HTMLReport:
     <h2>{heading}</h2><pre>{content}</pre><hr>
     """
 
-    def __init__(self):
+    def __init__(self, text=""):
         self.title = "PaperCheck Report"
-        self.lns = None
+        self.markLines = {"err": [], "warn": [], "crit": []}
+        self.text = text
         self.main = ""
+        self.spans = []  # resolve marked <span> elements
 
     def setTitle(self, title):
         self.title = title
+
+    def addCorrections(self, corrections, cssclass):
+        for corr in corrections:
+            self.markLines[cssclass] += [corr.line]
+
+            # todo: should build a html list an only apply marks to HTML inner
+            # todo place whitespace outside
+            # todo: replace only specific lines to prevent spelling errors shown many times
+            ms = ""
+            me = ""
+            if corr.match[0] in " (\n":  # FIXME: this might cause line shifts!
+                ms = corr.match[0]
+                corr.match = corr.match[1:]
+            if corr.match[-1] in " ),.\n":
+                me = corr.match[-1]
+                corr.match = corr.match[:-1]
+            spanmark = '<span class="corr {}" title="{} Suggestion: \'{}\'">'.format(
+                cssclass, corr.desc, corr.sugg.replace("\n", " ").strip()
+            )
+            span = "<span" + str(len(self.spans)) + ">" + corr.match + "</span>"
+
+            self.text = self.text.replace(ms + corr.match + me, ms + span + me)
+            self.spans.append(spanmark)
+
+    def hlTeX(self):
+        self.text = "".join(hlTeX(self.text.splitlines(True)))
+
+    def _finalizeCorrections(self):
+        for idx, span in enumerate(self.spans):
+            self.text = self.text.replace("<span{}>".format(str(idx)), span)
 
     def addCorrectedLines(self, lines, linenums):
 
@@ -71,11 +109,11 @@ class HTMLReport:
         rows = ""
 
         def lineClass(lNum):
-            if lNum in linenums[0]:
+            if lNum in linenums["crit"]:
                 return "crit"
-            if lNum in linenums[1]:
+            if lNum in linenums["warn"]:
                 return "warn"
-            if lNum in linenums[2]:
+            if lNum in linenums["err"]:
                 return "err"
             return ""
 
@@ -102,7 +140,7 @@ class HTMLReport:
     <li><span class="err">Spelling Errors: {}</span></li>
     </ul>
     <table><tbody>{}</tbody></table>""".format(
-            len(linenums[0]), len(linenums[1]), len(linenums[2]), rows
+            len(linenums["crit"]), len(linenums["warn"]), len(linenums["err"]), rows
         )
 
     def addSection(self, heading, content):
@@ -110,6 +148,9 @@ class HTMLReport:
             self.main += HTMLReport.SEC.format(heading=heading, content=content)
 
     def writeToFile(self, reportFileName):
+        self._finalizeCorrections()
+        self.addCorrectedLines(self.text.splitlines(True), self.markLines)
+
         with open(reportFileName, "w+") as f:
             f.write(str(self))
 

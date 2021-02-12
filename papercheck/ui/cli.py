@@ -1,10 +1,8 @@
-CFG_INTERACTIVE = False  # ask for action after each error
+import argparse
 
 
-verbose = True
-wasCorrectionMade = False
-
-
+# CLI Formatting
+# =====================================
 def bold(string):
     return "\033[1m" + string + "\033[0m"
 
@@ -21,9 +19,55 @@ def setTitle(title):
     return ""
 
 
-def set_silent():
-    global verbose
-    verbose = False
+# ArgParse
+# =======================================
+
+
+def buildArgParser():
+    argparser = argparse.ArgumentParser(
+        description="Checks papers and other technical texts for grammar, plagiarism and style.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    argparser.add_argument(
+        "-g", "--grammar", action="store_true", default=True, help="Check grammar"
+    )
+    argparser.add_argument(
+        "-p", "--plagiarism", action="store_true", help="Check for plagiarism"
+    )
+    argparser.add_argument(
+        "-s", "--spell", action="store_true", default=True, help="check spelling"
+    )
+    argparser.add_argument(
+        "-y", "--style", action="store_true", default=True, help="Check language style"
+    )
+    # argparser.add_argument(
+    #     "-o",
+    #     "--output",
+    #     dest="filename",
+    #     help="write report to FILENAME",
+    #     metavar="FILE",
+    #     default="./papercheck_report.html",
+    # )
+    argparser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        dest="quiet",
+        default=False,
+        help="don't print messages to stdout",
+    )
+    argparser.add_argument("-x", "--analyze", action="store_true", help="experimental")
+    argparser.add_argument("files", nargs="+")
+
+    return argparser
+
+
+# Deprecated
+# =======================================
+
+CFG_INTERACTIVE = False  # ask for action after each error
+verbose = True
+wasCorrectionMade = False
 
 
 G_issues = ""

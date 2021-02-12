@@ -268,6 +268,7 @@ tabBritishAmerican = [
     ("analogue", "analog"),
     ("catalogue", "catalog"),
     ("defence", "defense"),
+    ("initialisation", "initialization"),
     ("licence", "license"),
     ("centre", "center"),
     ("fibre", "fiber"),
