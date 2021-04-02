@@ -9,7 +9,7 @@ PaperCheck is a python script that searches for simple grammar mistakes in scien
 ## Getting Started
 
 ```shell
-git clone https://github.com:emareg/paper-checker.git
+git clone https://github.com/emareg/paper-checker.git
 cd paper-checker
 make setup
 ```
