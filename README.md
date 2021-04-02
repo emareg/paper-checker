@@ -24,7 +24,7 @@ python3 paperchecker.py -sgy example/testfile.tex
 
 ### 2. Compile as a stand-alone executable (Unix only)
 
-```shll
+```shell
 make
 ./papercheck -sgy example/testfile.tex
 ```
