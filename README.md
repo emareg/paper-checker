@@ -19,7 +19,7 @@ Afterwards, you can use the script in two ways:
 ### 1. Run the python file
 
 ```shell
-python3 paperchecker.py -sgy example/testfile.tex
+python3 papercheck.py -sgy example/testfile.tex
 ```
 
 ### 2. Compile as a stand-alone executable (Unix only)
