@@ -25,7 +25,7 @@ from papercheck.checker.plagiarism import checkPlagiarism
 
 from papercheck.lib.stripper import *
 from papercheck.pos.tagger import analyzeSentences
-from papercheck.textstats import createStats
+from papercheck.textstats import TextStats
 
 from papercheck.ui.cli import buildArgParser
 from papercheck.ui.report import HTMLReport, LineMarks, hlTeX
@@ -62,7 +62,7 @@ def parseFile(args):
                 print("#{}: {}".format(idx, line), end="")
 
         # show stats
-        stats = createStats(text)
+        stats = TextStats(text)
         print(stats)
 
         # regex finiter: https://docs.python.org/3/library/re.html#writing-a-tokenizer
@@ -97,7 +97,7 @@ def parseFile(args):
         # build report
         if args.style or args.grammar or args.spell or args.plagiarism:
             report.setTitle("PaperCheck Report for " + fileBaseName)
-            report.addSection("Statistics", stats)
+            report.addSection("Statistics", str(stats))
             report.addSection("TeX Warnings", texwarns)
             report.addSection("Plagiarism", plag)
             report.writeToFile(fileBaseName + "_papercheck.html")

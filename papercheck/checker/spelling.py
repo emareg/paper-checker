@@ -10,6 +10,8 @@ import pathlib
 
 DIC_DIR = pathlib.Path("dictionary")
 
+EXCEPTIONS = ["doi:", "http:"]  # todo
+
 
 def read_file_or_zip(filename):
     abs_filepath = pathlib.Path(__file__).resolve().parent.parent.joinpath(filename)
@@ -41,6 +43,7 @@ def read_acronyms(acronyms, acronymfile):
             acronyms[acronym] = ""
 
 
+# todo: remove/load from rules
 class Correction:
     def __init__(self, line, column, match, suggestion, description):
         self.line = line
@@ -87,6 +90,10 @@ def check_words(dictionary, text):
                         "sub",
                     ]:
                         continue
+                    if match[1:] in EXCEPTIONS:
+                        continue
+                    if match[0] in "./:#@&?":
+                        continue  # in URLs, hashtags
                     sugg = suggest(dictionary, word)
                     if sugg == "" and word[0].isupper():
                         continue  # do not show capital errors without suggestion
@@ -126,6 +133,7 @@ def edits1(word):
     return special + list(set(capital + transposes + replaces + inserts + deletes))
 
 
+# todo: count correct words of the text, then suggest words accodring to frequency
 def suggest(dictionary, wrong):
     suggs = list(set(w for w in edits1(wrong) if w in dictionary.keys()))
     return "" if len(suggs) == 0 else suggs[0]

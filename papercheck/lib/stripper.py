@@ -143,7 +143,8 @@ def stripTeX(text, preserveLines=False):
     for cmd in lstTexCmdTwo:
         text = re.sub(r"\\" + cmd + "\{([^}]*)\}\{([^}]*)\}", r"\1\2", text)
 
-    lstTexCmdRemove = ["cite", "label", "ref"]
+    # lstTexCmdRemove = ["cite", "label", "ref"]
+    lstTexCmdRemove = ["label", "ref"]  # leave cite for text stats!
     for cmd in lstTexCmdRemove:
         text = re.sub(r"\s?\\" + cmd + r"\{([^\}]*)\}", r"", text)
 
@@ -159,9 +160,13 @@ def stripTeX(text, preserveLines=False):
             r"(\\begin\{" + env + r"\*?\}(?:.|(\n))*?\\end\{" + env + r"\*?\})", text
         )
         for match in matches:
+            caption = re.search(r"\\caption\{(.*)?[}\n]\s*\n", match[0])
+            caption = caption.group(1) if caption else ""
             text = text.replace(
                 match[0],
-                "\\begin{" + env + "}" + "\n" * (len(str.splitlines(match[0])) - 1),
+                "Caption: "
+                + caption
+                + "\n" * (len(str.splitlines(match[0])) - len(str.splitlines(caption))),
             )
 
     # strip environments
@@ -176,7 +181,9 @@ def stripTeX(text, preserveLines=False):
     for env in lstTeXEnv:
         text = re.sub(r"\\begin\{" + env + r"\}", "", text)
         text = re.sub(r"\\end\{" + env + r"\}", "", text)
-        text = re.sub(r"\\item(?:\[[^\]]*\])?", "", text)
+
+    # remove bullets
+    text = re.sub(r"\\item(?:\[[^\]]*\])?", "", text)
 
     # headings
     lstTeXHeading = [
@@ -191,9 +198,9 @@ def stripTeX(text, preserveLines=False):
         text = re.sub(r"\\" + heading + r"\{([^}]*?)\}", r"\1", text)
 
     # remove remaining
-    text = re.sub(
-        r"\\\w+(?:\*|\[[^\]]*\])?(?:\{([^}\n]*)\})*", r"", text
-    )  # replace special chars
+    # text = re.sub(
+    #    r"\\\w+(?:\*|\[[^\]]*\])?(?:\{([^}\n]*)\})*", r"", text
+    # )  # replace special chars
 
     return text
 

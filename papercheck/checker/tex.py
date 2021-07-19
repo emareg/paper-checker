@@ -42,7 +42,7 @@ R_Caption_Period = ReRule(
 R_ItemPeriod = ReRule(
     "STYLE: Itemize/Enumerate items should be ended by punctuation (,.) if they are part of a sentence.",
     "\\1,",
-    r"\\item\s([^\n]+?\s(?!(?:and|or|[,.!;:]))(?:\w*))(?=\n\s*\\item|\n\s*\\end)",
+    r"\\item\s+([^\n]+?\s(?!(?:and|or|[,.!;:]))(?:\w+))(?=\n\s*\\item|\n\s*\\end)",
     # r"\\item\s[^\n]+?\s(?!(?:and|or|[,.!;:]))(\w*)\n\s*(?:\\item|\\end)",
 )
 

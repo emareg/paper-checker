@@ -39,9 +39,9 @@ class HTMLReport:
     .corr{font-weight:bold;cursor:help;}
     .corr .corr{background-color: #eee; outline: 1px solid gray; padding: .2em;}
     .corr:hover {background-color: yellow;}
-    .err{color:Magenta;}
+    .err{color:Magenta;} .err2{color:#707;} 
     .crit{color:red;}
-    .warn{color:orange;}
+    .warn{color:#f90;} .warn2{color:#b70;} 
     .good{color:green;}
     </style>
     """
@@ -77,7 +77,6 @@ class HTMLReport:
         for corr in corrections:
             self.markLines[cssclass] += [corr.line]
 
-            # todo: should build a html list an only apply marks to HTML inner
             # todo place whitespace outside
             # todo: replace only specific lines to prevent spelling errors shown many times
             ms = ""
@@ -88,8 +87,17 @@ class HTMLReport:
             if corr.match[-1] in " ),.\n":
                 me = corr.match[-1]
                 corr.match = corr.match[:-1]
+
+            # todo: move this outside of addCorrection!
+            applyclass = "err2" if cssclass == "err" and corr.sugg == "" else cssclass
+            applyclass = (
+                "warn2"
+                if cssclass == "warn" and corr.desc.startswith("Found vague")
+                else applyclass
+            )
+
             spanmark = '<span class="corr {}" title="{} Suggestion: \'{}\'">'.format(
-                cssclass, corr.desc, corr.sugg.replace("\n", " ").strip()
+                applyclass, corr.desc, corr.sugg.replace("\n", " ").strip()
             )
             span = "<span" + str(len(self.spans)) + ">" + corr.match + "</span>"
 

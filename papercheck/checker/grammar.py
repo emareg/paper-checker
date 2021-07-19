@@ -27,7 +27,7 @@ DIC_DIR = pathlib.Path("dictionary")
 # ==========================================================
 
 
-reIntroductoryPhrase = r"\s(?:Actually|As a result|Additionally|Afterwards|Consequently|However|Finally|First|Furthermore|Therefore|Third(?:ly)?|For example|For (?:this|that) reason|Generally|In general|In fact|In (?:18|19|20)\d\d|In the past|Instead(?! of)|On the other hand|Nevertheless|Nowadays|On the contrary|Recently|Second(?:ly)?|What is more)"
+reIntroductoryPhrase = r"\s(?:Actually|As a result|Additionally|Afterwards|By contrast|Consequently|However|Finally|First|Furthermore|For example|For (?:this|that) reason|Generally|In general|In fact|In (?:18|19|20)\d\d|In the past|In this (?:case|situation|paper|problem)|Instead(?! of)|On the other hand|Nevertheless|Nowadays|On the contrary|Recently|Second(?:ly)?|Therefore|Third(?:ly)?|What is more)"
 
 
 # Typography
@@ -44,12 +44,12 @@ wrongCharacters = [
 R_AvsAn = ReRule(
     "Use 'an' because the next word starts with a vowel SOUND.",
     "an",
-    r"\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaIi]|[Ee][^u]|[Uu][^sn]|[Uu]n[^ia]|[Uu]na(?!mi)|[Oo][^n]|[Oo]n[^e]|[Uu]nin|8[- ]|hour)\w+)\W",
+    r"\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaIi]|[Ee][^u]|[Uu][^snb]|[Uu]n[^ia]|[Uu]na(?!mi)|[Oo][^n]|[Oo]n[^e]|[Uu]nin|8[- ]|hour)\w+)\W",
 )
 R_AnvsA = ReRule(
     "Use 'a' because the next word does NOT start with a vowel SOUND.",
     "a",
-    r"\s(an)\s[„“”]?(?:[^AaOoEeIiUu\\„“”\s][a-z]|[^AEFHILMNORSX8„“”\s][^a-z]|[Uu]s|[Uu]ni|[Oo]ne)\w*\W",
+    r"\s(an)\s[„“”]?(?:[^AaOoEeIiUu\\„“”\s][a-z]|[^AEFHILMNORSX8„“”\s][^a-z]|[Uu]s|[Uu]ni|[Uu]bi|[Oo]ne)\w*\W",
 )
 R_RepeatedWord = ReRule(
     "You repeated a word, which is probably not intended.", r"", r"\s(\w+) +\1\W"
@@ -97,17 +97,18 @@ R_Did_Base = ReRule(
 R_Double_Det = ReRule(
     "You have repeated a determiner, which is probably not intended.",
     "",
-    r"\s" + reTheDet + r"\s+(" + reTheDet + r")\W",
+    r"\s" + reTheDet + r"\s+(" + reTheDet + r")\s",
 )
 R_Double_Adp = ReRule(
     "You have repeated an adposition, which is probably not intended.",
     "",
-    r"\s" + reAdpos + r"\s+(" + reAdpos + r")\W",
+    r"\s" + reAdpos + r"\s+(at|by|from|for|in|into|of|on|until|with|without)\s",
+    # false-alarm: in about, than in, than without, by at least
 )
 R_Double_Modal = ReRule(
     "You have repeated a modal verb, which is probably not intended.",
     "",
-    r"\s" + reModal + r"\s+(" + reModal + r")\W",
+    r"\s" + reModal + r"\s+(" + reModal + r")\s",
 )
 
 # check that no aux verb is before it: "will it be ..."
@@ -396,8 +397,8 @@ def checkAbbreviations(text):
             )
             foundAbbreviations.append(match[2].group(1))
 
-    matches = findRegEx(r"\s([A-Z]{3,5})\s(?!\(|“)", text)
-    desc = "Acronym '{}' was probably never introduced"
+    matches = findRegEx(r"\s([A-Z]{3,5}) (?![“(A-Z])", text)
+    desc = "Acronym {} was probably never introduced"
     for match in matches:
         if (
             "(" + match[2].group(1) + ")" not in text
@@ -456,6 +457,7 @@ def checkGrammar(text):
     global outputLines
     outputLines = text.splitlines(True)
     corrections = []
+    # print(text)
     # reliable, critical checks
     print("\n\nChecking Grammar:\n----------------------------------------------------")
     for rule in G_Rules + G_ExtRules:

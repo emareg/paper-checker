@@ -97,6 +97,7 @@ tabNumbers = [
 
 
 tabRedundantPhrases = [
+    ("(?<=[0-9])° deg(?:ree)?", "°"),
     ("all of the", "all"),
     ("all the", "all"),
     ("all in all", "overall"),
@@ -157,9 +158,11 @@ tabRedundantPhrases = [
 
 
 tabWrongCombinations = [
+    ("allows to be", "allows being"),
     ("at lest", "at least"),
     ("could of", "could have"),
     ("de-factor", "de-facto"),
+    ("et. al.", "et al."),
     ("last change", "last chance"),
     (r"(?:have|has|had) (?:the|a|no) change", "chance"),
     (r"(?:should|will) bee", "been"),
@@ -285,6 +288,9 @@ tabBritishAmerican = [
 ## Non Scientific / Informal
 ## ===================================================
 
+
+## outdated
+tabOutdated = [("latence", "latency"), ("consistence", "consistency")]
 
 # maybe in medical/biology context
 tabNonTechnicalWords = [("bee", "be")]

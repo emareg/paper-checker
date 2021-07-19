@@ -21,7 +21,10 @@ def statsReferences(text):
     )
 
     refs = {}
-    matches = re.findall(r"\\cite\{([^},]+)(?:, ?([^},]+))*\}", text)
+    matches = re.findall(
+        r"\\cite\{([^},]+)(?:, ?([^},]+))*\}", text
+    )  # removed by tex stripper
+    # print("Matches:", matches)
     matches += re.findall(
         r"\s\[((?:[A-Z][\w+ ]{1,3})?\d\d?)(?:(?:, |[…–])([A-Z][\w+ ]{1,3})?\d\d?)*\][.,]?(?=\s[\w[])",
         text,
@@ -58,139 +61,149 @@ def statsFigures(text):
     return figs
 
 
-def calcStats(text):
-    # todo: sentences, sentence lengths, words, cohesion, text difficulty
-
-    text = text.strip()
-
-    global G_stats
-    # init
-    G_stats["words"] = 0
-    G_stats["letters_all"] = len(text)
-    G_stats["characters_no_white"] = len(re.sub(r"\s+", "", text))
-    G_stats["characters_words"] = 0
-    G_stats["unique_words"] = 0
-    G_stats["unique_words_percent"] = 0
-    G_stats["word_length_min"] = 1000
-    G_stats["word_length_avg"] = 0
-    G_stats["word_length_max"] = 0
-    G_stats["vague_words"] = 0
-    G_stats["male_words"] = 0
-    G_stats["female_words"] = 0
-    G_stats["neutral_words"] = 0
-    G_stats["words_per_sent_min"] = 1000
-    G_stats["words_per_sent_max"] = 0
-    G_stats["words_per_sent_avg"] = 0
-    G_stats["sent_short"] = 0
-    G_stats["sent_long"] = 0
-
-    refs = statsReferences(text)
-    G_stats["refs_total"] = len(refs.keys())
-    G_stats["refs_cites"] = sum(refs.values())
-
-    figs = statsFigures(text)
-    G_stats["figs"] = figs["figs"]
-    G_stats["tabs"] = figs["tabs"]
-    G_stats["lsts"] = figs["lsts"]
-
-    sentences = split2sentences(text)
-
-    G_stats["sentences"] = len(sentences)
-
-    all_words = []
-    for sentence in sentences:
-        words = split2words(sentence)
-        if len(words) < 10:
-            G_stats["sent_short"] += 1
-        if len(words) > 30:
-            G_stats["sent_long"] += 1
-        if len(words) < G_stats["words_per_sent_min"]:
-            G_stats["words_per_sent_min"] = len(words)
-            G_stats["shortest_sent"] = sentence
-        if len(words) > G_stats["words_per_sent_max"]:
-            G_stats["words_per_sent_max"] = len(words)
-            G_stats["longest_sent"] = sentence
-        G_stats["words_per_sent_avg"] += len(words) / len(sentences)
-        all_words += words
-
-    # look at words
-    for word in all_words:
-
-        if word in lstVague:
-            G_stats["vague_words"] += 1
-        if word in ["he", "his", "him"]:
-            G_stats["male_words"] += 1
-        if word in ["it", "its"]:
-            G_stats["neutral_words"] += 1
-        if word in ["she", "her"]:
-            G_stats["female_words"] += 1
-
-        G_stats["characters_words"] += len(word)
-
-        if len(word) < G_stats["word_length_min"]:
-            G_stats["word_length_min"] = len(word)
-        if len(word) > G_stats["word_length_max"]:
-            G_stats["word_length_max"] = len(word)
-        G_stats["word_length_avg"] += len(word) / len(all_words)
-
-        if len(word) > 5:
-            pass
-
-    G_stats["words"] = len(all_words)
-    G_stats["unique_words"] = len(set(all_words))
-    G_stats["unique_words_percent"] = round(
-        100 * G_stats["unique_words"] / G_stats["words"] if G_stats["words"] else 0
-    )
-    long_words = [x.lower() for x in all_words if len(x) > 5]
-    word_count = Counter(long_words)
-    G_stats["common_words"] = word_count.most_common(6)
+def addDicCount(dic, entry):
+    if entry in dic.keys():
+        dic[entry] += 1
+    else:
+        dic[entry] = 1
 
 
-def createStats(text):
-    global G_stats
-    calcStats(text)
+class GenderCounts:
+    def __init__(self):
+        self.nMaleWords = 0
+        self.nFemaleWords = 0
+        self.nNeutralWords = 0
 
-    stats_str = ""
-    stats_str += " Characters: {} (incl. spaces)  \n".format(G_stats["letters_all"])
-    stats_str += "             {} (excl. spaces)  \n".format(
-        G_stats["characters_no_white"]
-    )
-    stats_str += "             {} (only words)    \n".format(
-        G_stats["characters_words"]
-    )
-    stats_str += "                                \n"
-    stats_str += "      Words: {} (total)         \n".format(G_stats["words"])
-    stats_str += "             {} (unique, {} %)  \n".format(
-        G_stats["unique_words"], G_stats["unique_words_percent"]
-    )
-    stats_str += "             chars per word: {} .. {} ({:.2f} avg.)\n".format(
-        G_stats["word_length_min"],
-        G_stats["word_length_max"],
-        G_stats["word_length_avg"],
-    )
-    stats_str += "                                \n"
-    stats_str += "  Sentences: {} (total)         \n".format(G_stats["sentences"])
-    stats_str += "             {} short, {} long  \n".format(
-        G_stats["sent_short"], G_stats["sent_long"]
-    )
-    stats_str += "             words per sent: {} .. {} ({:.2f} avg.)\n".format(
-        G_stats["words_per_sent_min"],
-        G_stats["words_per_sent_max"],
-        G_stats["words_per_sent_avg"],
-    )
-    stats_str += "                                \n"
-    stats_str += "Vague words: {}                 \n".format(G_stats["vague_words"])
-    stats_str += "    Genders: {} he, {} it, {} she\n".format(
-        G_stats["male_words"], G_stats["neutral_words"], G_stats["female_words"]
-    )
-    stats_str += " References: {} refs, {} times cited\n".format(
-        G_stats["refs_total"], G_stats["refs_cites"]
-    )
-    stats_str += "    Figures: {} figs, {} tables, {} listings\n".format(
-        G_stats["figs"], G_stats["tabs"], G_stats["lsts"]
-    )
-    # stats_str += "                                \n"
-    # stats_str += "Most Freq. Words: {}\n".format(G_stats["common_words"])
-    # stats_str += "Longest Sentence: '{}...'\n".format(G_stats["longest_sent"][:50])
 
-    return stats_str
+class MinMaxCounts:
+    def __init__(self):
+        self.nMin = 0
+        self.nMax = 0
+        self.nNeutralWords = 0
+
+
+class CharCounts:
+    def __init__(self):
+        self.nTotal = 0
+        self.nExclSpaces = 0
+        self.nInWords = 0
+
+
+class WordCounts:
+    def __init__(self):
+        self.nTotal = 0
+        self.nUnique = 0
+        self.unique_pcnt = 0
+        self.len_avg = 0
+        self.longest = ""
+
+
+class SentCounts:
+    def __init__(self):
+        self.nTotal = 0
+        self.nWordsMin = 1000
+        self.nWordsMax = 0
+
+
+# refactored verson
+class TextStats:
+    def __init__(self, text=""):
+
+        # count classes
+        self.gender = GenderCounts()
+        self.char = CharCounts()
+        self.word = WordCounts()
+        self.sent = SentCounts()
+
+        # payload
+        self.words = []
+        self.sentences = []
+        self.text = ""
+
+        # dict counts
+        self.fig = {}
+        self.ref = {}
+        self.vague = {}
+        self.freq = {}
+
+        self.parse(text)
+
+    def parse(self, text):
+        text = text.strip()
+        self.text = text
+
+        self.char.nTotal = len(text)
+        self.char.nExclSpaces = len(re.sub(r"\s+", "", text))
+
+        self.sentences = split2sentences(text)
+        self.sent.nTotal = len(self.sentences)
+        for sentence in self.sentences:
+            words = split2words(sentence)
+            self.words += words
+            lenW = len(words)
+
+            self.sent.nWordsMin = min(self.sent.nWordsMin, lenW)
+            self.sent.nWordsMax = max(self.sent.nWordsMax, lenW)
+
+        # words together
+        self.word.nTotal = len(self.words)
+        self.word.nUnique = len(set(self.words))
+        self.word.unique_pcnt = round(
+            100 * self.word.nUnique / self.word.nTotal if self.word.nTotal else 0
+        )
+
+        # figures / references
+        self.ref = statsReferences(self.text)
+        self.fig = statsFigures(text)
+
+        # look at individual words
+        for word in self.words:
+
+            if word in lstVague:
+                addDicCount(self.vague, word)
+            if word in ["he", "his", "him"]:
+                self.gender.nMaleWords += 1
+            if word in ["it", "its"]:
+                self.gender.nNeutralWords += 1
+            if word in ["she", "her"]:
+                self.gender.nFemaleWords += 1
+
+            self.char.nInWords += len(word)
+            self.word.len_avg += len(word) / len(self.words)
+
+            if len(word) > len(self.word.longest):
+                self.word.longest = word
+
+    def __str__(self):
+
+        stats_str = ""
+        stats_str += " Characters: {} (incl. spaces)\n".format(self.char.nTotal)
+        stats_str += "             {} (excl. spaces)\n".format(self.char.nExclSpaces)
+        stats_str += "             {} (only words)    \n".format(self.char.nInWords)
+        stats_str += "                                \n"
+        stats_str += "      Words: {} (total)         \n".format(self.word.nTotal)
+        stats_str += "             {} (unique, {} %)  \n".format(
+            self.word.nUnique, self.word.unique_pcnt
+        )
+        stats_str += "                                \n"
+        stats_str += "  Sentences: {} (total)         \n".format(len(self.sentences))
+        stats_str += "             words per sent: {} .. {} ({:.1f} avg.)\n".format(
+            self.sent.nWordsMin,
+            self.sent.nWordsMax,
+            self.word.nTotal / self.sent.nTotal,
+        )
+        stats_str += "                                \n"
+        stats_str += "Vague words: {}                 \n".format(
+            sum(self.vague.values())
+        )
+        stats_str += "    Genders: {} he, {} it, {} she\n".format(
+            self.gender.nMaleWords, self.gender.nNeutralWords, self.gender.nFemaleWords
+        )
+        stats_str += " References: {} refs, {} times cited\n".format(
+            len(self.ref.keys()), sum(self.ref.values())
+        )
+        stats_str += "    Figures: {} figs, {} tables, {} listings\n".format(
+            self.fig["figs"], self.fig["tabs"], self.fig["lsts"]
+        )
+
+        return stats_str
