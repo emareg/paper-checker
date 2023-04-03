@@ -179,6 +179,12 @@ R_Be_Do = ReRule(
     r"\s(?:be|been|is|are|was|were)\s(?:" + reAdv + r"\s)?(do|did|does)\W",
 )
 
+R_We_will = ReRule(
+    "Use present tense.",
+    "",
+    r"\s[Ww]e (will)\W",
+)
+
 
 # special rules
 R_If_There = ReRule(
@@ -266,6 +272,7 @@ G_Rules = [
     R_Be_Do,
     R_Comma_Intro,
     R_wrong_combination,
+    R_We_will,
 ]
 
 G_ExtRules = [
