@@ -44,7 +44,7 @@ wrongCharacters = [
 R_AvsAn = ReRule(
     "Use 'an' because the next word starts with a vowel SOUND.",
     "an",
-    r"\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaIi]|[Ee][^u]|[Uu][^snb]|[Uu]n[^ia]|[Uu]na(?!mi)|[Oo][^n]|[Oo]n[^e]|[Uu]nin|8[- ]|hour)\w+)\W",
+    r"\s(a)\s(?:[AEFHILMNORSX][A-Z\d]{2,3}|(?:[AaIi]|[Ee][^u]|[Uu][^snbA-Z]|[Uu]n[^ia]|[Uu]na(?!mi)|[Oo][^n]|[Oo]n[^e]|[Uu]nin|8[- ]|hour)\w+)\W",
 )
 R_AnvsA = ReRule(
     "Use 'a' because the next word does NOT start with a vowel SOUND.",
